@@ -159,13 +159,13 @@ textarea.cfg-input {
     display: flex;
     flex-direction: column;
     gap: 4px;
-    max-height: 260px;
+    max-height: 280px;
     overflow-y: auto;
 }
 
 .cfg-game-type-btn {
     width: 100%;
-    padding: 0.5rem 0.875rem;
+    padding: 0.5rem 0.75rem;
     border: 1.5px solid #E5E7EB;
     background: var(--cfg-card-bg);
     border-radius: 10px;
@@ -176,6 +176,9 @@ textarea.cfg-input {
     transition: all 0.15s;
     font-family: inherit;
     text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
 }
 
 .cfg-game-type-btn:hover {
@@ -190,6 +193,63 @@ textarea.cfg-input {
     color: var(--cfg-orange);
     box-shadow: 0 1px 3px rgba(230, 81, 0, 0.12);
 }
+
+/* Icon container inside each game-type button */
+.cfg-game-type-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F3F4F6;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: background 0.15s;
+}
+
+.cfg-game-type-btn.active .cfg-game-type-icon,
+.cfg-game-type-btn:hover .cfg-game-type-icon {
+    background: rgba(230, 81, 0, 0.12);
+}
+
+.cfg-game-type-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+/* Text stack inside button */
+.cfg-game-type-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.cfg-game-type-name {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--cfg-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cfg-game-type-btn.active .cfg-game-type-name,
+.cfg-game-type-btn:hover .cfg-game-type-name {
+    color: var(--cfg-orange);
+}
+
+.cfg-game-type-sub {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--cfg-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 /* Badge shown in main heading */
 .cfg-game-type-badge {

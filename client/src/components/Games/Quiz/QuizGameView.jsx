@@ -9,7 +9,7 @@ import GameAlert from '../GamePanel/GameAlert';
 import '../../../styles/components/games/quiz/Quiz.css';
 
 function QuizGameView() {
-    const { activityId } = useParais();
+    const { activityId } = usePairs();
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;

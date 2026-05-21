@@ -562,17 +562,24 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
                         </div>
                         <div className="cfg-sidebar-section">
                             <label>Tipo de Juego</label>
-                            <select
-                                className="cfg-input cfg-select"
-                                value={gameType}
-                                onChange={e => setGameType(e.target.value)}
-                            >
+                            <div className="cfg-game-type-list">
                                 {(interactionType === 'PAIRS' ? PAIR_TYPES : QUESTIONNAIRE_TYPES).map(gt => {
-                                    let game = ACTIVITY_CONFIG[gt]
-                                    return (<option key={game.value} value={game.value}>{game.label} — {game.subtitle || game.title}</option>)
-                                } 
-                                )}
-                            </select>
+                                    const game = ACTIVITY_CONFIG[gt];
+                                    return (
+                                        <button
+                                            key={game.value}
+                                            className={`cfg-game-type-btn ${gameType === game.value ? 'active' : ''}`}
+                                            onClick={() => setGameType(game.value)}
+                                        >
+                                            <span className="cfg-game-type-icon">{game.icon}</span>
+                                            <span className="cfg-game-type-info">
+                                                <span className="cfg-game-type-name">{game.title}</span>
+                                                <span className="cfg-game-type-sub">{game.subtitle}</span>
+                                            </span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
                         <div className="cfg-sidebar-section">
                             <label>Tema Específico</label>
