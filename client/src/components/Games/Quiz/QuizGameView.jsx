@@ -17,7 +17,7 @@ function QuizGameView() {
     const { currentGameData } = useGame();
 
     const [activity, setactivity] = useState(null);
-    const [gameconfigs, setGameconfigs] = useState([{}, {}]);
+    const [gameconfigs, setGameconfigs] = useState([{ showText: true }, { showText: true }]);
     const [currentQuestionIndex, setcurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [answers, setAnswers] = useState([]);
@@ -35,15 +35,17 @@ function QuizGameView() {
         setloading(true);
 
         if (!currentGameData) {
-            setError("No hay datos de la actividad. Regresa al panel para mnmcmar.");
+            setError("No hay datos de la actividad. Regresa al panel para iniciar.");
             setloading(false);
             return;
         }
 
-        // Read gameconfigs
-        if (currentGameData.gameconfigs && currentGameData.gameconfigs.length >= 2) {
-            const sorted = [...currentGameData.gameconfigs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-            setGameconfigs(sorted);
+        // Read gameConfigs (API returns camelCase with capital C)
+        const rawConfigs = currentGameData.gameConfigs || currentGameData.gameconfigs;
+        if (rawConfigs && rawConfigs.length >= 1) {
+            const sorted = [...rawConfigs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+            // Ensure showText defaults to true if not explicitly set
+            setGameconfigs(sorted.map(c => ({ showText: true, ...c })));
         }
 
         const mappedActivity = {
