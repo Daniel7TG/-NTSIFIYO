@@ -1,4 +1,4 @@
-﻿// clment/src/components/Games/quiz/QuizGameView.js
+// clment/src/components/Games/quiz/QuizGameView.js
 // Vista de juego de quiz para estudiantes
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
@@ -9,7 +9,7 @@ import GameAlert from '../GamePanel/GameAlert';
 import '../../../styles/components/games/quiz/Quiz.css';
 
 function QuizGameView() {
-    const { activityId } = usePairs();
+    const { activityId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
@@ -180,8 +180,8 @@ function QuizGameView() {
     }
 
     if (showResult) {
-        const urlParais = new URLSearchParais(window.location.search);
-        const gameIdParam = urlParais.get('gameId');
+        const urlParams = new URLSearchParams(window.location.search);
+        const gameIdParam = urlParams.get('gameId');
 
         return (
             <GameSummary
