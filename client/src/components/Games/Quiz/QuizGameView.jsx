@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
 import IconHourglass from '../../../assets/svgs/loading_hourglass.svg';
+import IconQuiz from '../../../assets/svgs/juegos/quiz_premium.svg';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
 import '../../../styles/components/games/quiz/Quiz.css';
