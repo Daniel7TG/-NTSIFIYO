@@ -4,7 +4,7 @@ import '../../styles/components/teacher/configurationGameStyles.css';
 import DictionaryService from '../../services/DictionaryService';
 import apiConfig from '../../services/apiConfig';
 import CustomAlert from '../common/CustomAlert';
-import { QUESTIONNAIRE_TYPES, PAIR_TYPES, ACTIVITY_CONFIG } from '../../config/activityConfig';
+import { QUESTIONNAIRE_TYPES, PAIR_TYPES, MEDIA_TYPES, ACTIVITY_CONFIG } from '../../config/activityConfig';
 import MediaService, { ContentType } from '../../services/MediaService';
 import { GAME_CATEGORIES, GAME_TOPICS } from '../../utils/gameCategories';
 import { useAlert } from '../../context/AlertContext';
@@ -187,13 +187,21 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
     const [questions, setQuestions] = useState([]);
     const [pairs, setPairs] = useState([]);
 
+    // Config cards state
+    const [config1, setConfig1] = useState({ showImage: false, showText: true, playAudio: false, isMazahua: false, order: 1 });
+    const [config2, setConfig2] = useState({ showImage: false, showText: true, playAudio: false, isMazahua: false, order: 2 });
+
+    // Media mode state
+    const [mediaId, setMediaId] = useState(null);
+    const [allowSpanishToggle, setAllowSpanishToggle] = useState(false);
+
     // When interaction type changes, reset gameType to the first subtype of that interaction
     const handleInteractionChange = (type) => {
         setInteractionType(type);
         if (type === 'PAIRS') {
-            setGameType(PAIR_TYPES[0].value);
+            setGameType(PAIR_TYPES[0]);
         } else {
-            setGameType(QUESTIONNAIRE_TYPES[0].value);
+            setGameType(QUESTIONNAIRE_TYPES[0]);
         }
     };
 
