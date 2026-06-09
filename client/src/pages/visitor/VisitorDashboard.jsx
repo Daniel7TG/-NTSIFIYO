@@ -19,7 +19,7 @@ const GAME_TYPE_MAP = {
     FAST_MEMORY: ActivityTypes.FAST_MEMORY,
     PAIR: ActivityTypes.MEMORY_GAME,
     INTRUDER: ActivityTypes.INTRUDER,
-    PUZZLE: ActivityTypes.PUZZLE,
+    // PUZZLE: ActivityTypes.PUZZLE,
     MEMORY_GAME: ActivityTypes.MEMORY_GAME,
     LOTTERY: ActivityTypes.LOTTERY,
     MAZE: ActivityTypes.MAZE,

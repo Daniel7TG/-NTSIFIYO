@@ -4,7 +4,7 @@ import Roles from '../utils/roles';
 import IconFastMemory from '../assets/svgs/juegos/memoria_rapida_premium.svg';
 import IconQuiz from '../assets/svgs/juegos/quiz_premium.svg';
 import IconIntruder from '../assets/svgs/juegos/intruso_premium.svg';
-import IconPuzzle from '../assets/svgs/juegos/rompecabezas_premium.svg';
+// import IconPuzzle from '../assets/svgs/juegos/rompecabezas_premium.svg';
 import IconMemory from '../assets/svgs/juegos/memorama_premium.svg';
 import IconLottery from '../assets/svgs/juegos/loteria_premium.svg';
 import IconMaze from '../assets/svgs/juegos/laberinto_premium.svg';
@@ -18,16 +18,18 @@ export const ActivityTypes = Object.freeze({
     QUESTIONNAIRE: "QUESTIONNAIRE",
     FAST_MEMORY: "FAST_MEMORY",
     INTRUDER: "INTRUDER",
-    // FIND_THE_WORD: "FIND_THE_WORD",
+    FIND_THE_WORD: "FIND_THE_WORD",
     MEDIA_SONG: "MEDIA_SONG",
     MEDIA_ANECDOTE: "MEDIA_ANECDOTE",
     MEDIA_LEGEND: "MEDIA_LEGEND",
     MEDIA_POEM: "MEDIA_POEM",
-    PUZZLE: "PUZZLE",
+    // PUZZLE: "PUZZLE",
     MEMORY_GAME: "MEMORY_GAME",
     LOTTERY: "LOTTERY",
     MAZE: "MAZE",
     PAIRS: "PAIRS",
+    CAT_LINES: "CAT_LINES",
+    FILL_BLANK: "FILL_BLANK",
 });
 
 export const ACTIVITY_CONFIG = {
@@ -85,6 +87,7 @@ export const ACTIVITY_CONFIG = {
             { icon: 'emoji_events', label: 'XP' }
         ]
     },
+    /*
     [ActivityTypes.PUZZLE]: {
         id: 'rompecabezas',
         value: ActivityTypes.PUZZLE,
@@ -103,6 +106,7 @@ export const ACTIVITY_CONFIG = {
             { icon: 'emoji_events', label: 'XP' }
         ]
     },
+    */
     [ActivityTypes.MEMORY_GAME]: {
         id: 'memorama',
         value: ActivityTypes.MEMORY_GAME,
@@ -157,25 +161,24 @@ export const ACTIVITY_CONFIG = {
             { icon: 'emoji_events', label: 'XP' }
         ]
     },
-    /*
     [ActivityTypes.FIND_THE_WORD]: {
         id: 'encuentra_palabra',
         value: ActivityTypes.FIND_THE_WORD,
         type: ActivityTypes.FIND_THE_WORD,
-        title: 'Encuentra Palabra',
-        label: 'Encuentra Palabra',
-        subtitle: 'Localiza la palabra correcta',
-        description: 'Localiza la palabra correcta basándote en su definición o pista.',
-        icon: renderIcon(IconFindWord, 'Encuentra Palabra'),
+        title: 'Sopa de Letras',
+        label: 'Sopa de Letras',
+        subtitle: 'Encuentra las palabras escondidas',
+        description: 'Localiza cada palabra mazahua escondida en la cuadrícula de letras. Arrastra para marcar la palabra; según la dificultad la cuadrícula crece y aparecen más direcciones.',
+        icon: renderIcon(IconFindWord, 'Sopa de Letras'),
         materialIcon: 'search',
         basePath: '/games/encuentra_palabra',
         color: '#0284c7',
         stats: [
+            { icon: 'grid_on', label: 'Cuadrícula' },
             { icon: 'search', label: 'Atención' },
             { icon: 'emoji_events', label: 'XP' }
         ]
     },
-    */
     [ActivityTypes.MEDIA_SONG]: {
         id: 'cancion',
         value: ActivityTypes.MEDIA_SONG,
@@ -261,6 +264,42 @@ export const ACTIVITY_CONFIG = {
             { icon: 'psychology', label: 'Lógica' },
             { icon: 'emoji_events', label: 'XP' }
         ]
+    },
+    [ActivityTypes.CAT_LINES]: {
+        id: 'tripas',
+        value: ActivityTypes.CAT_LINES,
+        type: ActivityTypes.CAT_LINES,
+        title: 'Tripas del Gato',
+        label: 'Tripas del Gato',
+        subtitle: 'Une los pares con líneas',
+        description: 'Traza líneas libres para unir cada carta con su par sin cruzar las líneas ya dibujadas. Completa todos los pares antes de que se acabe el tiempo.',
+        icon: renderIcon(IconPairs, 'Tripas del Gato'),
+        materialIcon: 'gesture',
+        basePath: '/games/tripas',
+        color: '#0ea5e9',
+        stats: [
+            { icon: 'gesture', label: 'Trazo' },
+            { icon: 'timer', label: 'Tiempo' },
+            { icon: 'emoji_events', label: 'XP' }
+        ]
+    },
+    [ActivityTypes.FILL_BLANK]: {
+        id: 'fill_blank',
+        value: ActivityTypes.FILL_BLANK,
+        type: ActivityTypes.FILL_BLANK,
+        title: 'Completar Oración',
+        label: 'Completar Oración',
+        subtitle: 'Rellena el espacio en blanco',
+        description: 'Completa las oraciones seleccionando la palabra correcta para el espacio en blanco. Practica vocabulario y gramática mazahua en contexto.',
+        icon: '📝',
+        materialIcon: 'edit_note',
+        basePath: '/games/fill_blank',
+        color: '#0284c7',
+        stats: [
+            { icon: 'edit_note', label: 'Oraciones' },
+            { icon: 'psychology', label: 'Contexto' },
+            { icon: 'emoji_events', label: 'XP' }
+        ]
     }
 };
 
@@ -268,8 +307,9 @@ export const ACTIVITY_CONFIG = {
 export const QUESTIONNAIRE_TYPES = [
     ActivityTypes.QUESTIONNAIRE,
     ActivityTypes.INTRUDER,
+    ActivityTypes.FILL_BLANK,
     // ActivityTypes.FIND_THE_WORD,
-    ActivityTypes.PUZZLE,
+    // ActivityTypes.PUZZLE,
 ];
 
 export const PAIR_TYPES = [
@@ -277,7 +317,9 @@ export const PAIR_TYPES = [
     ActivityTypes.FAST_MEMORY,
     ActivityTypes.LOTTERY,
     ActivityTypes.MAZE,
-    ActivityTypes.PAIRS
+    ActivityTypes.PAIRS,
+    ActivityTypes.CAT_LINES,
+    ActivityTypes.FIND_THE_WORD
 ];
 
 export const MEDIA_TYPES = [
@@ -315,10 +357,13 @@ export const getNavigationRoutes = () => {
         ActivityTypes.QUESTIONNAIRE,
         ActivityTypes.INTRUDER,
         ActivityTypes.LOTTERY,
-        ActivityTypes.PUZZLE,
+        // ActivityTypes.PUZZLE,
         ActivityTypes.FAST_MEMORY,
         ActivityTypes.MAZE,
-        ActivityTypes.PAIRS
+        ActivityTypes.PAIRS,
+        ActivityTypes.CAT_LINES,
+        ActivityTypes.FILL_BLANK,
+        ActivityTypes.FIND_THE_WORD
     ];
 
     return activeGames.map(type => {

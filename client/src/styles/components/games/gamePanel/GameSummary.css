@@ -151,6 +151,10 @@
     position: relative;
     width: 160px;
     height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .gs-progress-ring {
@@ -694,8 +698,6 @@
     .gs-header h2 { font-size: 30px; }
     .gs-content-row { padding: 0 2.5rem 2rem; }
     .gs-actions { padding: 1.5rem 2.5rem 2rem; }
-    .gs-score-circle { width: 180px; height: 180px; }
-    .gs-progress-ring { width: 180px; height: 180px; }
     .gs-score-number { font-size: 48px; }
     .gs-score-total { font-size: 20px; }
 }
@@ -730,7 +732,8 @@
 
     .gs-left-panel {
         flex: 0 0 320px;
-        justify-content: center;
+        justify-content: flex-start;
+        align-self: center;
     }
 
     .gs-right-panel {
@@ -752,21 +755,15 @@
 
     .gs-logs-list {
         display: flex !important;
-        max-height: none;
+        max-height: calc(100vh - 320px);
         overflow-y: auto;
-        height: 100%;
         margin-top: 0;
     }
 
     .gs-actions { padding: 1.5rem 3rem 2rem; }
 
-    .gs-score-circle { width: 200px; height: 200px; }
-    .gs-progress-ring { width: 200px; height: 200px; }
     .gs-score-number { font-size: 52px; }
     .gs-score-total { font-size: 22px; }
-
-    .gs-ring-bg { stroke-width: 14; }
-    .gs-ring-fill { stroke-width: 14; }
 }
 
 /* ===================== */
@@ -790,8 +787,6 @@
 
     .gs-content-row { padding: 0 1.5rem 1.5rem; gap: 1rem; }
 
-    .gs-score-circle { width: 140px; height: 140px; }
-    .gs-progress-ring { width: 140px; height: 140px; }
     .gs-score-number { font-size: 36px; }
     .gs-score-total { font-size: 16px; }
     .gs-ring-bg { stroke-width: 10; }

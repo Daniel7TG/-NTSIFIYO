@@ -442,7 +442,20 @@ const ActivitiesPanel = ({
             <div className="w-full">
                 <div className="max-w-6xl mx-auto p-8">
 
-                    <SectionHeader title={title} subtitle={subtitle} onReload={onReload} />
+                    <SectionHeader 
+                        title={title} 
+                        subtitle={subtitle} 
+                        onReload={onReload}
+                        actionButton={
+                            <button
+                                onClick={() => navigate(createRoute)}
+                                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#E65100] to-[#FF8F00] text-white font-semibold rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-all"
+                            >
+                                <span className="material-symbols-outlined text-xl">add</span>
+                                <span className="hidden sm:inline">Crear Nuevo</span>
+                            </button>
+                        }
+                    />
 
                     {/* Tabs — solo teacher */}
                     {showTabs && (

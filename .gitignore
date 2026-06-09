@@ -7,9 +7,14 @@ Cronograma_NtsiFiyo.md
 cliente_clase/ 
 client/build/
 imagenesAnimales/
+imagenesPronombres/
 imagenesFrutas/
 imagenesRopa/
 imagenesComida/
 tercer avance/
 cuarto avance/
 imagenesFrutas.zip
+*.md
+*.pdf
+*.docx
+*.puml

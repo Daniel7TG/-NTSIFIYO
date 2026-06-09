@@ -56,9 +56,12 @@ const GameSummary = ({
     const [expandedLogs, setExpandedLogs] = useState(false);
     const [timeElapsed, setTimeElapsed] = useState(0);
 
-    // Game type detection using activityConfig
+    // Game type detection using activityConfig.
+    // Fallback: if the start payload didn't carry gameType, treat logs that
+    // carry wordText (and no questionId) as a pairs-style word summary.
     const gameType = currentGameData?.gameType;
-    const isPairsGame = PAIR_TYPES.includes(gameType);
+    const looksLikeWordSummary = (responseLogs || []).some(l => l.wordText && l.questionId == null);
+    const isPairsGame = PAIR_TYPES.includes(gameType) || looksLikeWordSummary;
 
     // Performance tier
     const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;

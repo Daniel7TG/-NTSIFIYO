@@ -19,11 +19,14 @@ const GameAccessView = lazy(() => import('./components/Games/GameAccessView'));
 const MemoriaRapidaGameView = lazy(() => import('./components/Games/MemoriaRapida/MemoriaRapidaGameView'));
 const QuizGameView = lazy(() => import('./components/Games/Quiz/QuizGameView'));
 const IntrusoGameView = lazy(() => import('./components/Games/Intruso/IntrusoGameView'));
-const RompecabezasGameView = lazy(() => import('./components/Games/Rompecabezas/RompecabezasGameView'));
+// const RompecabezasGameView = lazy(() => import('./components/Games/Rompecabezas/RompecabezasGameView'));
 const ParesGameView = lazy(() => import('./components/Games/Pares/ParesGameView'));
 const MemoramaGameView = lazy(() => import('./components/Games/Memorama/MemoramaGameView'));
 const LoteriaGameView = lazy(() => import('./components/Games/Loteria/LoteriaGameView'));
 const LaberintoGameView = lazy(() => import('./components/Games/Laberinto/LaberintoGameView'));
+const TripasGameView = lazy(() => import('./components/Games/Tripas/TripasGameView'));
+const SopaLetrasGameView = lazy(() => import('./components/Games/SopaLetras/SopaLetrasGameView'));
+const FillBlankGameView = lazy(() => import('./components/Games/FillBlank/FillBlankGameView'));
 const ContentSection = lazy(() => import('./pages/common/ContentSection'));
 const NosotrosPage = lazy(() => import('./pages/NosotrosPage'));
 const MediaPlayerView = lazy(() => import('./components/common/MediaPlayerView'));
@@ -209,7 +212,7 @@ function App() {
                             <Route path="/games/intruso/jugar/:activityId" element={<IntrusoGameView />} />
 
                             {/* Rompecabezas */}
-                            <Route path="/games/rompecabezas/jugar/:activityId" element={<RompecabezasGameView />} />
+                            {/* <Route path="/games/rompecabezas/jugar/:activityId" element={<RompecabezasGameView />} /> */}
 
                             {/* Pares */}
                             <Route path="/games/pares/crear" element={
@@ -225,6 +228,33 @@ function App() {
 
                             {/* Laberinto */}
                             <Route path="/games/laberinto/jugar/:activityId" element={<LaberintoGameView />} />
+
+                            {/* Tripas del Gato */}
+                            <Route path="/games/tripas/crear" element={
+                                <ConfigurationGameView redirectPath="/games/tripas/jugar/{id}" />
+                            } />
+                            <Route path="/games/tripas/editar/:editId" element={
+                                <ConfigurationGameView redirectPath="/games/tripas" />
+                            } />
+                            <Route path="/games/tripas/jugar/:activityId" element={<TripasGameView />} />
+
+                            {/* Sopa de Letras */}
+                            <Route path="/games/encuentra_palabra/crear" element={
+                                <ConfigurationGameView redirectPath="/games/encuentra_palabra/jugar/{id}" />
+                            } />
+                            <Route path="/games/encuentra_palabra/editar/:editId" element={
+                                <ConfigurationGameView redirectPath="/games/encuentra_palabra" />
+                            } />
+                            <Route path="/games/encuentra_palabra/jugar/:activityId" element={<SopaLetrasGameView />} />
+
+                            {/* Fill Blank */}
+                            <Route path="/games/fill_blank/crear" element={
+                                <ConfigurationGameView redirectPath="/games/fill_blank/jugar/{id}" />
+                            } />
+                            <Route path="/games/fill_blank/editar/:editId" element={
+                                <ConfigurationGameView redirectPath="/games/fill_blank" />
+                            } />
+                            <Route path="/games/fill_blank/jugar/:activityId" element={<FillBlankGameView />} />
                         </Route>
                     </Route>
 

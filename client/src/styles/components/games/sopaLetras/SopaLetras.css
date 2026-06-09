@@ -1,0 +1,179 @@
+/* Sopa de Letras — word search */
+
+.sopa-layout {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    padding: 16px;
+    overflow: auto;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.sopa-grid-wrap {
+    flex: 0 1 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.sopa-grid {
+    display: grid;
+    gap: 3px;
+    background: #fffdf7;
+    border: 3px solid #0284c7;
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    touch-action: none;
+    user-select: none;
+    /* Square board sized to the smaller viewport axis */
+    width: min(70vh, 92vw, 620px);
+    aspect-ratio: 1 / 1;
+}
+
+.sopa-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #1e293b;
+    font-weight: 700;
+    font-size: clamp(0.6rem, 2.2vw, 1.1rem);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.12s, transform 0.12s;
+}
+
+.sopa-cell.selected {
+    background: #fde68a;
+    border-color: #f59e0b;
+    transform: scale(1.04);
+}
+
+.sopa-cell.found {
+    color: #fff;
+    font-weight: 800;
+}
+
+/* ── Clue list ── */
+.sopa-clues {
+    flex: 0 0 240px;
+    max-width: 280px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.sopa-clues-title {
+    margin: 0 0 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.sopa-clues-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sopa-clue {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid #eef2f7;
+    transition: opacity 0.2s, background 0.2s;
+}
+
+.sopa-clue.done {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
+.sopa-clue-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+.sopa-clue-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.sopa-clue-text {
+    font-weight: 600;
+    color: #334155;
+    font-size: 0.9rem;
+}
+
+.sopa-clue.done .sopa-clue-text {
+    text-decoration: line-through;
+    color: #94a3b8;
+}
+
+.sopa-clue-answer {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #059669;
+}
+
+.sopa-clue-audio {
+    background: none;
+    border: none;
+    color: #0284c7;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.sopa-clue-check {
+    color: #10b981;
+    font-weight: 800;
+}
+
+.game-top-bar__timer.timer-low {
+    color: #ef4444;
+    animation: sopa-pulse 0.8s ease-in-out infinite;
+}
+
+@keyframes sopa-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+}
+
+/* ── Mobile: clue list below grid ── */
+@media (max-width: 820px) {
+    .sopa-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+    .sopa-clues {
+        flex: 1 1 auto;
+        width: 100%;
+        max-width: min(92vw, 620px);
+    }
+    .sopa-clues-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .sopa-clue {
+        flex: 0 1 auto;
+    }
+}
