@@ -12,6 +12,8 @@ import '../../../styles/components/games/loteria/Loteria.css';
 
 import IconError from '../../../assets/svgs/error_cross.svg';
 import IconHourglass from '../../../assets/svgs/loading_hourglass.svg';
+import IconLottery from '../../../assets/svgs/juegos/loteria_premium.svg';
+import IconPares from '../../../assets/svgs/juegos/pares_premium.svg';
 
 const CARD_INTERVAL_MS = 5000;
 const PENALTY_PTS = 5;
@@ -64,7 +66,7 @@ function buildGameData(words, gameConfigs) {
 const LoteriaGameView = () => {
     const { activityId } = useParams();
     const navigate = useNavigate();
-    const { currentGameData, clearGameData } = useGame();
+    const { currentGameData } = useGame();
 
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState(null);
@@ -86,6 +88,7 @@ const LoteriaGameView = () => {
 
     const [gameState, setGameState] = useState('loading'); // loading | playing | finished | error
     const [elapsed, setElapsed] = useState(0);
+    const [startDate, setStartDate] = useState(null);
 
     const timerRef = useRef(null);
     const pileTimerRef = useRef(null);
@@ -120,9 +123,10 @@ const LoteriaGameView = () => {
             if (result.success && result.data) { data = result.data; }
         }
 
+        // NO limpiar currentGameData: GameSummary lo necesita para enviar
+        // el activityId real (el param de la URL es el id del juego)
         if (data && (data.words?.length || data.wordIds?.length)) {
             loadFromApiData(data);
-            if (clearGameData) clearGameData();
         } else {
             loadMockData();
         }
@@ -138,6 +142,7 @@ const LoteriaGameView = () => {
         setPile(p); setBoard(b);
         setActivityTitle('¡Lotería!');
         setActivityXP(100);
+        setStartDate(new Date().toISOString());
         setGameState('playing');
     }
 
@@ -153,6 +158,7 @@ const LoteriaGameView = () => {
         setPile(p); setBoard(b);
         setActivityTitle(data.title || '¡Lotería!');
         setActivityXP(data.experience || 100);
+        setStartDate(new Date().toISOString());
         setGameState('playing');
     }
 
@@ -288,7 +294,7 @@ const LoteriaGameView = () => {
             <GameSummary
                 activityId={activityId}
                 gameId={gameIdParam || 6}
-                startDate={new Date().toISOString()}
+                startDate={startDate || new Date().toISOString()}
                 correctAnswers={matchedIds.size}
                 totalQuestions={board.length}
                 responseLogs={finalResponseLogs}

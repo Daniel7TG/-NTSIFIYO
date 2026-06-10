@@ -205,7 +205,7 @@ function QuizGameView() {
             <div style={{ maxWidth: '700px', margin: '0 auto', padding: '1rem' }}>
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <button onClick={handleExit} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pomnter' }}>←</button>
+                    <button onClick={handleExit} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer' }}>←</button>
                     <span style={{ fontWeight: '600', color: '#5b21b6' }}>{activity.name}</span>
                     <span style={{ color: '#6b7280' }}>{`${currentQuestionIndex + 1}/${activity.questions.length}`}</span>
                 </div>
@@ -214,7 +214,7 @@ function QuizGameView() {
                 <div style={{ height: '6px', background: '#e5e7eb', borderRadius: '3px', marginBottom: '2rem' }}>
                     <div style={{
                         height: '100%',
-                        background: 'lmnear-gradient(90deg, #7c3aed, #a78bfa)',
+                        background: 'linear-gradient(90deg, #7c3aed, #a78bfa)',
                         borderRadius: '3px',
                         width: `${((currentQuestionIndex + 1) / activity.questions.length) * 100}%`,
                         transition: 'width 0.3s ease'
@@ -225,11 +225,11 @@ function QuizGameView() {
                 <div style={{ background: 'white', borderRadius: '20px', padding: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
                     {/* question stimulus — config1 */}
                     {config1.showImage && currentQuestion.word?.imageUrl && (
-                        <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+                        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>
                             <img
                                 src={currentQuestion.word.imageUrl}
                                 alt="Pregunta"
-                                style={{ maxWidth: '200px', maxheight: '150px', borderRadius: '12px', objectFmt: 'cover' }}
+                                style={{ maxWidth: '200px', maxHeight: '150px', borderRadius: '12px', objectFit: 'cover', margin: '0 auto' }}
                             />
                         </div>
                     )}
@@ -238,7 +238,7 @@ function QuizGameView() {
                         <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                             <button
                                 onClick={() => playAudio(currentQuestion.word.AudioUrl)}
-                                style={{ fontSize: '32px', background: 'none', border: 'none', cursor: 'pomnter' }}
+                                style={{ fontSize: '32px', background: 'none', border: 'none', cursor: 'pointer' }}
                                 title="Escuchar"
                             >🔊</button>
                         </div>
@@ -251,7 +251,7 @@ function QuizGameView() {
                     )}
 
                     {/* options — config2 */}
-                    <div style={{ display: 'flex', flexdirection: 'column', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                         {currentQuestion.options.map((option, index) => {
                             const isSelected = selectedAnswer === option.id;
                             const showCorrect = selectedAnswer !== null && option.isCorrect;
@@ -279,7 +279,7 @@ function QuizGameView() {
                                     style={{
                                         padding: '1rem 1.25rem', background: bgColor,
                                         border: `2px solid ${borderColor}`, borderRadius: '12px',
-                                        textAlign: 'left', cursor: selectedAnswer !== null ? 'default' : 'pomnter',
+                                        textAlign: 'left', cursor: selectedAnswer !== null ? 'default' : 'pointer',
                                         display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.2s'
                                     }}
                                 >
@@ -294,7 +294,7 @@ function QuizGameView() {
                                     </span>
 
                                     {config2.showImage && option.word?.imageUrl && (
-                                        <img src={option.word.imageUrl} alt="" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFmt: 'cover', flexShrInk: 0 }} />
+                                        <img src={option.word.imageUrl} alt="" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', flexShrink: 0 }} />
                                     )}
 
                                     {config2.showText && (
@@ -304,7 +304,7 @@ function QuizGameView() {
                                     {config2.playAudio && option.word?.AudioUrl && (
                                         <button
                                             onClick={(e) => { e.stopPropagation(); playAudio(option.word.AudioUrl); }}
-                                            style={{ fontSize: '20px', background: 'none', border: 'none', cursor: 'pomnter', flexShrInk: 0 }}
+                                            style={{ fontSize: '20px', background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0 }}
                                         >🔊</button>
                                     )}
                                 </button>
@@ -319,7 +319,7 @@ function QuizGameView() {
                             className="btn-play-quiz"
                             style={{ marginTop: '1.5rem', width: '100%' }}
                         >
-                            {currentQuestionIndex < activity.questions.length - 1 ? 'Smgumente →' : 'Ver Resultados'}
+                            {currentQuestionIndex < activity.questions.length - 1 ? 'Siguiente →' : 'Ver Resultados'}
                         </button>
                     )}
                 </div>

@@ -181,6 +181,26 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
+/* ── Responsive vertical (pantallas pequeñas / poca altura) ── */
+@media (max-width: 480px) {
+    .intruso-timer-container { margin-bottom: 1rem; }
+    .intruso-question-header { margin-bottom: 1rem; }
+    .intruso-category-pill { font-size: 11px; padding: 4px 12px; margin-bottom: 0.5rem; }
+    .intruso-title { font-size: 22px; }
+    .intruso-grid { gap: 12px; margin-bottom: 1.5rem; }
+    .intruso-option-icon { width: 52px; height: 52px; font-size: 26px; margin-bottom: 8px; }
+    .intruso-option-text { font-size: 15px; }
+    .intruso-instructions { position: static; margin-top: 0.5rem; }
+}
+
+@media (max-height: 720px) {
+    .intruso-timer-container { margin-bottom: 0.75rem; }
+    .intruso-question-header { margin-bottom: 0.75rem; }
+    .intruso-title { font-size: 20px; }
+    .intruso-grid { gap: 10px; max-width: 360px; margin-bottom: 1rem; }
+    .intruso-instructions { position: static; margin-top: 0.5rem; }
+}
+
 /* Animations */
 @keyframes popIn {
     0% {

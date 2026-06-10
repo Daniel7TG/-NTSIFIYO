@@ -261,6 +261,31 @@
     }
 }
 
+@media (max-width: 480px) {
+    .gap-header h1 { font-size: 20px; }
+    .gap-section-title { font-size: 17px; }
+
+    .gap-teacher-section { padding: 0.75rem 1rem; }
+    .gap-teacher-section h2 { font-size: 16px; }
+    .gap-teacher-section p { font-size: 13px; }
+
+    .gap-activity-card { padding: 0.85rem; }
+    .gap-activity-card h3 { font-size: 16px; }
+    .gap-card-icon { width: 40px; height: 40px; font-size: 20px; }
+    .gap-card-description { font-size: 13px; }
+
+    .gap-btn { padding: 0.65rem 1rem; font-size: 14px; }
+
+    .gap-pagination {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding: 0.5rem;
+    }
+
+    .gap-footer { margin-top: 1rem; padding: 0.75rem; }
+}
+
 .gap-spinner {
     width: 40px;
     height: 40px;

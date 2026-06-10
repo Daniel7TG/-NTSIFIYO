@@ -3,39 +3,41 @@
 /* ===================== */
 /* CONTAINER & CARD */
 /* ===================== */
+/* El contenedor crece con el contenido: si la tarjeta es más alta que el
+   viewport, la página hace scroll en lugar de recortar o solapar contenido. */
 .game-summary-container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    min-height: calc(100vh - 64px);
     padding: 1.5rem;
     background: linear-gradient(135deg, #f0fdf4 0%, #fef9c3 50%, #f3f4f6 100%);
     font-family: 'Poppins', sans-serif;
-    position: relative;
-    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .gs-card {
+    /* margin:auto centra vertical y horizontalmente sin recortar cuando
+       la tarjeta excede el alto del viewport (a diferencia de align-items:center) */
+    margin: auto;
     width: 100%;
     max-width: 520px;
     background: white;
     border-radius: 24px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 4px 20px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    overflow: hidden;
 }
 
 /* ===================== */
 /* DYNAMIC HEADER */
 /* ===================== */
 .gs-header {
-    padding: 2rem 2rem 1.5rem;
+    padding: 1.75rem 2rem 1.25rem;
     text-align: center;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .gs-header-centered h2 {
@@ -53,14 +55,14 @@
 }
 
 .gs-header-icon {
-    font-size: 56px;
+    font-size: 52px;
     margin-bottom: 0.5rem;
     display: block;
     animation: headerIconBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
 }
 
 .gs-header-icon-svg {
-    height: 56px;
+    height: 52px;
     max-width: 100%;
     margin: 0 auto 0.5rem;
     display: block;
@@ -125,9 +127,8 @@
 .gs-content-row {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 0 2rem 2rem;
-    overflow: hidden;
+    gap: 1.25rem;
+    padding: 1.25rem 2rem 0;
 }
 
 /* ===================== */
@@ -136,30 +137,43 @@
 .gs-left-panel {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
     align-items: center;
+    min-width: 0;
 }
 
 /* Score Circle */
 .gs-score-section {
     display: flex;
     justify-content: center;
-    margin: 0.5rem 0 1rem;
 }
 
+/* El tamaño real lo dicta esta clase: el SVG interno (ProgressRing usa
+   tamaño inline) se fuerza a llenar el contenedor para poder escalarlo
+   desde CSS en pantallas pequeñas. */
 .gs-score-circle {
     position: relative;
-    width: 160px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
+.gs-score-circle > div {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.gs-score-circle svg {
+    width: 100% !important;
+    height: 100% !important;
+}
+
 .gs-progress-ring {
-    width: 160px;
-    height: 160px;
+    width: 100%;
+    height: 100%;
     transform: rotate(-90deg);
 }
 
@@ -184,10 +198,6 @@
 .gs-ring-fill.perfect { stroke: #fbbf24; }
 
 .gs-score-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -195,7 +205,7 @@
 }
 
 .gs-score-number {
-    font-size: 42px;
+    font-size: 38px;
     font-weight: 900;
     color: #1f2937;
     line-height: 1;
@@ -203,7 +213,7 @@
 }
 
 .gs-score-total {
-    font-size: 18px;
+    font-size: 17px;
     color: #6b7280;
     font-weight: 600;
     margin-top: 2px;
@@ -217,9 +227,10 @@
     justify-content: space-around;
     background: #f9fafb;
     border-radius: 16px;
-    padding: 1rem 1.5rem;
+    padding: 0.85rem 1.25rem;
     width: 100%;
     border: 1px solid #e5e7eb;
+    box-sizing: border-box;
 }
 
 .gs-metric {
@@ -238,7 +249,7 @@
 }
 
 .gs-metric-value {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 800;
     color: #374151;
 }
@@ -249,7 +260,7 @@
 }
 
 .gs-star {
-    font-size: 22px;
+    font-size: 21px;
     line-height: 1;
     animation: starsPop 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
     transform: scale(0);
@@ -278,13 +289,14 @@
     background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
     border: 2px solid #c4b5fd;
     border-radius: 20px;
-    padding: 1.5rem;
+    padding: 1rem 1.25rem;
     width: 100%;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     align-items: center;
     animation: xpGlow 2s ease-in-out infinite alternate;
+    box-sizing: border-box;
 }
 
 .level-up-anim {
@@ -301,10 +313,10 @@
     gap: 0.5rem;
 }
 
-.gs-xp-icon { font-size: 28px; }
+.gs-xp-icon { font-size: 26px; }
 
 .gs-xp-value {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 900;
     color: #7c3aed;
     animation: xpCount 2s ease-out forwards;
@@ -342,6 +354,7 @@
 .gs-right-panel {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .gs-logs-section { margin-bottom: 0; text-align: left; }
@@ -350,9 +363,9 @@
     width: 100%;
     background: white;
     border: 2px solid #e5e7eb;
-    padding: 1rem;
+    padding: 0.85rem 1rem;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: #374151;
     display: flex;
@@ -361,6 +374,7 @@
     cursor: pointer;
     transition: all 0.2s;
     font-family: inherit;
+    box-sizing: border-box;
 }
 
 .gs-logs-toggle:hover {
@@ -380,7 +394,7 @@
     margin-top: 1rem;
     flex-direction: column;
     gap: 0.75rem;
-    max-height: 380px;
+    max-height: 320px;
     overflow-y: auto;
     padding-right: 8px;
 }
@@ -404,6 +418,7 @@
     flex-direction: column;
     gap: 0.5rem;
     transition: transform 0.2s, box-shadow 0.2s;
+    flex-shrink: 0;
 }
 
 .gs-log-item:hover {
@@ -548,13 +563,14 @@
 .gs-actions {
     display: flex;
     gap: 1rem;
-    padding: 1.5rem 2rem 2rem;
+    padding: 1.25rem 2rem 1.5rem;
     margin-top: auto;
+    flex-shrink: 0;
 }
 
 .gs-btn {
     flex: 1;
-    padding: 14px 24px;
+    padding: 13px 24px;
     border-radius: 14px;
     font-size: 16px;
     font-weight: 700;
@@ -595,6 +611,7 @@
 /* LOADING STATE */
 /* ===================== */
 .gs-loading-card {
+    margin: auto;
     width: 100%;
     max-width: 520px;
     background: white;
@@ -688,123 +705,124 @@
 }
 
 /* ===================== */
-/* RESPONSIVE - TABLET & DESKTOP */
+/* RESPONSIVE - TABLET (>= 640px) */
 /* ===================== */
 @media (min-width: 640px) {
     .gs-card { max-width: 720px; }
-    .gs-header { padding: 2rem 2.5rem 1.5rem; }
-    .gs-header-icon { font-size: 68px; }
-    .gs-header-icon-svg { height: 68px; }
-    .gs-header h2 { font-size: 30px; }
-    .gs-content-row { padding: 0 2.5rem 2rem; }
-    .gs-actions { padding: 1.5rem 2.5rem 2rem; }
-    .gs-score-number { font-size: 48px; }
-    .gs-score-total { font-size: 20px; }
 }
 
 /* ===================== */
-/* RESPONSIVE - DESKTOP 2-COLUMN */
+/* RESPONSIVE - DESKTOP 2 COLUMNAS (>= 900px) */
 /* ===================== */
 @media (min-width: 900px) {
-    .game-summary-container {
-        padding: 2rem;
-        min-height: calc(100vh - 80px);
-    }
-
     .gs-card {
-        max-width: 1100px;
-        max-height: calc(100vh - 120px);
-        overflow-y: auto;
+        max-width: 1040px;
         border-radius: 28px;
     }
 
-    .gs-header { padding: 2.5rem 3rem 2rem; }
-    .gs-header-icon { font-size: 72px; }
-    .gs-header-icon-svg { height: 72px; }
-    .gs-header h2 { font-size: 32px; }
-
     .gs-content-row {
         flex-direction: row;
-        align-items: stretch;
-        gap: 2.5rem;
-        padding: 0 3rem 2rem;
+        align-items: flex-start;
+        gap: 2rem;
+        padding: 1.5rem 2.5rem 0;
     }
 
     .gs-left-panel {
-        flex: 0 0 320px;
-        justify-content: flex-start;
-        align-self: center;
+        flex: 0 0 300px;
     }
 
     .gs-right-panel {
         flex: 1;
         background: #f9fafb;
         border-radius: 20px;
-        padding: 1.5rem;
+        padding: 1.25rem;
         border: 1px solid #f3f4f6;
-        overflow: hidden;
     }
 
-    .gs-logs-section {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
+    /* En desktop los logs siempre visibles, con scroll interno acotado */
     .gs-logs-toggle { display: none; }
 
     .gs-logs-list {
         display: flex !important;
-        max-height: calc(100vh - 320px);
-        overflow-y: auto;
         margin-top: 0;
+        max-height: clamp(220px, 45vh, 480px);
     }
 
-    .gs-actions { padding: 1.5rem 3rem 2rem; }
-
-    .gs-score-number { font-size: 52px; }
-    .gs-score-total { font-size: 22px; }
+    .gs-actions { padding: 1.5rem 2.5rem 1.75rem; }
 }
 
 /* ===================== */
-/* RESPONSIVE - MOBILE (< 480px) */
+/* RESPONSIVE - MÓVIL (< 480px) */
 /* ===================== */
 @media (max-width: 480px) {
-    .game-summary-container {
-        padding: 1rem;
-        min-height: auto;
-    }
+    .game-summary-container { padding: 0.75rem; }
 
-    .gs-card {
-        border-radius: 20px;
-        max-width: 100%;
-    }
+    .gs-card { border-radius: 20px; }
 
-    .gs-header { padding: 1.5rem 1.5rem 1rem; }
-    .gs-header-icon { font-size: 48px; }
-    .gs-header-icon-svg { height: 48px; }
-    .gs-header h2 { font-size: 22px; }
+    .gs-header { padding: 1.25rem 1.25rem 1rem; }
+    .gs-header-icon { font-size: 44px; }
+    .gs-header-icon-svg { height: 44px; }
+    .gs-header-centered h2 { font-size: 21px; }
+    .gs-header-centered p { font-size: 13px; }
 
-    .gs-content-row { padding: 0 1.5rem 1.5rem; gap: 1rem; }
+    .gs-content-row { padding: 1rem 1.25rem 0; gap: 1rem; }
 
-    .gs-score-number { font-size: 36px; }
-    .gs-score-total { font-size: 16px; }
-    .gs-ring-bg { stroke-width: 10; }
-    .gs-ring-fill { stroke-width: 10; }
+    .gs-score-circle { width: 120px; height: 120px; }
+    .gs-score-number { font-size: 30px; }
+    .gs-score-total { font-size: 14px; }
 
-    .gs-metrics-section { padding: 0.75rem 1rem; }
-    .gs-metric-value { font-size: 18px; }
-    .gs-star { font-size: 20px; }
+    .gs-metrics-section { padding: 0.65rem 0.85rem; }
+    .gs-metric-value { font-size: 16px; }
+    .gs-star { font-size: 18px; }
 
-    .gs-xp-container { padding: 1rem; }
-    .gs-xp-value { font-size: 24px; }
-    .gs-xp-icon { font-size: 24px; }
+    .gs-xp-container { padding: 0.75rem 1rem; }
+    .gs-xp-value { font-size: 22px; }
+    .gs-xp-icon { font-size: 22px; }
 
-    .gs-actions { padding: 1rem 1.5rem 1.5rem; flex-direction: column; }
-    .gs-btn { width: 100%; }
+    .gs-logs-list { max-height: 260px; }
+
+    .gs-actions { padding: 1rem 1.25rem 1.25rem; flex-direction: column; gap: 0.65rem; }
+    .gs-btn { width: 100%; padding: 12px 18px; font-size: 15px; }
 
     .gs-pairs-summary { flex-direction: column; gap: 12px; }
     .gs-pairs-completed, .gs-pairs-incomplete { padding: 12px; }
+}
+
+/* ===================== */
+/* RESPONSIVE - POCA ALTURA (compactar verticalmente) */
+/* ===================== */
+@media (max-height: 760px) {
+    .game-summary-container { padding: 1rem; }
+
+    .gs-header { padding: 1rem 1.5rem 0.75rem; }
+    .gs-header-icon { font-size: 40px; margin-bottom: 0.25rem; }
+    .gs-header-icon-svg { height: 40px; margin-bottom: 0.25rem; }
+    .gs-header-centered h2 { font-size: 21px; }
+    .gs-header-centered p { font-size: 13px; }
+
+    .gs-content-row { gap: 0.85rem; }
+    .gs-left-panel { gap: 0.85rem; }
+
+    .gs-score-circle { width: 116px; height: 116px; }
+    .gs-score-number { font-size: 28px; }
+    .gs-score-total { font-size: 14px; }
+
+    .gs-metrics-section { padding: 0.6rem 1rem; }
+    .gs-xp-container { padding: 0.65rem 1rem; gap: 0.25rem; }
+    .gs-xp-value, .gs-xp-icon { font-size: 21px; }
+    .gs-current-level { font-size: 13px; }
+
+    .gs-logs-list { max-height: clamp(160px, 35vh, 300px); }
+
+    .gs-actions { padding: 0.85rem 1.5rem 1.1rem; }
+    .gs-btn { padding: 10px 18px; font-size: 14px; }
+}
+
+/* Móviles muy angostos */
+@media (max-width: 380px) {
+    .gs-header-centered h2 { font-size: 19px; }
+    .gs-metrics-section { flex-direction: column; gap: 0.5rem; }
+    .gs-metric { flex-direction: row; gap: 0.5rem; justify-content: space-between; width: 100%; }
 }
 
 /* ===================== */
@@ -822,6 +840,7 @@
     align-items: center;
     text-align: center;
     animation: fadeIn 0.4s ease-out;
+    box-sizing: border-box;
 }
 
 .gs-error-icon {

@@ -36,6 +36,23 @@
     box-sizing: border-box;
 }
 
+/* En pantallas angostas o de poca altura el contenido puede no caber:
+   se permite scroll vertical en lugar de recortar el juego */
+@media (max-width: 600px), (max-height: 720px) {
+    .game-container {
+        height: auto;
+        min-height: calc(100vh - 64px);
+        overflow-y: auto;
+        padding: 0.5rem 0.75rem 1.5rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .game-top-bar__title { font-size: 13px; }
+    .game-top-bar__timer { font-size: 11px; padding: 4px 8px; }
+    .game-top-bar__back-btn { width: 32px; height: 32px; font-size: 17px; }
+}
+
 /* ============================================================
    BARRA SUPERIOR — idéntica en todos los juegos
    Estructura: [botón volver] [título] [timer]

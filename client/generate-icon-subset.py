@@ -39,13 +39,14 @@ ICONS = sorted(set([
 
     # --- config/activityConfig.js ---
     "compare_arrows", "drag_indicator", "emoji_events",
-    "lightbulb", "psychology", "quiz", "search", "style", "timer",
+    "lightbulb", "psychology", "quiz", "search", "style", "timer", "grid_on", "gesture",
+    
 
     # --- pages/AuthPage.jsx (dynamic) ---
     "face", "expand_more", "lock", "badge",
 
     # --- pages/Register.jsx ---
-    "cast_for_education",
+    "cast_for_education", "account_circle",
 
     # --- pages/NosotrosPage.jsx ---
     "child_care", "code", "diversity_3",

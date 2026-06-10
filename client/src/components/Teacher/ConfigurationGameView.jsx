@@ -178,9 +178,8 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
     const [gameType, setGameType] = useState('QUESTIONNAIRE');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [experience, setExperience] = useState(0);
     const [difficult, setDifficult] = useState('EASY');
-    const [selectedTopic, setSelectedTopic] = useState(GAME_TOPICS[0].id);
+    const [selectedTopic, setSelectedTopic] = useState('');
 
     const [words, setWords] = useState([]);
     
@@ -243,7 +242,6 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
                 setGameType(game.gameType || defaultType);
                 setTitle(game.title || '');
                 setDescription(game.description || '');
-                setExperience(game.experience || 0);
                 setDifficult(game.difficult || 'EASY');
 
                 if (isMedia) {
@@ -362,8 +360,7 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
         if (!description || description.trim() === '') return "La descripción del juego no puede estar vacía.";
         if (!gameType) return "El tipo de juego es obligatorio.";
         if (!difficult) return "La dificultad del juego es obligatoria.";
-        if (!selectedTopic) return "El tema/categoría específica del juego es obligatorio.";
-        if (!experience || experience <= 0) return "La experiencia debe ser un valor numérico positivo mayor a 0.";
+        if (!selectedTopic) return "Debes seleccionar el tema/categoría específica del juego.";
         if (totalItems <= 0 && interactionType !== 'MEDIA') return "El juego debe tener al menos un ítem (pregunta o par).";
 
         if (interactionType === 'MEDIA') {
@@ -418,7 +415,7 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
         setIsSubmitting(true);
         const dto = {
             gameType, title, description,
-            experience: experience || recXP,
+            experience: recXP,
             difficult,
             gameTopic: selectedTopic,
             totalQuestions: totalItems,
@@ -547,13 +544,6 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
                             </div>
                         </div>
                         <div className="cfg-sidebar-section">
-                            <label>XP</label>
-                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <input className="cfg-input" type="number" value={experience} onChange={e => setExperience(parseInt(e.target.value) || 0)} style={{ width: '80px' }} />
-                                <span className="cfg-xp-hint">⭐ {recXP}</span>
-                            </div>
-                        </div>
-                        <div className="cfg-sidebar-section">
                             <label>Interacción</label>
                             <div className="cfg-toggle-group">
                                 <button className={`cfg-toggle-btn ${interactionType === 'QUESTIONNAIRE' ? 'active' : ''}`} onClick={() => handleInteractionChange('QUESTIONNAIRE')}>Quiz</button>
@@ -588,6 +578,7 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
                                 value={selectedTopic}
                                 onChange={e => setSelectedTopic(e.target.value)}
                             >
+                                <option value="" disabled>— Selecciona un tema —</option>
                                 {GAME_CATEGORIES.map(cat => (
                                     <optgroup key={cat.id} label={cat.label}>
                                         {GAME_TOPICS.filter(t => t.categoryId === cat.id).map(topic => (

@@ -38,6 +38,30 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
+/* ── Responsive vertical (pantallas pequeñas / poca altura) ── */
+@media (max-width: 480px) {
+    .mem-board {
+        gap: 8px;
+        padding: 10px;
+        border-radius: 16px;
+        margin-bottom: 0.75rem;
+    }
+
+    .mem-card-front-icon { font-size: 24px; }
+    .mem-card-text { font-size: 12px; }
+    .mem-card-text.mazahua { font-size: 13px; }
+    .mem-card-emoji { font-size: 26px; }
+}
+
+@media (max-height: 720px) {
+    .mem-board {
+        max-width: 480px;
+        gap: 8px;
+        padding: 10px;
+        margin-bottom: 0.75rem;
+    }
+}
+
 /* ============================================
    CARTA INDIVIDUAL — Flip 3D
    ============================================ */
