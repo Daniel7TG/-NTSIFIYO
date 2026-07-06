@@ -7,9 +7,11 @@ import AdminLogin from './pages/AdminLogin';
 import apiConfig from './services/apiConfig';
 
 import { useAuth } from './context/AuthContext';
+import { CoyoteProvider } from './context/CoyoteContext';
 
 import MainLayout from './components/Layout/MainLayout';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
+import AppErrorBoundary from './components/common/AppErrorBoundary';
 import DashboardSwitcher from './components/Dashboard/DashboardSwitcher';
 import Roles from './utils/roles';
 
@@ -88,10 +90,12 @@ function App() {
     }, []);
 
     return (
+        <CoyoteProvider>
         <Router>
             <div className="min-h-screen bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark">
                 <Navbar />
                 <PageContent>
+                <AppErrorBoundary>
                 <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<Home />} />
@@ -259,9 +263,11 @@ function App() {
                     </Route>
 
                 </Routes>
+                </AppErrorBoundary>
                 </PageContent>
             </div>
         </Router>
+        </CoyoteProvider>
     );
 }
 

@@ -100,4 +100,42 @@
     .animate-fade-in {
         animation: fadeIn 0.35s ease-out both;
     }
+
+    /* ── Playful Child-friendly 3D Cards ── */
+    .kid-card {
+        @apply bg-white rounded-[24px] border-4 border-gray-200 shadow-[0_6px_0_#cbd5e1] hover:shadow-[0_10px_0_#cbd5e1] hover:-translate-y-1 active:translate-y-0.5 active:shadow-[0_2px_0_#cbd5e1] transition-all duration-150 relative overflow-hidden;
+    }
+
+    .kid-card-green {
+        @apply bg-white rounded-[24px] border-4 border-emerald-200 shadow-[0_6px_0_#10b981] hover:shadow-[0_10px_0_#10b981] hover:-translate-y-1 active:translate-y-0.5 active:shadow-[0_2px_0_#10b981] transition-all duration-150 relative overflow-hidden;
+    }
+
+    .kid-card-amber {
+        @apply bg-white rounded-[24px] border-4 border-amber-200 shadow-[0_6px_0_#f59e0b] hover:shadow-[0_10px_0_#f59e0b] hover:-translate-y-1 active:translate-y-0.5 active:shadow-[0_2px_0_#f59e0b] transition-all duration-150 relative overflow-hidden;
+    }
+
+    .kid-card-indigo {
+        @apply bg-white rounded-[24px] border-4 border-indigo-200 shadow-[0_6px_0_#8353ec] hover:shadow-[0_10px_0_#8353ec] hover:-translate-y-1 active:translate-y-0.5 active:shadow-[0_2px_0_#8353ec] transition-all duration-150 relative overflow-hidden;
+    }
+
+    .kid-card-dynamic {
+        background-color: #ffffff;
+        border-radius: 24px;
+        border-width: 4px;
+        border-style: solid;
+        border-color: var(--card-color);
+        box-shadow: 0 6px 0 var(--card-shadow, var(--card-color));
+        transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, border-color 0.15s ease;
+        position: relative;
+    }
+
+    .kid-card-dynamic:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 0 var(--card-shadow, var(--card-color));
+    }
+
+    .kid-card-dynamic:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 var(--card-shadow, var(--card-color));
+    }
 }

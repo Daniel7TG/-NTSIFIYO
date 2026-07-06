@@ -7,6 +7,7 @@ import IconHourglass from '../../../assets/svgs/loading_hourglass.svg';
 import IconQuiz from '../../../assets/svgs/juegos/quiz_premium.svg';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
+import GameCard from '../GameCard/GameCard';
 import '../../../styles/components/games/quiz/Quiz.css';
 
 function QuizGameView() {
@@ -86,13 +87,6 @@ function QuizGameView() {
         return config.isMazahua ? word.mazahuaWord : word.spanishWord;
     };
 
-    const playAudio = (AudioUrl) => {
-        if (AudioUrl) {
-            const Audio = new Audio(AudioUrl);
-            Audio.play().catch(() => { });
-        }
-    };
-
     const handleAnswerSelect = (optionId) => {
         if (selectedAnswer !== null) return;
         setSelectedAnswer(optionId);
@@ -109,13 +103,13 @@ function QuizGameView() {
             isCorrect: isCorrect,
             questionText: currentQuestion.question || getWordText(currentQuestion.word, config1),
             questionImage: config1.showImage && currentQuestion.word ? currentQuestion.word.imageUrl : null,
-            questionAudio: config1.playAudio && currentQuestion.word ? currentQuestion.word.AudioUrl : null,
+            questionAudio: config1.playAudio && currentQuestion.word ? currentQuestion.word.audioUrl : null,
             selectedText: selectedOptionObj ? (selectedOptionObj.text || getWordText(selectedOptionObj.word, config2)) : null,
             selectedImage: selectedOptionObj && config2.showImage && selectedOptionObj.word ? selectedOptionObj.word.imageUrl : null,
-            selectedAudio: selectedOptionObj && config2.playAudio && selectedOptionObj.word ? selectedOptionObj.word.AudioUrl : null,
+            selectedAudio: selectedOptionObj && config2.playAudio && selectedOptionObj.word ? selectedOptionObj.word.audioUrl : null,
             correctText: correctOptionObj ? (correctOptionObj.text || getWordText(correctOptionObj.word, config2)) : null,
             correctImage: correctOptionObj && config2.showImage && correctOptionObj.word ? correctOptionObj.word.imageUrl : null,
-            correctAudio: correctOptionObj && config2.playAudio && correctOptionObj.word ? correctOptionObj.word.AudioUrl : null,
+            correctAudio: correctOptionObj && config2.playAudio && correctOptionObj.word ? correctOptionObj.word.audioUrl : null,
         };
 
         setResponseLogs(prev => [...prev, logEntry]);
@@ -192,7 +186,7 @@ function QuizGameView() {
                 gameId={gameIdParam || 3}
                 startDate={startDate}
                 correctAnswers={score}
-                totalquestions={activity.questions.length}
+                totalQuestions={activity.questions.length}
                 responseLogs={responseLogs}
                 onExit={handleExit}
                 onRetry={handleRestart}
@@ -223,26 +217,18 @@ function QuizGameView() {
 
                 {/* question Card */}
                 <div style={{ background: 'white', borderRadius: '20px', padding: '2rem', boxShadow: '0 4px 16px rgba(0,0,0,0.1)' }}>
-                    {/* question stimulus — config1 */}
-                    {config1.showImage && currentQuestion.word?.imageUrl && (
-                        <div style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>
-                            <img
-                                src={currentQuestion.word.imageUrl}
-                                alt="Pregunta"
-                                style={{ maxWidth: '200px', maxHeight: '150px', borderRadius: '12px', objectFit: 'cover', margin: '0 auto' }}
-                            />
-                        </div>
-                    )}
-
-                    {config1.playAudio && currentQuestion.word?.AudioUrl && (
-                        <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
-                            <button
-                                onClick={() => playAudio(currentQuestion.word.AudioUrl)}
-                                style={{ fontSize: '32px', background: 'none', border: 'none', cursor: 'pointer' }}
-                                title="Escuchar"
-                            >🔊</button>
-                        </div>
-                    )}
+                    {/* question stimulus — config1 (GameCard con imagen y/o audio) */}
+                    {currentQuestion.word &&
+                        ((config1.showImage && currentQuestion.word.imageUrl) ||
+                            (config1.playAudio && currentQuestion.word.audioUrl)) && (
+                            <div className="quiz-question-card">
+                                <GameCard
+                                    imageUrl={config1.showImage ? currentQuestion.word.imageUrl : undefined}
+                                    audioUrl={config1.playAudio ? currentQuestion.word.audioUrl : undefined}
+                                    disabled={false}
+                                />
+                            </div>
+                        )}
 
                     {config1.showText && (
                         <h2 style={{ textAlign: 'center', color: '#1f2937', fontSize: '20px', marginBottom: '2rem' }}>
@@ -250,64 +236,32 @@ function QuizGameView() {
                         </h2>
                     )}
 
-                    {/* options — config2 */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    {/* options — config2 (GameCard por opción, como en Intruso) */}
+                    <div className="quiz-options-grid">
                         {currentQuestion.options.map((option, index) => {
                             const isSelected = selectedAnswer === option.id;
                             const showCorrect = selectedAnswer !== null && option.isCorrect;
                             const showWrong = isSelected && !option.isCorrect;
 
-                            let bgColor = 'white';
-                            let borderColor = '#e5e7eb';
-                            if (showCorrect) { bgColor = '#f0fdf4'; borderColor = '#22c55e'; }
-                            if (showWrong) { bgColor = '#fef2f2'; borderColor = '#ef4444'; }
-                            if (isSelected && !showWrong && !showCorrect) { bgColor = '#f3e8ff'; borderColor = '#7c3aed'; }
-
                             const optionText = config2.showText
                                 ? (option.text || getWordText(option.word, config2) || '')
                                 : '';
 
-                            // Skmp entirely empty options (no text, no image, no Audio)
-                            const hasContent = optionText || (config2.showImage && option.word?.imageUrl) || (config2.playAudio && option.word?.AudioUrl);
+                            // Omitir opciones totalmente vacías (sin texto, imagen ni audio)
+                            const hasContent = optionText || (config2.showImage && option.word?.imageUrl) || (config2.playAudio && option.word?.audioUrl);
                             if (!hasContent) return null;
 
                             return (
-                                <button
+                                <GameCard
                                     key={option.id}
+                                    text={optionText || undefined}
+                                    imageUrl={config2.showImage ? option.word?.imageUrl : undefined}
+                                    audioUrl={config2.playAudio ? option.word?.audioUrl : undefined}
                                     onClick={() => handleAnswerSelect(option.id)}
+                                    selected={showCorrect ? 'correct' : showWrong ? 'incorrect' : null}
                                     disabled={selectedAnswer !== null}
-                                    style={{
-                                        padding: '1rem 1.25rem', background: bgColor,
-                                        border: `2px solid ${borderColor}`, borderRadius: '12px',
-                                        textAlign: 'left', cursor: selectedAnswer !== null ? 'default' : 'pointer',
-                                        display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'all 0.2s'
-                                    }}
-                                >
-                                    <span style={{
-                                        width: '28px', height: '28px', borderRadius: '50%',
-                                        background: showCorrect ? '#22c55e' : showWrong ? '#ef4444' : '#f3f4f6',
-                                        color: (showCorrect || showWrong) ? 'white' : '#6b7280',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontWeight: '600', fontSize: '14px', flexShrink: 0
-                                    }}>
-                                        {showCorrect ? '✓' : showWrong ? '✗' : String.fromCharCode(65 + index)}
-                                    </span>
-
-                                    {config2.showImage && option.word?.imageUrl && (
-                                        <img src={option.word.imageUrl} alt="" style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', flexShrink: 0 }} />
-                                    )}
-
-                                    {config2.showText && (
-                                        <span style={{ fontWeight: '500', color: '#374151', flex: 1 }}>{optionText}</span>
-                                    )}
-
-                                    {config2.playAudio && option.word?.AudioUrl && (
-                                        <button
-                                            onClick={(e) => { e.stopPropagation(); playAudio(option.word.AudioUrl); }}
-                                            style={{ fontSize: '20px', background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0 }}
-                                        >🔊</button>
-                                    )}
-                                </button>
+                                    animationDelay={`${index * 0.08}s`}
+                                />
                             );
                         })}
                     </div>

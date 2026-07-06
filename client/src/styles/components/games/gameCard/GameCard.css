@@ -4,13 +4,13 @@
    BASE CARD
    ══════════════════════════════════════════ */
 .game-card {
-    border-radius: 20px;
+    border-radius: 24px;
     aspect-ratio: 1;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    border: 3px solid transparent;
+    border: 4px solid #e2e8f0;
+    box-shadow: 0 6px 0 #cbd5e1;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
     position: relative;
     user-select: none;
 
@@ -20,27 +20,52 @@
 
 .game-card:hover:not(.game-card--disabled) {
     transform: translateY(-4px);
-    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 10px 0 #cbd5e1;
+    border-color: #cbd5e1;
 }
 
 .game-card:active:not(.game-card--disabled) {
-    transform: scale(0.95);
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #cbd5e1;
 }
 
 .game-card--disabled {
     cursor: default;
-    /* pointer-events: none; */
 }
 
 /* ── State feedback ── */
 .game-card--correct {
     border-color: #10B981;
+    box-shadow: 0 6px 0 #059669;
     background-color: #ecfdf5;
+}
+
+.game-card--correct:hover:not(.game-card--disabled) {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 0 #059669;
+    border-color: #10B981;
+}
+
+.game-card--correct:active:not(.game-card--disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #059669;
 }
 
 .game-card--incorrect {
     border-color: #EF4444;
+    box-shadow: 0 6px 0 #DC2626;
     background-color: #fef2f2;
+}
+
+.game-card--incorrect:hover:not(.game-card--disabled) {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 0 #DC2626;
+    border-color: #EF4444;
+}
+
+.game-card--incorrect:active:not(.game-card--disabled) {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #DC2626;
 }
 
 /* Image-mode cards should stay white so the image bg blends */
@@ -99,7 +124,9 @@
     color: #1e293b;
     text-align: center;
     padding: 0.5rem;
-    word-break: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -125,7 +152,10 @@
     font-size: clamp(9px, 8cqw, 15px);
     font-weight: 700;
     color: #ffffff;
-    word-break: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
 }
 
 /* When text-audio mode — footer lives outside the body (normal flow) */
@@ -162,22 +192,29 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: none;
-    background: #E65100;
+    border: 2.5px solid #E65100;
+    background: #FF9800;
     color: #ffffff;
     cursor: pointer;
-    transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
-    box-shadow: 0 2px 8px rgba(230, 81, 0, 0.35);
+    transition: all 0.1s ease;
+    box-shadow: 0 4px 0 #C2410C;
 }
 
 .gc-audio-btn:hover {
-    background: #BF360C;
-    transform: scale(1.08);
-    box-shadow: 0 4px 12px rgba(230, 81, 0, 0.45);
+    background: #FFA726;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 #C2410C;
+}
+
+.gc-audio-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #C2410C;
 }
 
 .gc-audio-btn--playing {
-    background: #FF6D00;
+    background: #10B981;
+    border-color: #059669;
+    box-shadow: 0 4px 0 #047857;
     animation: gc-pulse 0.8s infinite alternate;
 }
 
@@ -188,12 +225,18 @@
 /* Smaller audio button when combined with image */
 .game-card--image-audio .gc-audio-btn,
 .game-card--image-text-audio .gc-audio-btn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
+    box-shadow: 0 3px 0 #C2410C;
+}
+.game-card--image-audio .gc-audio-btn:active,
+.game-card--image-text-audio .gc-audio-btn:active {
+    transform: translateY(2.5px);
+    box-shadow: 0 0.5px 0 #C2410C;
 }
 .game-card--image-audio .gc-audio-btn .material-symbols-outlined,
 .game-card--image-text-audio .gc-audio-btn .material-symbols-outlined {
-    font-size: 18px;
+    font-size: 20px;
 }
 
 /* Corner placement for image cards */

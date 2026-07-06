@@ -42,6 +42,7 @@ function GameAccessView() {
                         title={metadata.title}
                         subtitle={metadata.subtitle}
                         gameBasePath={metadata.basePath}
+                        color={metadata.color}
                         cardIcon={<span className="material-symbols-outlined">{metadata.materialIcon}</span>}
                     />
                 </div>

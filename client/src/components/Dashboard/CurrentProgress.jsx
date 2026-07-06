@@ -26,7 +26,7 @@ const CurrentProgress = ({ experience = 0, level = 1 }) => {
     );
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div className="kid-card-amber p-6">
             <h3 className="font-bold text-gray-800 mb-6">Progreso Actual</h3>
 
             {/* Progress Ring */}
@@ -48,7 +48,7 @@ const CurrentProgress = ({ experience = 0, level = 1 }) => {
 
                 <Link
                     to="/estudiante/progreso"
-                    className="inline-block w-full py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 transition-colors"
+                    className="inline-block w-full py-3 border-3 border-gray-200 text-gray-700 font-bold rounded-2xl shadow-[0_4px_0_#cbd5e1] hover:shadow-[0_6px_0_#cbd5e1] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_1px_0_#cbd5e1] transition-all duration-150 bg-white"
                 >
                     Ver Ruta Completa
                 </Link>

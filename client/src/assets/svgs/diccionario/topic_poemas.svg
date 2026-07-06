@@ -1,23 +1,64 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <circle cx="32" cy="32" r="30" fill="#FFF3E0" />
+  <defs>
+    <!-- Gradiente de fondo (Estilo pergamino suave) -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7" />
+      <stop offset="100%" stop-color="#FDE68A" />
+    </linearGradient>
+    <!-- Gradiente del pergamino -->
+    <linearGradient id="scrollGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#FDF4E3" />
+    </linearGradient>
+    <!-- Gradiente de la pluma (Fénix/Pájaro en tonos bronce/dorados) -->
+    <linearGradient id="quillGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#92400E" />
+    </linearGradient>
+  </defs>
 
-  <!-- Pergamino -->
-  <path d="M15,20 L45,20 C48,20 50,22 50,25 C50,28 48,30 45,30 C48,30 50,32 50,35 L50,50 L20,50 C17,50 15,48 15,45 C15,42 17,40 20,40 C17,40 15,38 15,35 L15,20 Z" fill="#FFB74D" opacity="0.5" />
-  <rect x="18" y="22" width="28" height="26" fill="#FFFFFF" />
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGrad)" />
 
-  <!-- Texto en pergamino -->
-  <line x1="22" y1="26" x2="38" y2="26" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" />
-  <line x1="22" y1="32" x2="32" y2="32" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" />
-  <line x1="22" y1="38" x2="36" y2="38" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" />
+  <!-- Pergamino enrollado con pluma de escribir (Poemas) -->
+  <g transform="translate(30, 32)" filter="drop-shadow(0px 3px 2px rgba(146, 64, 14, 0.2))">
+    <!-- Pergamino enrollado de fondo -->
+    <path d="M -16,-16 
+             L 10,-16 
+             C 14,-16 16,-12 16,-8 
+             L 16,12 
+             C 16,16 12,18 8,18 
+             L -18,18 
+             C -22,18 -24,14 -24,10 
+             L -24,-10 
+             C -24,-14 -20,-16 -16,-16 Z" 
+          fill="url(#scrollGrad)" stroke="#F59E0B" stroke-width="1" />
+          
+    <!-- Rollito superior del pergamino -->
+    <path d="M -16,-16 C -12,-16 -10,-14 -12,-11 C -14,-8 -18,-8 -20,-11 C -22,-14 -20,-16 -16,-16 Z" fill="#F59E0B" opacity="0.6" />
+    <!-- Rollito inferior del pergamino -->
+    <path d="M 8,18 C 12,18 14,16 12,13 C 10,10 6,10 4,13 C 2,16 4,18 8,18 Z" fill="#F59E0B" opacity="0.6" />
 
-  <!-- Pluma (Quill) -->
-  <path d="M48,10 C48,10 45,15 48,22 C48,22 45,25 35,35 L33,40 L38,38 C38,38 48,35 48,35 C48,35 55,30 55,20 C55,10 48,10 48,10 Z" fill="#1E3A8A" />
-  
-  <!-- Detalles de la pluma -->
-  <path d="M48,10 C48,10 45,15 48,22 C48,22 45,25 35,35" fill="none" stroke="#EFF6FF" stroke-width="1.5" />
-  <line x1="42" y1="18" x2="48" y2="15" stroke="#EFF6FF" stroke-width="1.5" />
-  <line x1="40" y1="24" x2="46" y2="20" stroke="#EFF6FF" stroke-width="1.5" />
+    <!-- Líneas de poema/escritura cursiva simulas -->
+    <path d="M -14,-8 C -10,-8 -10,-10 -6,-10 M -12,-4 C -8,-4 -8,-6 -4,-6 M -14,0 C -10,0 -10,-2 -6,-2 M -12,4 C -8,4 -8,2 -4,2" fill="none" stroke="#78350F" stroke-width="1.2" stroke-linecap="round" opacity="0.6" />
 
-  <!-- Tinta -->
-  <circle cx="34" cy="42" r="1.5" fill="#1E3A8A" />
+    <!-- Pluma de escribir (Quill Pen) cruzada -->
+    <g transform="translate(10, 0) rotate(-35)">
+      <!-- Punta de la pluma -->
+      <path d="M -12,15 L -9,11 L -7,12 Z" fill="#78350F" />
+      
+      <!-- Eje central de la pluma (Calamus) -->
+      <path d="M -9,11 L 12,-18" fill="none" stroke="#92400E" stroke-width="1.5" stroke-linecap="round" />
+      
+      <!-- Cerdas/Pluma estilizada (Vanes) -->
+      <path d="M -7,10 
+               C -1,6 4,-1 11,-12 
+               C 12,-14 9,-16 8,-16 
+               C 1,-8 -5,-2 -9,7" 
+            fill="url(#quillGrad)" />
+            
+      <!-- Detalles de cortes en las cerdas de la pluma -->
+      <path d="M 4,-2 L 7,-3 M 0,3 L 3,2" stroke="#FEF3C7" stroke-width="1" />
+    </g>
+  </g>
 </svg>

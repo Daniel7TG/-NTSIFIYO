@@ -10,34 +10,62 @@
     box-sizing: border-box;
 }
 
-/* Botón de acción primario del Quiz (Siguiente / Ver Resultados) */
 .btn-play-quiz {
     display: block;
     padding: 0.85rem 1.5rem;
-    background: linear-gradient(135deg, #7c3aed, #5b21b6);
+    background-color: #7c3aed;
     color: white;
-    border: none;
-    border-radius: 12px;
+    border: 3px solid #5b21b6;
+    border-radius: 16px;
     font-family: 'Poppins', sans-serif;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 900;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+    transition: all 0.15s ease;
+    box-shadow: 0 4px 0 #5b21b6;
 }
 
 .btn-play-quiz:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+    background-color: #8b5cf6;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 #5b21b6;
 }
 
 .btn-play-quiz:active {
-    transform: scale(0.97);
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #5b21b6;
+}
+
+/* ── Estímulo de la pregunta (GameCard con imagen/audio) ── */
+.quiz-question-card {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.quiz-question-card .game-card {
+    width: 180px;
+    min-height: 140px;
+}
+
+/* ── Grid de opciones de respuesta (GameCard por opción) ── */
+.quiz-options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+}
+
+.quiz-options-grid .game-card {
+    min-height: 110px;
 }
 
 /* ── Responsive vertical (pantallas pequeñas) ── */
 @media (max-width: 480px) {
     .quiz-access-panel {
         padding: 0.75rem 0.5rem 1.5rem;
+    }
+
+    .quiz-options-grid {
+        gap: 0.5rem;
     }
 }

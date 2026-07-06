@@ -1,21 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <circle cx="32" cy="32" r="30" fill="#EFF6FF" />
+  <defs>
+    <!-- Gradiente de fondo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCE7F3" />
+      <stop offset="100%" stop-color="#FBCFE8" />
+    </linearGradient>
+    <!-- Gradiente de las notas musicales -->
+    <linearGradient id="noteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DB2777" />
+      <stop offset="100%" stop-color="#9D174D" />
+    </linearGradient>
+  </defs>
 
-  <!-- Ondas sonoras -->
-  <path d="M15,32 A18,18 0 0,1 49,32" fill="none" stroke="#93C5FD" stroke-width="2" stroke-linecap="round" />
-  <path d="M10,32 A24,24 0 0,1 54,32" fill="none" stroke="#93C5FD" stroke-width="2" stroke-dasharray="4 4" stroke-linecap="round" />
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGrad)" />
 
-  <!-- Corcheas (Notas musicales) -->
-  <g transform="translate(18, 15)">
-    <!-- Barra superior -->
-    <path d="M4,5 L24,2" fill="none" stroke="#1E3A8A" stroke-width="3" stroke-linecap="round" />
+  <!-- Nota musical doble tridimensional flotando (Canciones) -->
+  <g transform="translate(30, 30)" filter="drop-shadow(0px 3px 2px rgba(157, 23, 77, 0.25))">
+    <!-- Barra superior de la nota doble -->
+    <path d="M -8,-15 L 14,-20 L 14,-14 L -8,-9 Z" fill="url(#noteGrad)" />
     
-    <!-- Nota Izquierda -->
-    <line x1="5" y1="5" x2="5" y2="28" stroke="#1E3A8A" stroke-width="3" />
-    <circle cx="3" cy="28" r="5" fill="#E65100" />
-    
-    <!-- Nota Derecha -->
-    <line x1="23" y1="2" x2="23" y2="25" stroke="#1E3A8A" stroke-width="3" />
-    <circle cx="21" cy="25" r="5" fill="#E65100" />
+    <!-- Pica izquierda -->
+    <rect x="-8" y="-9" width="3" height="20" fill="url(#noteGrad)" />
+    <!-- Cabeza de nota izquierda -->
+    <ellipse cx="-12" cy="11" rx="6" ry="4.5" fill="url(#noteGrad)" transform="rotate(-20 -12 11)" />
+
+    <!-- Pica derecha -->
+    <rect x="11" y="-14" width="3" height="20" fill="url(#noteGrad)" />
+    <!-- Cabeza de nota derecha -->
+    <ellipse cx="7" cy="6" rx="6" ry="4.5" fill="url(#noteGrad)" transform="rotate(-20 7 6)" />
+
+    <!-- Destellos de notas musicales pequeñas flotando alrededor -->
+    <g transform="translate(18, -4) scale(0.65)" opacity="0.8">
+      <path d="M -2,-5 C 3,-5 3,3 0,5" fill="none" stroke="#F43F5E" stroke-width="1.5" />
+      <ellipse cx="-4.5" cy="5" rx="3.5" ry="2.5" fill="#F43F5E" transform="rotate(-20 -4.5 5)" />
+    </g>
+
+    <g transform="translate(-16, -10) scale(0.5)" opacity="0.6">
+      <path d="M -2,-5 C 3,-5 3,3 0,5" fill="none" stroke="#F43F5E" stroke-width="1.5" />
+      <ellipse cx="-4.5" cy="5" rx="3.5" ry="2.5" fill="#F43F5E" transform="rotate(-20 -4.5 5)" />
+    </g>
   </g>
 </svg>

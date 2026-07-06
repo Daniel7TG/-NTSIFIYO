@@ -3,10 +3,10 @@ export const getMazeDimensions = (difficulty) => {
         case 'Fácil':
             return { width: 5, height: 5 };
         case 'Difícil':
-            return { width: 12, height: 12 };
+            return { width: 10, height: 10 };
         case 'Medio':
         default:
-            return { width: 8, height: 8 };
+            return { width: 7, height: 7 };
     }
 };
 

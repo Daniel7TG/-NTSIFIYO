@@ -248,12 +248,14 @@ const LaberintoGameView = () => {
                 if (entrance) {
                     setActiveItem({ ...entrance, _side: 'entrance' });
                     setPathTraced([{ x: avatarPos.x, y: avatarPos.y }]);
+                    if (entrance.audioUrl) new Audio(entrance.audioUrl).play().catch(() => { });
                 }
             } else if (atRight) {
                 const exit = exits.find(e => e.row === avatarPos.y && !completedPairs.has(e.pairId));
                 if (exit) {
                     setActiveItem({ ...exit, _side: 'exit' });
                     setPathTraced([{ x: avatarPos.x, y: avatarPos.y }]);
+                    if (exit.audioUrl) new Audio(exit.audioUrl).play().catch(() => { });
                 }
             }
             return;
@@ -358,14 +360,14 @@ const LaberintoGameView = () => {
                     pathTraced={pathTraced}
                     completedPairs={completedPairs}
                 />
-            </div>
 
-            <LaberintoControls
-                onMove={handleMove}
-                onSelect={handleSelect}
-                isSelectEnabled={isSelectEnabled}
-                hasActiveItem={!!activeItem}
-            />
+                <LaberintoControls
+                    onMove={handleMove}
+                    onSelect={handleSelect}
+                    isSelectEnabled={isSelectEnabled}
+                    hasActiveItem={!!activeItem}
+                />
+            </div>
 
             <GameAlert
                 isOpen={alert.open}

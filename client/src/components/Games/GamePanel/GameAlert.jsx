@@ -1,7 +1,16 @@
 import React, { useEffect, useState, useRef } from 'react';
 import '../../../styles/components/games/gamePanel/GameAlert.css';
+import { useCoyote } from '../../../context/CoyoteContext';
 
 const GameAlert = ({ isOpen, type, onClose, autoCloseDuration = 1500 }) => {
+    const { triggerReaction } = useCoyote();
+    
+    useEffect(() => {
+        if (isOpen && type) {
+            triggerReaction(type);
+        }
+    }, [isOpen, type, triggerReaction]);
+
     const [render, setRender] = useState(isOpen);
     const onCloseRef = useRef(onClose);
 

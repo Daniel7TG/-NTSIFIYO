@@ -1,21 +1,47 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <circle cx="32" cy="32" r="30" fill="#FFF3E0" />
+  <defs>
+    <!-- Gradiente de fondo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F3E8FF" />
+      <stop offset="100%" stop-color="#E9D5FF" />
+    </linearGradient>
+    <!-- Gradiente de la paleta -->
+    <linearGradient id="paletteGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E2E8F0" />
+    </linearGradient>
+    <!-- Gradiente de madera del pincel -->
+    <linearGradient id="woodGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="100%" stop-color="#78350F" />
+    </linearGradient>
+  </defs>
 
-  <!-- Paleta de pintor -->
-  <path d="M48,16 C38,10 20,12 14,24 C8,36 12,50 25,54 C35,57 45,50 50,42 C55,34 58,22 48,16 Z" fill="#E65100" />
-  
-  <!-- Orificio para el pulgar -->
-  <ellipse cx="40" cy="45" rx="4" ry="6" fill="#FFF3E0" transform="rotate(-30 40 45)" />
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGrad)" />
 
-  <!-- Pincel -->
-  <path d="M55,10 L45,20" fill="none" stroke="#8D6E63" stroke-width="3" stroke-linecap="round" />
-  <path d="M45,20 L40,25 C38,27 42,30 45,25 Z" fill="#1E3A8A" />
+  <!-- Paleta artística con pincel -->
+  <g transform="translate(30, 32)" filter="drop-shadow(0px 3px 2px rgba(107, 33, 168, 0.15))">
+    <!-- Paleta de pintor -->
+    <path d="M-18,-15 C-8,-22 14,-15 18,-6 C22,4 12,20 -2,18 C-10,17 -11,10 -15,10 C-19,10 -24,-4 -18,-15 Z" fill="url(#paletteGrad)" stroke="#CBD5E1" stroke-width="1" />
+    <!-- Orificio de agarre de la paleta -->
+    <circle cx="-10" cy="-6" r="3" fill="#E9D5FF" />
 
-  <!-- Manchas de pintura -->
-  <circle cx="22" cy="28" r="4" fill="#1E3A8A" /> <!-- Azul -->
-  <circle cx="28" cy="42" r="5" fill="#4CAF50" /> <!-- Verde -->
-  <circle cx="38" cy="26" r="4.5" fill="#FFB74D" /> <!-- Amarillo/Naranja claro -->
-  
-  <!-- Gota cayendo -->
-  <path d="M22,32 L22,35 C22,37 24,37 24,35 L24,32 Z" fill="#1E3A8A" />
+    <!-- Colores en la paleta -->
+    <circle cx="-10" cy="5" r="3.5" fill="#EF4444" /> <!-- Rojo -->
+    <circle cx="-2" cy="11" r="3.5" fill="#3B82F6" /> <!-- Azul -->
+    <circle cx="8" cy="9" r="3" fill="#10B981" /> <!-- Verde -->
+    <circle cx="12" cy="0" r="3.5" fill="#F59E0B" /> <!-- Naranja -->
+    <circle cx="6" cy="-8" r="3.2" fill="#EC4899" /> <!-- Rosa -->
+
+    <!-- Pincel atravesado -->
+    <g transform="translate(5, 0) rotate(45)">
+      <!-- Mango de madera -->
+      <rect x="-1" y="-24" width="2" height="34" fill="url(#woodGrad)" rx="0.5" />
+      <!-- Casquillo plateado -->
+      <rect x="-1.5" y="10" width="3" height="4" fill="#94A3B8" />
+      <!-- Cerdas con pintura morada -->
+      <path d="M -1.5,14 L 1.5,14 C 2,16 2,18 0,21 C -2,18 -2,16 -1.5,14 Z" fill="#8B5CF6" />
+    </g>
+  </g>
 </svg>

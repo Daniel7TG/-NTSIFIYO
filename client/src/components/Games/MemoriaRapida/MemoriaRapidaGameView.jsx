@@ -2,12 +2,14 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import { useCoyote } from '../../../context/CoyoteContext';
 import MemoriaRapidaCard from './MemoriaRapidaCard';
 import GameSummary from '../GamePanel/GameSummary';
 import GameCard from '../GameCard/GameCard';
 import IconSuccess from '../../../assets/svgs/success_game.svg';
 import IconError from '../../../assets/svgs/error_cross.svg';
 import '../../../styles/components/games/GameBase.css';
+import '../../../styles/components/games/memoriaRapida/MemoriaRapida.css';
 
 const GAME_DURATION = 60; // segundos
 const BASE_SPEED = 3500;  // ms entre tarjetas
@@ -21,6 +23,7 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
     const returnToMap = location.state?.returnToMap;
     
     const { currentGameData } = useGame();
+    const { triggerReaction } = useCoyote();
 
     const [gameState, setGameState] = useState('loading'); // loading | countdown | playing | paused | completed
     const [error, setError] = useState(null);
@@ -105,12 +108,12 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
         return () => clearInterval(timer);
     }, [gameState]);
 
-    // Auto-skip card
+    // Auto-skip card: al expirar el tiempo cuenta siempre como no respondida (incorrecta)
     useEffect(() => {
         if (gameState !== 'playing' || !bottomCardProps) return;
         clearTimeout(autoTimerRef.current);
         autoTimerRef.current = setTimeout(() => {
-            processAnswer(false);
+            processAnswer(null);
         }, speed);
         return () => clearTimeout(autoTimerRef.current);
     }, [bottomCardProps, gameState, speed]);
@@ -153,11 +156,12 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
         setCardKey(prev => prev + 1);
     }, [topWords, currentGameData]);
 
+    // userSaysMatch: true/false = respuesta del usuario; null = tiempo agotado (siempre incorrecta)
     const processAnswer = useCallback((userSaysMatch) => {
         if (gameStateRef.current !== 'playing') return;
 
         clearTimeout(autoTimerRef.current);
-        const isCorrect = userSaysMatch === currentMatch;
+        const isCorrect = userSaysMatch !== null && userSaysMatch === currentMatch;
         const currentTopWord = topWords[currentTopIndex];
         
         setResponseLogs(prev => [...prev, { 
@@ -181,9 +185,11 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
             setCorrectCount(prev => prev + 1);
             setSpeed(prev => Math.max(MIN_SPEED, prev - SPEED_DECREASE));
             setFeedback('correct');
+            triggerReaction('correct');
         } else {
             setCombo(0);
             setFeedback('incorrect');
+            triggerReaction('incorrect');
         }
 
         setTimeout(() => setFeedback(null), 400);
@@ -206,6 +212,28 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
         clearTimeout(autoTimerRef.current);
     };
 
+    // Reinicia todo el estado del juego (usado por "Reintentar" en GameSummary)
+    const restartGame = () => {
+        clearTimeout(autoTimerRef.current);
+        const shuffledWords = [...(currentGameData?.words || [])].sort(() => Math.random() - 0.5);
+        setTopWords(shuffledWords);
+        setCurrentTopIndex(0);
+        setBottomCardProps(null);
+        setCurrentMatch(false);
+        setScore(0);
+        setCombo(0);
+        setMaxCombo(0);
+        setCorrectCount(0);
+        setTotalCards(0);
+        setTimeLeft(GAME_DURATION);
+        setSpeed(BASE_SPEED);
+        setFeedback(null);
+        setResponseLogs([]);
+        setCountdown(3);
+        setStartDate(new Date().toISOString());
+        setGameState('countdown');
+    };
+
     const togglePause = () => {
         setGameState(prev => prev === 'paused' ? 'playing' : 'paused');
     };
@@ -219,12 +247,12 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
     if (gameState === 'error') {
         return (
             <div className="game-error-container">
-                <div className="error-box">
-                    <h2><img src={IconError} alt="Error" className="inline w-8 h-8 align-middle mr-2" />Error</h2>
-                    <p>{error}</p>
-                    <button className="btn btn-secondary" onClick={() => window.history.back()}>
-                        Volver Atrás
-                    </button>
+                <div className="game-top-bar">
+                    <button className="game-top-bar__back-btn" onClick={() => navigate(-1)}>‹</button>
+                    <span className="game-top-bar__title">Error</span>
+                </div>
+                <div style={{ textAlign: 'center', padding: '2rem' }}>
+                    {error || 'No se encontraron palabras para este juego.'}
                 </div>
             </div>
         );
@@ -251,32 +279,22 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
                 totalQuestions={totalCards}
                 responseLogs={responseLogs}
                 onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/estudiante/actividades')}
-                onRetry={initGame}
+                onRetry={restartGame}
             />
     }
 
     if (gameState === 'countdown') {
         return (
             <div className="game-container" style={{ justifyContent: 'center' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <p style={{ fontSize: '16px', color: '#6b7280', marginBottom: '1rem' }}>
-                        Memoria Rápida
-                    </p>
-                    <div style={{
-                        width: '120px', height: '120px', borderRadius: '50%',
-                        background: 'white', display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', margin: '0 auto 1.5rem',
-                        boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
-                        animation: 'comboPop 0.5s ease'
-                    }}>
-                        <span style={{ fontSize: '56px', fontWeight: '800', color: '#1e293b' }}>
+                <div className="mr-countdown">
+                    <p className="mr-countdown__subtitle">Memoria Rápida</p>
+                    <div className="mr-countdown__circle">
+                        <span className="mr-countdown__number">
                             {countdown || '🚀'}
                         </span>
                     </div>
-                    <p style={{ fontSize: '18px', fontWeight: '700', color: '#374151' }}>
-                        ¡Prepárate!
-                    </p>
-                    <p style={{ fontSize: '13px', color: '#9ca3af', marginTop: '0.5rem' }}>
+                    <p className="mr-countdown__ready">¡Prepárate!</p>
+                    <p className="mr-countdown__hint">
                         Desliza ➡️ si coincide, ⬅️ si no
                     </p>
                 </div>
@@ -287,37 +305,16 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
     if (gameState === 'paused') {
         return (
             <div className="game-container" style={{ justifyContent: 'center' }}>
-                <div style={{
-                    background: 'white', borderRadius: '24px', padding: '2.5rem',
-                    textAlign: 'center', boxShadow: '0 10px 40px rgba(0,0,0,0.15)',
-                    maxWidth: '360px', width: '100%'
-                }}>
-                    <span style={{ fontSize: '48px', display: 'block', marginBottom: '1rem' }}>⏸️</span>
-                    <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1e293b', marginBottom: '0.5rem' }}>
-                        Juego Pausado
-                    </h2>
-                    <p style={{ color: '#6b7280', marginBottom: '2rem' }}>
+                <div className="mr-paused">
+                    <span className="mr-paused__icon">⏸️</span>
+                    <h2 className="mr-paused__title">Juego Pausado</h2>
+                    <p className="mr-paused__score">
                         Puntaje actual: <strong>{score.toLocaleString()}</strong>
                     </p>
-                    <button
-                        onClick={togglePause}
-                        style={{
-                            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-                            color: 'white', border: 'none', borderRadius: '14px',
-                            padding: '14px 2rem', fontSize: '16px', fontWeight: '700',
-                            cursor: 'pointer', width: '100%', marginBottom: '0.75rem'
-                        }}
-                    >
+                    <button className="mr-paused__btn-continue" onClick={togglePause}>
                         ▶️ Continuar
                     </button>
-                    <button
-                        onClick={() => window.history.back()}
-                        style={{
-                            background: 'transparent', color: '#ef4444', border: '2px solid #ef4444',
-                            borderRadius: '14px', padding: '12px 2rem', fontSize: '14px',
-                            fontWeight: '700', cursor: 'pointer', width: '100%'
-                        }}
-                    >
+                    <button className="mr-paused__btn-exit" onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate(-1)}>
                         Salir del Juego
                     </button>
                 </div>
@@ -335,13 +332,14 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
             {/* Top Bar */}
             <div className="game-top-bar">
                 <button className="game-top-bar__back-btn" onClick={togglePause}>⏸</button>
-
-                {combo >= 2 && (
-                    <div className="mr-combo-badge">
-                        {combo}x COMBO
-                    </div>
-                )}
-
+                <span className="game-top-bar__title">
+                    Memoria Rápida
+                    {combo >= 2 && (
+                        <span className="mr-combo-badge" style={{ marginLeft: '8px' }}>
+                            {combo}x
+                        </span>
+                    )}
+                </span>
                 <div className="mr-score-area">
                     <div className="mr-score-label">Puntaje</div>
                     <div className="mr-score-value">{score.toLocaleString()}</div>
@@ -351,51 +349,53 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
             {/* Timer */}
             <div className="mr-timer-row">
                 <div className="mr-timer-dot" />
-                <span className="mr-timer-text">{formatTime(timeLeft)}</span>
+                <span className="mr-timer-text">⏱ {formatTime(timeLeft)}</span>
                 <div className="mr-timer-bar">
                     <div
-                        className="mr-timer-fill"
+                        className={`mr-timer-fill ${timeLeft <= 10 ? 'timer-low' : ''}`}
                         style={{ width: `${(timeLeft / GAME_DURATION) * 100}%` }}
                     />
                 </div>
             </div>
 
-            {/* Top Card / Word Display */}
-            <div className="mr-word-display" style={{ padding: '0', background: 'transparent', boxShadow: 'none' }}>
-                {currentTopWord && (
-                    <div style={{ maxWidth: '250px', margin: '0 auto', transform: 'scale(0.85)' }}>
-                        <GameCard {...topCardProps} disabled={true} />
+            {/* Área de juego: carta de referencia + carta deslizable
+                (columna en móvil, fila en pantallas anchas) */}
+            <div className="mr-play-area">
+                <div className="mr-word-display">
+                    {currentTopWord && (
+                        <div className="mr-top-card">
+                            <GameCard {...topCardProps} disabled={true} />
+                        </div>
+                    )}
+                </div>
+
+                <div className="mr-card-area">
+                    {bottomCardProps && (
+                        <MemoriaRapidaCard
+                            key={cardKey}
+                            cardProps={bottomCardProps}
+                            onSwipe={handleSwipe}
+                            disabled={gameState !== 'playing'}
+                        />
+                    )}
+
+                    {/* Speed indicator */}
+                    <div className="mr-speed-indicator">
+                        {Math.round((1 - (speed - MIN_SPEED) / (BASE_SPEED - MIN_SPEED)) * 100)}%
                     </div>
-                )}
-            </div>
-
-            {/* Swipeable Card */}
-            <div className="mr-card-area">
-                {bottomCardProps && (
-                    <MemoriaRapidaCard
-                        key={cardKey}
-                        cardProps={bottomCardProps}
-                        onSwipe={handleSwipe}
-                        disabled={gameState !== 'playing'}
-                    />
-                )}
-
-                {/* Speed indicator */}
-                <div className="mr-speed-indicator">
-                    {Math.round((1 - (speed - MIN_SPEED) / (BASE_SPEED - MIN_SPEED)) * 100)}%
                 </div>
             </div>
 
             {/* Action Buttons */}
             <div className="mr-action-buttons">
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div className="mr-btn-group">
                     <button className="mr-btn-incorrect" onClick={handleIncorrectBtn}>
                         ✕
                     </button>
                     <span className="mr-btn-label incorrect">Incorrecto</span>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <div className="mr-btn-group">
                     <button className="mr-btn-correct" onClick={handleCorrectBtn}>
                         ✓
                     </button>

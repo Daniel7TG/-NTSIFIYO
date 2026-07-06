@@ -15,12 +15,8 @@ export const ALL_DIRECTIONS = [
     { dx: -1, dy: 1 },  // ↙
 ];
 
-const GRID_BY_DIFFICULTY = { EASY: 10, MEDIUM: 12, HARD: 14 };
-
 export const getGridSize = (difficulty, longestWord) => {
-    const base = GRID_BY_DIFFICULTY[String(difficulty).toUpperCase()] ?? GRID_BY_DIFFICULTY.MEDIUM;
-    // Grid must always be able to hold the longest word.
-    return Math.max(base, longestWord + 1);
+    return Math.max(8, longestWord);
 };
 
 // Normalize a raw word to its grid form: uppercase, no spaces. Accents/'ʼ kept.
@@ -100,7 +96,7 @@ export const generateWordSearch = (entries, difficulty) => {
             }
             return { size, grid, placements, unplaced };
         }
-        size += 1; // grow and retry
+        // Retry with the same size (no size += 1)
     }
     return { size, grid: [], placements: [], unplaced: prepared };
 };

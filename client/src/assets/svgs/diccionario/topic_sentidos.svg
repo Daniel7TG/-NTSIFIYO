@@ -1,23 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <circle cx="32" cy="32" r="30" fill="#FFF3E0" />
+  <defs>
+    <!-- Gradiente de fondo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#CFFAFE" />
+      <stop offset="100%" stop-color="#A5F3FC" />
+    </linearGradient>
+    <!-- Gradiente de los sentidos (Ojo principal) -->
+    <linearGradient id="senseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0891B2" />
+      <stop offset="100%" stop-color="#0E7490" />
+    </linearGradient>
+  </defs>
 
-  <!-- Círculo interior tenue -->
-  <circle cx="32" cy="32" r="22" fill="none" stroke="#FFB74D" stroke-width="1.5" stroke-dasharray="4 2" />
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGrad)" />
 
-  <!-- Ojo (Centro) -->
-  <path d="M22,32 Q32,24 42,32 Q32,40 22,32 Z" fill="#FFFFFF" stroke="#E65100" stroke-width="2" />
-  <circle cx="32" cy="32" r="4" fill="#1E3A8A" />
+  <!-- Símbolo de los sentidos: Ojo iluminado y ondas sonoras -->
+  <g transform="translate(32, 32)" filter="drop-shadow(0px 3px 2px rgba(14, 116, 144, 0.2))">
+    <!-- Contorno del ojo -->
+    <path d="M -18,0 C -10,-12 10,-12 18,0 C 10,12 -10,12 -18,0 Z" fill="url(#senseGrad)" />
+    <!-- Iris blanco -->
+    <circle cx="0" cy="0" r="7" fill="#FFFFFF" />
+    <!-- Pupila cian -->
+    <circle cx="0" cy="0" r="3.5" fill="#06B6D4" />
+    <!-- Brillo del ojo -->
+    <circle cx="2.5" cy="-2.5" r="1.2" fill="#FFFFFF" />
+    
+    <!-- Ceja estilizada arriba -->
+    <path d="M -15,-10 C -5,-16 5,-16 15,-10" fill="none" stroke="#0E7490" stroke-width="2" stroke-linecap="round" />
 
-  <!-- Oreja (Izquierda) -->
-  <path d="M16,32 C12,32 12,24 16,24 C18,24 18,28 16,28" fill="none" stroke="#E65100" stroke-width="2" stroke-linecap="round" />
-
-  <!-- Nariz (Arriba) -->
-  <path d="M30,16 L30,20 L34,20" fill="none" stroke="#E65100" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-
-  <!-- Boca/Lengua (Abajo) -->
-  <path d="M28,45 Q32,48 36,45" fill="none" stroke="#E65100" stroke-width="2" stroke-linecap="round" />
-  <path d="M30,46 Q32,50 34,46" fill="#FFB74D" />
-
-  <!-- Mano pequeña (Derecha - Tacto) -->
-  <path d="M48,30 L48,26 A1.5,1.5 0 0,1 51,26 L51,34 C51,37 48,38 46,38 C45,38 45,35 45,35 L45,28 A1.5,1.5 0 0,1 48,28 Z" fill="#E65100" />
+    <!-- Ondas decorativas alrededor (Símbolo de audición/percepción) -->
+    <path d="M -22,-6 C -25,-3 -25,3 -22,6" fill="none" stroke="#22D3EE" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+    <path d="M 22,-6 C 25,-3 25,3 22,6" fill="none" stroke="#22D3EE" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+  </g>
 </svg>

@@ -1,5 +1,6 @@
 // client/src/components/Games/GameCard/GameCard.jsx
 import React, { useState } from 'react';
+import useFitText from '../../../hooks/useFitText';
 import '../../../styles/components/games/gameCard/GameCard.css';
 
 /**
@@ -24,6 +25,8 @@ const GameCard = ({
     animationDelay,
 }) => {
     const [playing, setPlaying] = useState(false);
+    const centerTextRef = useFitText({ maxFontSize: 18, minFontSize: 8, text });
+    const footerTextRef = useFitText({ maxFontSize: 15, minFontSize: 8, text });
 
     const hasImage = !!imageUrl;
     const hasText = !!text;
@@ -69,7 +72,7 @@ const GameCard = ({
 
     const textFooter = (
         <div className="gc-text-footer">
-            <span>{text}</span>
+            <span ref={footerTextRef}>{text}</span>
         </div>
     );
 
@@ -80,7 +83,7 @@ const GameCard = ({
             case 'text-only':
                 return (
                     <div className="gc-body gc-body--center">
-                        <span className="gc-text-center">{text}</span>
+                        <span className="gc-text-center" ref={centerTextRef}>{text}</span>
                     </div>
                 );
 

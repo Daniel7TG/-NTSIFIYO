@@ -77,6 +77,13 @@ const TripasGameView = () => {
             else { setGameState('error'); setLoading(false); return; }
         }
 
+        // El fetch puede responder success sin palabras: verificar antes de construir cartas
+        if (!data?.words?.length) {
+            setGameState('error');
+            setLoading(false);
+            return;
+        }
+
         const configs = data.gameConfigs || [];
         const cfg0 = configs[0] || { showText: false, showImage: true, playAudio: false, isMazahua: true };
         const cfg1 = configs[1] || { showText: true, showImage: false, playAudio: true, isMazahua: true };
@@ -84,17 +91,48 @@ const TripasGameView = () => {
         const left = shuffle(buildSideCards(data.words, cfg0, 'L'));
         const right = shuffle(buildSideCards(data.words, cfg1, 'R'));
 
-        // Place each side as a vertical column, shuffled order so pairs cross.
+        // Place all cards randomly across the board, avoiding overlaps.
+        // Card size is 18% of the board width (matches CSS .tripas-card width).
+        const CARD_W_PCT = 0.18;
+        // Board aspect ratio: mobile 3:4 (0.75), desktop 4:3 (1.333).
+        // We use the board ref if available, otherwise assume mobile (worst-case taller).
+        const boardRect = boardRef.current?.getBoundingClientRect();
+        const boardAR = boardRect ? (boardRect.width / boardRect.height) : 0.75;
+        // The card is square (aspect-ratio:1 in CSS), so its height
+        // relative to the board is: cardPxWidth / boardPxHeight
+        //   = (CARD_W_PCT * boardW) / boardH = CARD_W_PCT * boardAR
+        const CARD_H_PCT = CARD_W_PCT * boardAR;
+
+        const MARGIN_X = CARD_W_PCT / 2 + 0.02;
+        const MARGIN_Y = CARD_H_PCT / 2 + 0.02;
+
         const layout = {};
-        const place = (cards, xPct) => {
-            const n = cards.length;
-            cards.forEach((c, i) => {
-                const y = n === 1 ? 0.5 : 0.12 + (0.76 * i) / (n - 1);
-                layout[c.uid] = { x: xPct, y };
-            });
-        };
-        place(left, 0.16);
-        place(right, 0.84);
+        const allCards = [...left, ...right];
+        const placed = [];
+
+        const randomInRange = (min, max) => min + Math.random() * (max - min);
+        const isFarEnough = (pos) => placed.every(p => {
+            const dx = Math.abs(pos.x - p.x);
+            const dy = Math.abs(pos.y - p.y);
+            // Cards must not overlap: centers must be at least one card-width / card-height apart
+            return dx >= CARD_W_PCT || dy >= CARD_H_PCT;
+        });
+
+        // Shuffle allCards so placement order is random too
+        const shuffledAll = shuffle(allCards);
+        for (const card of shuffledAll) {
+            let pos;
+            let attempts = 0;
+            do {
+                pos = {
+                    x: randomInRange(MARGIN_X, 1 - MARGIN_X),
+                    y: randomInRange(MARGIN_Y, 1 - MARGIN_Y),
+                };
+                attempts++;
+            } while (!isFarEnough(pos) && attempts < 500);
+            layout[card.uid] = pos;
+            placed.push(pos);
+        }
 
         setLeftCards(left);
         setRightCards(right);

@@ -117,44 +117,34 @@ const LoteriaGameView = () => {
         setLoading(true);
         setLoadError(null);
 
-        let data = currentGameData || null;
-        if (!data) {
-            const result = await GameService.startGame(parseInt(activityId));
-            if (result.success && result.data) { data = result.data; }
-        }
+        // Cualquier excepción debe terminar en estado de error visible,
+        // nunca en el spinner de carga infinito
+        try {
+            let data = currentGameData || null;
+            if (!data) {
+                const result = await GameService.startGame(parseInt(activityId));
+                if (result.success && result.data) { data = result.data; }
+            }
 
-        // NO limpiar currentGameData: GameSummary lo necesita para enviar
-        // el activityId real (el param de la URL es el id del juego)
-        if (data && (data.words?.length || data.wordIds?.length)) {
-            loadFromApiData(data);
-        } else {
-            loadMockData();
+            // NO limpiar currentGameData: GameSummary lo necesita para enviar
+            // el activityId real (el param de la URL es el id del juego)
+            if (data?.words?.length) {
+                loadFromApiData(data);
+            } else {
+                setLoadError('La actividad no tiene palabras configuradas.');
+                setGameState('error');
+            }
+        } catch (e) {
+            setLoadError('No se pudo cargar la actividad. Intenta de nuevo.');
+            setGameState('error');
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-    }
-
-    function loadMockData() {
-        const cfgs = [
-            { showText: true, showImage: false, playAudio: false, isMazahua: false },
-            { showText: true, showImage: false, playAudio: false, isMazahua: false },
-        ];
-        const { pile: p, board: b } = buildGameData(ALL_WORDS, cfgs);
-        setPile(p); setBoard(b);
-        setActivityTitle('¡Lotería!');
-        setActivityXP(100);
-        setStartDate(new Date().toISOString());
-        setGameState('playing');
     }
 
     function loadFromApiData(data) {
-        // Combinar palabras del API con el pool completo para tener cartas "decoy" en la pila
-        const apiWords = data.words || [];
-        // Crear pool extendido mezclando palabras del API con mock si son pocas
-        const pool = apiWords.length >= 9 ? apiWords : [
-            ...apiWords,
-            ...ALL_WORDS.filter(w => !apiWords.find(aw => aw.id === w.id)).slice(0, 15 - apiWords.length)
-        ];
-        const { pile: p, board: b } = buildGameData(pool, data.gameConfigs || []);
+        // buildGameData ya soporta menos de 9 palabras: la tabla usa las que haya
+        const { pile: p, board: b } = buildGameData(data.words, data.gameConfigs || []);
         setPile(p); setBoard(b);
         setActivityTitle(data.title || '¡Lotería!');
         setActivityXP(data.experience || 100);

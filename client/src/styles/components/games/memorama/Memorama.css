@@ -18,8 +18,10 @@
     width: 100%;
     max-width: 620px;
     padding: 16px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 28px;
+    border: 4px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05);
     backdrop-filter: blur(4px);
     margin-bottom: 1.2rem;
 }
@@ -43,7 +45,7 @@
     .mem-board {
         gap: 8px;
         padding: 10px;
-        border-radius: 16px;
+        border-radius: 20px;
         margin-bottom: 0.75rem;
     }
 
@@ -78,8 +80,8 @@
     position: absolute;
     inset: 0;
     transform-style: preserve-3d;
-    transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 14px;
+    transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 20px;
 }
 
 .mem-card.flipped .mem-card-inner,
@@ -91,17 +93,19 @@
 .mem-card-front {
     position: absolute;
     inset: 0;
-    background: var(--primary-orange);
-    border-radius: 14px;
+    background-color: #FF9800;
+    border: 4px solid #E65100;
+    border-radius: 20px;
     backface-visibility: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(230, 81, 0, 0.35);
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-    background-size: 18px 18px;
+    box-shadow: 0 6px 0 #C2410C;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px);
+    background-size: 16px 16px;
     pointer-events: auto;
     z-index: 2;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
 
 /* Cuando está volteada: el dorso no captura eventos, el frente sí */
@@ -122,7 +126,7 @@
     position: absolute;
     inset: 0;
     background: transparent;
-    border-radius: 14px;
+    border-radius: 20px;
     backface-visibility: hidden;
     transform: rotateY(180deg);
     display: block;
@@ -135,16 +139,14 @@
     width: 100%;
     height: 100%;
     margin: 0;
-    border-radius: 14px;
+    border-radius: 20px;
 }
 
 /* Cuando está volteada: el contenido captura eventos */
 .mem-card.flipped .mem-card-back,
 .mem-card.matched .mem-card-back {
     pointer-events: auto;
-    /* z-index: 2; */
 }
-
 
 /* Carta incorrecta (shake + rojo brevemente) */
 .mem-card.wrong .mem-card-back {
@@ -172,8 +174,15 @@
 }
 
 /* Hover en cartas no volteadas */
-.mem-card:not(.flipped):not(.matched):hover .mem-card-inner {
-    transform: scale(1.04);
+.mem-card:not(.flipped):not(.matched):hover .mem-card-front {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 0 #C2410C;
+    background-color: #FFA726;
+}
+
+.mem-card:not(.flipped):not(.matched):active .mem-card-front {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #C2410C;
 }
 
 /* ============================================
@@ -340,40 +349,47 @@
     padding: 0.95rem 1rem;
     background: #FFFFFF;
     color: var(--primary-orange);
-    border: 2px solid var(--primary-orange);
-    border-radius: 12px;
+    border: 3px solid var(--primary-orange);
+    border-radius: 16px;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 900;
     cursor: pointer;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
     font-family: 'Poppins', sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
+    box-shadow: 0 4px 0 #C2410C;
 }
 
 .mem-btn-retry:hover {
     background: #FFF7F0;
     transform: translateY(-1px);
+    box-shadow: 0 5px 0 #C2410C;
+}
+
+.mem-btn-retry:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #C2410C;
 }
 
 .mem-btn-continue {
     flex: 1;
     padding: 0.95rem 1rem;
-    background: var(--primary-orange);
+    background-color: #10B981;
     color: #FFFFFF;
-    border: none;
-    border-radius: 12px;
+    border: 3px solid #059669;
+    border-radius: 16px;
     font-size: 13px;
-    font-weight: 700;
+    font-weight: 900;
     cursor: pointer;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    box-shadow: 0 4px 16px rgba(230, 81, 0, 0.3);
-    transition: all 0.2s;
+    box-shadow: 0 4px 0 #047857;
+    transition: all 0.15s ease;
     font-family: 'Poppins', sans-serif;
     display: flex;
     align-items: center;
@@ -382,8 +398,14 @@
 }
 
 .mem-btn-continue:hover {
-    background: #BF360C;
+    background-color: #34d399;
     transform: translateY(-1px);
+    box-shadow: 0 5px 0 #047857;
+}
+
+.mem-btn-continue:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #047857;
 }
 
 /* ============================================

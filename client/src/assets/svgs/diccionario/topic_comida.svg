@@ -1,19 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <circle cx="32" cy="32" r="30" fill="#FFF3E0" />
-  
-  <!-- Vapor (Atrás) -->
-  <path d="M22,25 Q20,15 25,10" fill="none" stroke="#FFB74D" stroke-width="2" stroke-linecap="round" />
-  <path d="M32,22 Q30,12 35,8" fill="none" stroke="#FFB74D" stroke-width="2" stroke-linecap="round" />
-  <path d="M42,25 Q40,15 45,10" fill="none" stroke="#FFB74D" stroke-width="2" stroke-linecap="round" />
+  <defs>
+    <!-- Gradiente de fondo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF3C7" />
+      <stop offset="100%" stop-color="#FDE68A" />
+    </linearGradient>
+    <!-- Gradiente de la cazuela/plato -->
+    <linearGradient id="plateGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EA580C" />
+      <stop offset="100%" stop-color="#9A3412" />
+    </linearGradient>
+    <!-- Gradiente del maíz/taco -->
+    <linearGradient id="tacoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+  </defs>
 
-  <!-- Cuchara de madera -->
-  <path d="M48,15 L35,30" fill="none" stroke="#8D6E63" stroke-width="3" stroke-linecap="round" />
-  <ellipse cx="49" cy="14" rx="4" ry="6" fill="#8D6E63" transform="rotate(45 49 14)" />
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGrad)" />
 
-  <!-- Plato hondo -->
-  <path d="M10,32 L54,32 C54,45 45,52 32,52 C19,52 10,45 10,32 Z" fill="#E65100" />
-  <ellipse cx="32" cy="32" rx="22" ry="4" fill="#FFB74D" />
-  
-  <!-- Detalle del plato (Patrón simple) -->
-  <path d="M15,40 Q32,50 49,40" fill="none" stroke="#FFFFFF" stroke-width="2" opacity="0.4" />
+  <!-- Cazuela tradicional de barro de perfil -->
+  <g transform="translate(32, 34)" filter="drop-shadow(0px 3px 2px rgba(154, 52, 18, 0.25))">
+    <!-- Vapor caliente flotando -->
+    <path d="M -8,-20 C -10,-24 -6,-28 -8,-32" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+    <path d="M 0,-18 C -2,-22 2,-26 0,-30" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+    <path d="M 8,-20 C 6,-24 10,-28 8,-32" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" opacity="0.6" />
+
+    <!-- Contenido (sopa/comida caliente) -->
+    <ellipse cx="0" cy="-6" rx="16" ry="6" fill="#F97316" />
+
+    <!-- Cuerpo de la cazuela -->
+    <path d="M -18,-6 C -18,-6 -18,12 0,12 C 18,12 18,-6 18,-6" fill="url(#plateGrad)" />
+    <!-- Borde superior de la cazuela -->
+    <ellipse cx="0" cy="-6" rx="18" ry="4" fill="#C2410C" />
+    <!-- Detalle decorativo de la cazuela (greca blanca tradicional) -->
+    <path d="M -14,2 L -10,0 L -6,2 L -2,0 L 2,2 L 6,0 L 10,2 L 14,0" fill="none" stroke="#FFFBEB" stroke-width="1.2" stroke-linecap="round" opacity="0.8" />
+
+    <!-- Asas de la cazuela -->
+    <path d="M -18,-4 C -22,-4 -22,2 -18,2" fill="none" stroke="#9A3412" stroke-width="2" />
+    <path d="M 18,-4 C 22,-4 22,2 18,2" fill="none" stroke="#9A3412" stroke-width="2" />
+  </g>
 </svg>

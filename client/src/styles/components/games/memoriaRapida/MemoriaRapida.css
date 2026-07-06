@@ -2,32 +2,29 @@
 /* Estilos específicos de Memoria Rápida — juego de deslizar tarjetas */
 /* Variables, container, top-bar, loading/error → GameBase.css */
 
-/* .memoria-rapida-container → .game-container */
-/* .mr-top-bar y hijos → .game-top-bar de GameBase.css */
-
-/* Elementos propios del score y combo de Memoria Rápida */
-
-
+/* ============================================
+   SCORE & COMBO (top bar items)
+   ============================================ */
 .mr-score-area {
     text-align: right;
 }
 
 .mr-score-label {
     font-size: 11px;
-    color: #6b7280;
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600;
 }
 
 .mr-score-value {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 800;
-    color: #1e293b;
+    color: var(--primary-blue);
     line-height: 1;
+    font-variant-numeric: tabular-nums;
 }
 
-/* Combo Badge */
 .mr-combo-badge {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
     color: #78350f;
@@ -40,27 +37,23 @@
 }
 
 @keyframes comboPop {
-    0% {
-        transform: scale(0.7);
-    }
-
-    60% {
-        transform: scale(1.15);
-    }
-
-    100% {
-        transform: scale(1);
-    }
+    0%   { transform: scale(0.7); }
+    60%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
 }
 
-/* Timer Row */
+/* ============================================
+   TIMER — reuses game-progress-row from GameBase
+   with MR-specific coloring
+   ============================================ */
 .mr-timer-row {
     display: flex;
     align-items: center;
     gap: 10px;
     width: 100%;
-    max-width: 420px;
-    margin-bottom: 1rem;
+    max-width: var(--game-max-width);
+    margin-bottom: 0.75rem;
+    flex-shrink: 0;
 }
 
 .mr-timer-dot {
@@ -69,76 +62,72 @@
     border-radius: 50%;
     background: #ef4444;
     animation: timerPulse 1s infinite;
+    flex-shrink: 0;
 }
 
 @keyframes timerPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.3;
-    }
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.3; }
 }
 
 .mr-timer-text {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    color: #374151;
-    min-width: 50px;
+    color: var(--primary-blue);
+    min-width: 42px;
+    font-variant-numeric: tabular-nums;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 4px 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
 }
 
 .mr-timer-bar {
     flex: 1;
-    height: 6px;
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 3px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
     overflow: hidden;
 }
 
 .mr-timer-fill {
     height: 100%;
-    background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e);
-    border-radius: 3px;
+    background: var(--primary-orange);
+    border-radius: 5px;
     transition: width 1s linear;
 }
 
-/* Word Display */
+.mr-timer-fill.timer-low {
+    background: var(--error);
+}
+
+/* ============================================
+   PLAY AREA
+   ============================================ */
+.mr-play-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: var(--game-max-width);
+    min-height: 0;
+}
+
 .mr-word-display {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 1.2rem;
 }
 
-.mr-audio-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
-    transition: transform 0.15s;
-}
-
-.mr-audio-btn:hover {
-    transform: scale(1.1);
-}
-
-.mr-word-text {
-    font-size: 32px;
-    font-weight: 800;
-    color: #1e293b;
-    letter-spacing: -0.02em;
+/* Carta de referencia (arriba en móvil, izquierda en escritorio) */
+.mr-top-card {
+    width: 160px;
 }
 
 /* ============================================
@@ -146,9 +135,8 @@
    ============================================ */
 .mr-card-area {
     position: relative;
-    width: 320px;
-    height: 340px;
-    margin-bottom: 1.5rem;
+    width: 260px;
+    height: 280px;
 }
 
 .mr-swipe-card {
@@ -156,7 +144,7 @@
     width: 100%;
     height: 100%;
     background: white;
-    border-radius: 24px;
+    border-radius: 20px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
     overflow: hidden;
     cursor: grab;
@@ -173,7 +161,7 @@
 }
 
 .mr-swipe-card.swiping-right {
-    box-shadow: 0 8px 30px rgba(34, 197, 94, 0.35);
+    box-shadow: 0 8px 30px rgba(16, 185, 129, 0.35);
 }
 
 .mr-swipe-card.swiping-left {
@@ -183,41 +171,29 @@
 /* Overlay de feedback al deslizar */
 .mr-swipe-overlay {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 24px;
+    border-radius: 20px;
     pointer-events: none;
     z-index: 5;
-    transition: opacity 0.1s;
+    transition: opacity 0.15s;
 }
 
 .mr-swipe-overlay.correct {
-    background: rgba(34, 197, 94, 0.15);
-    border: 3px solid #22c55e;
+    background: rgba(16, 185, 129, 0.15);
+    border: 3px solid var(--success);
 }
 
 .mr-swipe-overlay.incorrect {
     background: rgba(239, 68, 68, 0.15);
-    border: 3px solid #ef4444;
+    border: 3px solid var(--error);
 }
 
 .mr-overlay-icon {
     font-size: 48px;
     font-weight: bold;
-}
-
-/* Imagen dentro de la tarjeta */
-.mr-card-image {
-    width: 85%;
-    height: 85%;
-    object-fit: cover;
-    border-radius: 16px;
-    pointer-events: none;
 }
 
 /* Animación de salida */
@@ -253,30 +229,41 @@
         transform: scale(0.85);
         opacity: 0;
     }
-
     to {
         transform: scale(1);
         opacity: 1;
     }
 }
 
-/* Botones Correcto / Incorrecto */
+/* ============================================
+   ACTION BUTTONS — Correcto / Incorrecto
+   ============================================ */
 .mr-action-buttons {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4rem;
-    margin-bottom: 1rem;
+    gap: 3.5rem;
+    padding: 0.5rem 0;
+    flex-shrink: 0;
+}
+
+.mr-btn-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .mr-btn-incorrect,
 .mr-btn-correct {
-    width: 64px;
-    height: 64px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     border: 3px solid;
-    background: white;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     font-size: 24px;
+    font-weight: 700;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -286,8 +273,8 @@
 }
 
 .mr-btn-incorrect {
-    border-color: #ef4444;
-    color: #ef4444;
+    border-color: var(--error);
+    color: var(--error);
 }
 
 .mr-btn-incorrect:hover {
@@ -297,14 +284,14 @@
 }
 
 .mr-btn-correct {
-    border-color: #22c55e;
-    color: #22c55e;
+    border-color: var(--success);
+    color: var(--success);
 }
 
 .mr-btn-correct:hover {
-    background: #f0fdf4;
+    background: #ecfdf5;
     transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.25);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
 }
 
 .mr-btn-label {
@@ -317,23 +304,29 @@
 }
 
 .mr-btn-label.incorrect {
-    color: #ef4444;
+    color: var(--error);
 }
 
 .mr-btn-label.correct {
-    color: #22c55e;
+    color: var(--success);
 }
 
-/* Mode label */
+/* ============================================
+   MODE LABEL
+   ============================================ */
 .mr-mode-label {
     font-size: 11px;
     color: #9ca3af;
     text-transform: uppercase;
     letter-spacing: 0.12em;
     font-weight: 700;
+    flex-shrink: 0;
+    padding-bottom: 0.25rem;
 }
 
-/* Feedback flash */
+/* ============================================
+   FEEDBACK FLASH
+   ============================================ */
 .mr-feedback-flash {
     position: fixed;
     top: 50%;
@@ -346,373 +339,182 @@
 }
 
 @keyframes feedbackFlash {
-    0% {
-        transform: translate(-50%, -50%) scale(0.5);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translate(-50%, -50%) scale(1.5);
-        opacity: 0;
-    }
+    0%   { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
 }
 
-/* Speed indicator */
+/* ============================================
+   SPEED INDICATOR
+   ============================================ */
 .mr-speed-indicator {
     position: absolute;
     top: 8px;
     right: 8px;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(30, 58, 138, 0.7);
     color: white;
     font-size: 10px;
     font-weight: 700;
     padding: 3px 8px;
     border-radius: 8px;
     z-index: 3;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
-
-
-/* .game-error-container, .game-loading-container, .spinner, @keyframes spin → GameBase.css */
 
 /* ============================================
-   RESULTADO DEL JUEGO → Usa componente GameSummary
-   (GameSummary.css tiene todos sus propios estilos)
+   COUNTDOWN SCREEN
    ============================================ */
-
-
-
-/* ============================================
-   RESULTADO DEL JUEGO
-   ============================================ */
-.resultado-juego-container {
-    background: linear-gradient(180deg, #b8f0d5 0%, #e8f5c8 40%, #fef9c3 100%);
-    min-height: 100vh;
-    padding: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.resultado-content {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    max-width: 500px;
-    width: 100%;
-    padding: 2rem;
-    animation: slideUp 0.5s ease-out;
-}
-
-@keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.resultado-header {
+.mr-countdown {
     text-align: center;
-    margin-bottom: 2rem;
 }
 
-.resultado-header h1 {
-    color: var(--primary-blue);
-    font-family: 'Poppins', sans-serif;
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-}
-
-.activity-name {
-    color: var(--primary-orange);
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-/* Calificación */
-.rating-section {
-    text-align: center;
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: #F0F9FF;
-    border-radius: 12px;
-}
-
-.stars-display {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-}
-
-.stars {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-    font-size: 32px;
-}
-
-.star {
-    opacity: 0.3;
-    transition: opacity 0.3s ease;
-}
-
-.star.filled {
-    opacity: 1;
-    animation: starPop 0.4s ease;
-}
-
-@keyframes starPop {
-    0% {
-        transform: scale(0.5);
-    }
-
-    50% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-.star-message {
-    color: var(--primary-blue);
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-/* Estadísticas */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-}
-
-.stat-card {
-    background: #F3F4F6;
-    padding: 1.25rem;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    border-left: 4px solid var(--primary-orange);
-}
-
-.stat-icon {
-    font-size: 28px;
-}
-
-.stat-content {
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-label {
+.mr-countdown__subtitle {
+    font-size: 15px;
     color: var(--text-secondary);
-    font-family: 'PublicSans', sans-serif;
-    font-size: 11px;
-    text-transform: uppercase;
-    margin-bottom: 0.25rem;
-}
-
-.stat-value {
-    color: var(--primary-blue);
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: bold;
-}
-
-/* Desglose de Puntuación */
-.scoring-breakdown {
-    background: #F9FAFB;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-}
-
-.scoring-breakdown h3 {
-    color: var(--primary-blue);
-    font-family: 'Poppins', sans-serif;
-    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.breakdown-item {
     margin-bottom: 1.5rem;
 }
 
-.breakdown-label {
-    display: block;
+.mr-countdown__circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    animation: comboPop 0.5s ease;
+}
+
+.mr-countdown__number {
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--primary-blue);
+}
+
+.mr-countdown__ready {
+    font-size: 18px;
+    font-weight: 700;
     color: var(--text-primary);
-    font-family: 'PublicSans', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.mr-countdown__hint {
     font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
+    color: #9ca3af;
 }
 
-.breakdown-bar {
-    height: 8px;
-    background-color: #E5E7EB;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 0.25rem;
+/* ============================================
+   PAUSED SCREEN
+   ============================================ */
+.mr-paused {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    max-width: 360px;
+    width: 100%;
 }
 
-.breakdown-fill {
-    height: 100%;
-    transition: width 0.5s ease;
-}
-
-.breakdown-fill.success {
-    background-color: var(--success);
-}
-
-.breakdown-fill.warning {
-    background-color: var(--warning);
-}
-
-.breakdown-fill.info {
-    background-color: var(--info);
-}
-
-.breakdown-value {
+.mr-paused__icon {
+    font-size: 48px;
     display: block;
-    text-align: right;
-    color: var(--text-secondary);
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.breakdown-total {
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-    background: white;
-    border-radius: 8px;
-    border: 2px solid var(--primary-orange);
-}
-
-.breakdown-score {
-    color: var(--primary-orange);
-    font-family: 'Poppins', sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-/* Experiencia */
-.xp-section {
-    background: linear-gradient(135deg, #FFF9C4, #FFE082);
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    border-left: 4px solid var(--primary-orange);
-}
-
-.xp-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
     margin-bottom: 1rem;
 }
 
-.xp-recommended,
-.xp-earned {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-}
-
-.xp-arrow {
-    color: var(--primary-orange);
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.xp-value.highlight {
-    color: var(--success);
-    font-size: 28px;
-}
-
-/* Retroalimentación */
-.feedback-section {
-    background: #F0F9FF;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-}
-
-.feedback-section h3 {
+.mr-paused__title {
+    font-size: 22px;
+    font-weight: 800;
     color: var(--primary-blue);
-    font-family: 'Poppins', sans-serif;
+    margin-bottom: 0.5rem;
+}
+
+.mr-paused__score {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+    font-size: 14px;
+}
+
+.mr-paused__btn-continue {
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 2rem;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
     margin-bottom: 0.75rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-.feedback-section p {
-    color: var(--text-primary);
-    font-family: 'PublicSans', sans-serif;
+.mr-paused__btn-continue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.mr-paused__btn-exit {
+    background: transparent;
+    color: var(--error);
+    border: 2px solid var(--error);
+    border-radius: 14px;
+    padding: 12px 2rem;
     font-size: 14px;
-    line-height: 1.5;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.15s;
 }
 
-/* Botones de Acción */
-.action-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-.action-buttons .btn {
-    flex: 1;
-}
-
-/* Guardado */
-.save-info {
-    text-align: center;
-    padding: 1rem;
-    background: #DCFCE7;
-    border-radius: 8px;
-}
-
-.save-info p {
-    color: #15803D;
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-}
-
-.save-info small {
-    color: #6B7280;
-    font-size: 12px;
+.mr-paused__btn-exit:hover {
+    background: #fef2f2;
 }
 
 /* ============================================
    RESPONSIVE
    ============================================ */
-@media (max-width: 480px) {
-    .mr-card-area {
-        width: 280px;
-        height: 300px;
+@media (min-width: 900px) {
+    .mr-play-area {
+        flex-direction: row;
+        justify-content: center;
+        gap: 3rem;
     }
 
-    .mr-word-text {
-        font-size: 26px;
+    .mr-top-card {
+        width: 220px;
+    }
+
+    .mr-card-area {
+        width: 320px;
+        height: 340px;
+    }
+
+    .mr-timer-row {
+        max-width: 720px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mr-card-area {
+        width: 240px;
+        height: 260px;
+    }
+
+    .mr-top-card {
+        width: 140px;
     }
 
     .mr-score-value {
-        font-size: 22px;
+        font-size: 20px;
     }
 
     .mr-action-buttons {
@@ -721,8 +523,8 @@
 
     .mr-btn-incorrect,
     .mr-btn-correct {
-        width: 56px;
-        height: 56px;
+        width: 52px;
+        height: 52px;
         font-size: 20px;
     }
 }

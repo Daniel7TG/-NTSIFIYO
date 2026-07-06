@@ -9,8 +9,8 @@
     width: 100%;
     flex: 1;
     min-height: 0;
-    padding: 6px;
-    gap: 8px;
+    padding: 4px;
+    gap: 6px;
     overflow: hidden;
     box-sizing: border-box;
 }
@@ -21,17 +21,20 @@
    Sin paneles laterales, el cálculo es mucho más simple.
    ============================================================ */
 .laberinto-board-container {
-    --board-size: min(calc(100vw - 24px), calc(100dvh - 310px));
+    --board-size: min(calc(100vw - 16px), calc(100dvh - 260px));
     width: var(--board-size);
     height: var(--board-size);
-    max-width: 600px;
-    max-height: 600px;
+    max-width: 800px;
+    max-height: 800px;
     flex-shrink: 0;
     position: relative;
     background-color: #f8fafc;
     border-radius: 8px;
     box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
     overflow: hidden;
+    /* Padding prevents the outermost cell borders (maze walls)
+       from being clipped by overflow:hidden on the container */
+    padding: 2px;
 }
 
 .laberinto-cell {
@@ -49,7 +52,7 @@
    ============================================================ */
 .laberinto-inline-card {
     position: absolute;
-    inset: 2px;
+    inset: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,6 +67,11 @@
 .laberinto-inline-card .game-card {
     width: 100%;
     height: 100%;
+    min-height: 0;
+    aspect-ratio: unset;
+    border-width: 2px;
+    border-radius: 6px;
+    box-shadow: none;
 }
 
 .laberinto-entrance {
@@ -200,6 +208,31 @@
 }
 
 /* ============================================================
+   RESPONSIVE — pantallas anchas (laptop HD y FullHD)
+   El D-pad pasa al costado del tablero para que el laberinto
+   aproveche la altura completa del viewport
+   ============================================================ */
+@media (min-width: 900px) {
+    .laberinto-main {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 32px;
+    }
+
+    .laberinto-board-container {
+        --board-size: min(calc(100dvh - 160px), calc(100vw - 340px));
+        max-width: 640px;
+        max-height: 640px;
+    }
+
+    .laberinto-controls-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+/* ============================================================
    RESPONSIVE — ≤ 480px
    ============================================================ */
 @media (max-width: 480px) {
@@ -209,7 +242,7 @@
     }
 
     .laberinto-board-container {
-        --board-size: min(calc(100vw - 16px), calc(100dvh - 290px));
+        --board-size: min(calc(100vw - 12px), calc(100dvh - 250px));
     }
 
     .laberinto-dpad {
@@ -237,7 +270,7 @@
    ============================================================ */
 @media (max-width: 360px) {
     .laberinto-board-container {
-        --board-size: min(calc(100vw - 12px), calc(100dvh - 270px));
+        --board-size: min(calc(100vw - 8px), calc(100dvh - 230px));
     }
 
     .laberinto-dpad {

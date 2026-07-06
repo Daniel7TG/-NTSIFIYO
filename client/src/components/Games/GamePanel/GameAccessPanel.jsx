@@ -5,15 +5,17 @@ import ActivityApiService from '../../../services/ActivityApiService';
 import { useAuth } from '../../../context/AuthContext';
 import { useGame } from '../../../context/GameContext';
 import Roles from '../../../utils/roles';
-import '../../../styles/components/games/gamePanel/GameAccessPanel.css';
+import ActivityCard from './ActivityCard';
+import LoadingState from '../../common/LoadingState';
+import { darken } from '../../../utils/colorUtils';
 
 function GameAccessPanel({
     gameType,
-    icon,
     title,
     subtitle,
     gameBasePath,
     cardIcon,
+    color = '#E65100',
     tipTeacher = "Crea actividades personalizadas y tus alumnos podrán jugarlas",
     tipStudent = "Juega rápido y acumula puntos para subir de nivel"
 }) {
@@ -121,135 +123,111 @@ function GameAccessPanel({
         navigate(`${gameBasePath}/editar/${activityId}`);
     }
 
-    function getDifficultyColor(difficulty) {
-        const colors = { 'EASY': '#22c55e', 'MEDIUM': '#f59e0b', 'HARD': '#ef4444' };
-        return colors[difficulty] || '#6b7280';
-    }
-
-    function getDifficultyLabel(difficulty) {
-        const labels = { 'EASY': '🟢 Fácil', 'MEDIUM': '🟡 Medio', 'HARD': '🔴 Difícil' };
-        return labels[difficulty] || difficulty;
-    }
-
     return (
-        <div className="game-access-panel" style={{ position: 'relative' }}>
+        <div className="relative animate-fade-in-up">
             {/* Encabezado */}
-            <div className="gap-header">
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                    <span style={{ fontSize: '20px', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))' }}>{icon}</span>
+            <div className="flex items-center gap-4 mb-8">
+                <div
+                    className="w-16 h-16 rounded-3xl flex items-center justify-center shrink-0 border-2 border-slate-100 overflow-hidden p-2"
+                    style={{ backgroundColor: color + '15' }}
+                >
+                    {cardIcon}
                 </div>
-                <h1>{title}</h1>
-                <p>{subtitle}</p>
+                <div className="min-w-0">
+                    <h1 className="text-3xl font-black leading-tight" style={{ color }}>{title}</h1>
+                    <p className="text-gray-500 font-bold mt-0.5">{subtitle}</p>
+                </div>
             </div>
 
-            {/* Botón de crear (solo para maestros) */}
+            {/* Sección de crear (solo para maestros) */}
             {userRole === 'teacher' && (
-                <div className="gap-teacher-section">
-                    <div style={{
-                        width: '80px', height: '80px', borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        margin: '0 auto 16px', fontSize: '36px', border: '3px solid #fed7aa'
-                    }}>✨</div>
-                    <h2>Crear Nueva Actividad</h2>
-                    <p>Diseña actividades personalizadas de {title} para tus alumnos.</p>
+                <div
+                    className="kid-card-dynamic p-6 mb-8 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left"
+                    style={{ '--card-color': color, '--card-shadow': darken(color, 0.2) }}
+                >
+                    <div
+                        className="w-16 h-16 rounded-full flex items-center justify-center text-3xl shrink-0 border-2 border-slate-100"
+                        style={{ backgroundColor: color + '15' }}
+                    >✨</div>
+                    <div className="flex-1">
+                        <h2 className="font-black text-gray-800 text-lg">Crear Nueva Actividad</h2>
+                        <p className="text-sm text-gray-500 font-medium">Diseña actividades personalizadas de {title} para tus alumnos.</p>
+                    </div>
                     <button
-                        className="gap-btn gap-btn-primary"
                         onClick={handleCreateActivity}
-                        style={{ maxWidth: '300px', margin: '0 auto' }}
+                        className="px-6 py-3 flex items-center justify-center gap-2 text-white font-black rounded-2xl border-2 whitespace-nowrap transition-all hover:-translate-y-0.5 active:translate-y-0.5"
+                        style={{ backgroundColor: color, borderColor: darken(color, 0.15), boxShadow: `0 4px 0 ${darken(color, 0.32)}` }}
                     >
-                        🚀 Abrir Editor de Actividades
+                        <span className="material-symbols-outlined text-lg">add_circle</span>
+                        Abrir Editor
                     </button>
                 </div>
             )}
 
             {/* Actividades disponibles */}
-            <div className="gap-role-content">
-                <div>
-                    <h2 className="gap-section-title">🎮 Actividades Disponibles</h2>
-                    {loading ? (
-                        <div className="gap-loading">
-                            <div className="gap-spinner" />
-                            <p>Cargando actividades...</p>
-                        </div>
-                    ) : activities.length === 0 ? (
-                        <div className="gap-no-activities">
-                            <span style={{ fontSize: '64px', display: 'block', marginBottom: '16px' }}>🎒</span>
-                            <p style={{ fontSize: '18px', color: '#374151', marginBottom: '8px' }}>No hay actividades disponibles</p>
-                            <p>Pide a tu maestro que cree una actividad para ti</p>
-                        </div>
-                    ) : (
-                        <>
-                            <div className="gap-activities-grid">
-                                {activities.map((activity) => (
-                                    <div key={activity.id} className="gap-activity-card" style={{ position: 'relative' }}>
-                                        {/* Botones editar (solo maestro) */}
-                                        {userRole === 'teacher' && (
-                                            <div className="gap-teacher-actions">
-                                                <button
-                                                    className="gap-btn-edit"
-                                                    onClick={(e) => { e.stopPropagation(); handleEditActivity(activity.id); }}
-                                                    title="Editar"
-                                                >✏️</button>
-                                            </div>
-                                        )}
-                                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                                            <div className="gap-card-icon">{cardIcon}</div>
-                                            <div>
-                                                <h3 style={{ paddingRight: userRole === 'teacher' ? '80px' : '0' }}>{activity.title}</h3>
-                                                <span style={{
-                                                    display: 'inline-block', padding: '2px 8px', borderRadius: '12px',
-                                                    fontSize: '11px', fontWeight: '600',
-                                                    background: getDifficultyColor(activity.difficult) + '20',
-                                                    color: getDifficultyColor(activity.difficult), marginTop: '4px'
-                                                }}>
-                                                    {getDifficultyLabel(activity.difficult)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <p className="gap-card-description">{activity.description}</p>
-                                        <div className="gap-card-stats">
-                                            <span>{'⭐ ' + (activity.experience || 0) + ' XP'}</span>
-                                            <span>{'🎯 ' + (activity.totalQuestions || 0) + ' items'}</span>
-                                            {activity.teacherDTO && (
-                                                <span>👤 {activity.teacherDTO.firstName}</span>
-                                            )}
-                                        </div>
-                                        <button
-                                            className="gap-btn gap-btn-play"
-                                            onClick={() => handlePlayGame(activity.id)}
-                                            disabled={startingGame}
-                                        >
-                                            {startingGame ? 'Cargando...' : '▶️ ¡Jugar Ahora!'}
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+            <h2 className="text-xl font-black text-gray-800 mb-5 flex items-center gap-2">
+                <span className="material-symbols-outlined" style={{ color }}>sports_esports</span>
+                Actividades Disponibles
+            </h2>
 
-                            {/* Paginación */}
-                            {pageData.totalPages > 1 && (
-                                <div className="gap-pagination">
-                                    <button
-                                        onClick={() => loadActivities(pageData.number - 1)}
-                                        disabled={pageData.first}
-                                    >Anterior</button>
-                                    <span>Página {pageData.number + 1} de {pageData.totalPages}</span>
-                                    <button
-                                        onClick={() => loadActivities(pageData.number + 1)}
-                                        disabled={pageData.last}
-                                    >Siguiente</button>
-                                </div>
-                            )}
-                        </>
-                    )}
+            {loading ? (
+                <LoadingState message="Cargando actividades..." />
+            ) : activities.length === 0 ? (
+                <div className="kid-card p-12 text-center flex flex-col items-center justify-center">
+                    <span className="text-6xl block mb-4">🎒</span>
+                    <h3 className="text-xl font-black text-gray-800 mb-1">No hay actividades disponibles</h3>
+                    <p className="text-gray-500 font-medium">
+                        {userRole === 'teacher'
+                            ? 'Crea una actividad para que tus alumnos la jueguen.'
+                            : 'Pide a tu maestro que cree una actividad para ti.'}
+                    </p>
                 </div>
-            </div>
+            ) : (
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {activities.map((activity) => (
+                            <ActivityCard
+                                key={activity.id}
+                                activity={activity}
+                                userRole={userRole}
+                                cardIcon={cardIcon}
+                                color={color}
+                                disabled={startingGame}
+                                onEdit={userRole === 'teacher' ? handleEditActivity : undefined}
+                                onPlay={handlePlayGame}
+                            />
+                        ))}
+                    </div>
+
+                    {/* Paginación */}
+                    {pageData.totalPages > 1 && (
+                        <div className="flex justify-center items-center gap-4 mt-10 p-4">
+                            <button
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${pageData.first ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-primary border border-primary/30 hover:bg-primary/5 shadow-sm'}`}
+                                onClick={() => loadActivities(pageData.number - 1)}
+                                disabled={pageData.first}
+                            >
+                                Anterior
+                            </button>
+                            <span className="text-gray-600 font-medium bg-white px-4 py-2 rounded-lg shadow-sm">
+                                Página {pageData.number + 1} de {pageData.totalPages}
+                            </span>
+                            <button
+                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${pageData.last ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-primary border border-primary/30 hover:bg-primary/5 shadow-sm'}`}
+                                onClick={() => loadActivities(pageData.number + 1)}
+                                disabled={pageData.last}
+                            >
+                                Siguiente
+                            </button>
+                        </div>
+                    )}
+                </>
+            )}
 
             {/* Footer */}
-            <div className="gap-footer">
-                <small>
-                    💡 Tip: {userRole === 'teacher' ? tipTeacher : tipStudent}
-                </small>
+            <div className="mt-10 flex items-center justify-center gap-2 text-sm text-gray-500 font-medium">
+                <span className="material-symbols-outlined text-lg" style={{ color }}>lightbulb</span>
+                Tip: {userRole === 'teacher' ? tipTeacher : tipStudent}
             </div>
         </div>
     );

@@ -1,17 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <circle cx="32" cy="32" r="30" fill="#EFF6FF" />
-  
-  <!-- Gancho centrado -->
-  <path d="M32,15 C35,15 37,12 35,8 C33,4 28,10 32,15 Z" fill="none" stroke="#94A3B8" stroke-width="2" />
-  <path d="M32,15 L32,20" fill="none" stroke="#94A3B8" stroke-width="2" />
+  <defs>
+    <!-- Gradiente de fondo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E0E7FF" />
+      <stop offset="100%" stop-color="#C7D2FE" />
+    </linearGradient>
+    <!-- Gradiente de la prenda (Falda/Saco) -->
+    <linearGradient id="clothesGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#312E81" />
+    </linearGradient>
+    <!-- Gradiente del bordado/faja -->
+    <linearGradient id="embroideryGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#EC4899" />
+      <stop offset="100%" stop-color="#F43F5E" />
+    </linearGradient>
+  </defs>
 
-  <!-- Prenda ancha -->
-  <path d="M20,20 L44,20 L55,30 L50,35 L44,30 L44,52 L20,52 L20,30 L14,35 L9,30 Z" fill="#1E3A8A" />
-  
-  <!-- Cuello -->
-  <path d="M26,20 C26,25 38,25 38,20" fill="none" stroke="#EFF6FF" stroke-width="2" />
-  
-  <!-- Patrón decorativo -->
-  <line x1="20" y1="45" x2="44" y2="45" stroke="#38BDF8" stroke-width="2" />
-  <path d="M20,40 L24,37 L28,40 L32,37 L36,40 L40,37 L44,40" fill="none" stroke="#FFB74D" stroke-width="2" stroke-linejoin="round" />
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGrad)" />
+
+  <!-- Prenda tradicional: Quexquemetl o Blusa bordada Mazahua -->
+  <g transform="translate(32, 32)" filter="drop-shadow(0px 3px 2px rgba(49, 46, 129, 0.2))">
+    <!-- Silueta de blusa/quexquemetl -->
+    <path d="M -16,-12 L -6,-16 L 0,-10 L 6,-16 L 16,-12 L 20,8 L -20,8 Z" fill="url(#clothesGrad)" />
+    
+    <!-- Cuello bordado en pico (V-Neck) -->
+    <path d="M -6,-16 L 0,-6 L 6,-16" fill="none" stroke="url(#embroideryGrad)" stroke-width="2.5" stroke-linecap="round" />
+    
+    <!-- Faja bordada tradicional en la cintura -->
+    <rect x="-20" y="2" width="40" height="6" fill="url(#embroideryGrad)" />
+    <!-- Líneas cruzadas simulando telar de cintura en la faja -->
+    <path d="M -18,2 L -18,8 M -14,2 L -14,8 M -10,2 L -10,8 M -6,2 L -6,8 M -2,2 L -2,8 M 2,2 L 2,8 M 6,2 L 6,8 M 10,2 L 10,8 M 14,2 L 14,8 M 18,2 L 18,8" stroke="#FFFFFF" stroke-width="0.8" opacity="0.8" />
+    
+    <!-- Bordado de florecita en el pecho -->
+    <circle cx="0" cy="0" r="2.5" fill="#FBBF24" />
+    <circle cx="-4" cy="0" r="1.5" fill="#FFFFFF" />
+    <circle cx="4" cy="0" r="1.5" fill="#FFFFFF" />
+    <circle cx="0" cy="-4" r="1.5" fill="#FFFFFF" />
+  </g>
 </svg>

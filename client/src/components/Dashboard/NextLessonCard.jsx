@@ -9,7 +9,7 @@ const NextLessonCard = ({ pendingActivities }) => {
 
     if (!pendingActivities || pendingActivities.length === 0) {
         return (
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm text-center py-10">
+            <div className="kid-card-green p-6 text-center py-10">
                 <div className="w-16 h-16 rounded-full bg-green-100 text-green-500 flex items-center justify-center mx-auto mb-4">
                     <span className="material-symbols-outlined text-3xl">task_alt</span>
                 </div>
@@ -24,7 +24,7 @@ const NextLessonCard = ({ pendingActivities }) => {
     const isMemory = nextGame.gameType === ActivityTypes.fastMemory?.value || nextGame.gameType === ActivityTypes.memoryGame?.value;
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div className="kid-card-green p-6">
             <div className="flex flex-col md:flex-row gap-6">
                 {/* Lesson Image Placeholder */}
                 <div className="relative w-full md:w-48 h-40 md:h-auto flex-shrink-0 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
@@ -57,7 +57,7 @@ const NextLessonCard = ({ pendingActivities }) => {
                         {/* Resume Button */}
                         <Link
                             to={`/games/${isMemory ? 'memorama' : 'quiz'}/jugar/${nextGame.gameId}`}
-                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white font-semibold rounded-full hover:bg-primary-dark transition-colors shadow-sm"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF9800] border-2 border-[#E65100] text-white font-bold rounded-2xl shadow-[0_4px_0_#C2410C] hover:shadow-[0_6px_0_#C2410C] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_1px_0_#C2410C] transition-all duration-150"
                         >
                             <span>Comenzar</span>
                             <span className="material-symbols-outlined text-lg">arrow_forward</span>

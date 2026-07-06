@@ -8,8 +8,14 @@ import IconIntruder from '../assets/svgs/juegos/intruso_premium.svg';
 import IconMemory from '../assets/svgs/juegos/memorama_premium.svg';
 import IconLottery from '../assets/svgs/juegos/loteria_premium.svg';
 import IconMaze from '../assets/svgs/juegos/laberinto_premium.svg';
-import IconFindWord from '../assets/svgs/juegos/buscar_premium.svg';
+import IconFindWord from '../assets/svgs/juegos/sopa_letras_premium.svg';
 import IconPairs from '../assets/svgs/juegos/pares_premium.svg';
+import IconTripas from '../assets/svgs/juegos/tripas_premium.svg';
+import IconFillBlank from '../assets/svgs/juegos/completar_oracion_premium.svg';
+import IconCanciones from '../assets/svgs/diccionario/topic_canciones.svg';
+import IconAnecdotas from '../assets/svgs/diccionario/topic_anecdotas.svg';
+import IconLeyendas from '../assets/svgs/diccionario/topic_leyendas.svg';
+import IconPoemas from '../assets/svgs/diccionario/topic_poemas.svg';
 
 // Custom icon renderer
 const renderIcon = (src, alt) => <img src={src} alt={alt} className="w-full h-full object-contain drop-shadow-sm" style={{ maxWidth: '100%', maxHeight: '100%' }} />;
@@ -187,7 +193,7 @@ export const ACTIVITY_CONFIG = {
         label: 'Canción',
         subtitle: 'Actividad con canción',
         description: 'Disfruta y aprende con esta actividad musical en mazahua.',
-        icon: '🎵',
+        icon: renderIcon(IconCanciones, 'Canción'),
         materialIcon: 'music_note',
         basePath: '/games/cancion',
         color: '#db2777',
@@ -204,7 +210,7 @@ export const ACTIVITY_CONFIG = {
         label: 'Anécdota',
         subtitle: 'Actividad con anécdota',
         description: 'Aprende del contexto y la historia mediante anécdotas.',
-        icon: '📖',
+        icon: renderIcon(IconAnecdotas, 'Anécdota'),
         materialIcon: 'menu_book',
         basePath: '/games/anecdota',
         color: '#059669',
@@ -221,7 +227,7 @@ export const ACTIVITY_CONFIG = {
         label: 'Leyenda',
         subtitle: 'Actividad con leyenda',
         description: 'Descubre historias tradicionales y expande tu conocimiento cultural.',
-        icon: '🗺️',
+        icon: renderIcon(IconLeyendas, 'Leyenda'),
         materialIcon: 'map',
         basePath: '/games/leyenda',
         color: '#7c3aed',
@@ -238,7 +244,7 @@ export const ACTIVITY_CONFIG = {
         label: 'Poema',
         subtitle: 'Actividad con poema',
         description: 'Aprende vocabulario a través de la poesía y cultura mazahua.',
-        icon: '📜',
+        icon: renderIcon(IconPoemas, 'Poema'),
         materialIcon: 'auto_stories',
         basePath: '/games/poema',
         color: '#f59e0b',
@@ -273,7 +279,7 @@ export const ACTIVITY_CONFIG = {
         label: 'Tripas del Gato',
         subtitle: 'Une los pares con líneas',
         description: 'Traza líneas libres para unir cada carta con su par sin cruzar las líneas ya dibujadas. Completa todos los pares antes de que se acabe el tiempo.',
-        icon: renderIcon(IconPairs, 'Tripas del Gato'),
+        icon: renderIcon(IconTripas, 'Tripas del Gato'),
         materialIcon: 'gesture',
         basePath: '/games/tripas',
         color: '#0ea5e9',
@@ -291,7 +297,7 @@ export const ACTIVITY_CONFIG = {
         label: 'Completar Oración',
         subtitle: 'Rellena el espacio en blanco',
         description: 'Completa las oraciones seleccionando la palabra correcta para el espacio en blanco. Practica vocabulario y gramática mazahua en contexto.',
-        icon: '📝',
+        icon: renderIcon(IconFillBlank, 'Completar Oración'),
         materialIcon: 'edit_note',
         basePath: '/games/fill_blank',
         color: '#0284c7',

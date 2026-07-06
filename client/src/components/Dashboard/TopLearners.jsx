@@ -21,7 +21,7 @@ const TopLearners = ({ learners, currentUserName }) => {
     };
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div className="kid-card p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-gray-800">Mejores Estudiantes</h3>

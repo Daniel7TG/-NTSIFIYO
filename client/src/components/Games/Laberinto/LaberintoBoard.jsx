@@ -11,13 +11,17 @@ const LaberintoBoard = ({
     completedPairs
 }) => {
     const boardRef = useRef(null);
+    const gridRef = useRef(null);
     const [cellSizeX, setCellSizeX] = useState(0);
     const [cellSizeY, setCellSizeY] = useState(0);
 
     useEffect(() => {
         const updateSize = () => {
-            if (boardRef.current && grid.length > 0) {
-                const rect = boardRef.current.getBoundingClientRect();
+            // Measure the inner grid, not the outer container, so cell
+            // coordinates stay correct even when the container has padding.
+            const el = gridRef.current || boardRef.current;
+            if (el && grid.length > 0) {
+                const rect = el.getBoundingClientRect();
                 setCellSizeX(rect.width / grid[0].length);
                 setCellSizeY(rect.height / grid.length);
             }
@@ -106,6 +110,7 @@ const LaberintoBoard = ({
         <div className="laberinto-board-container" ref={boardRef}>
             <div
                 className="laberinto-grid"
+                ref={gridRef}
                 style={{
                     display: 'grid',
                     gridTemplateColumns: `repeat(${width}, 1fr)`,

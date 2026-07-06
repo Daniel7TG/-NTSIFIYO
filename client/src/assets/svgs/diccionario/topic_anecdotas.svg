@@ -1,17 +1,50 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
-  <circle cx="32" cy="32" r="30" fill="#FFF3E0" />
+  <defs>
+    <!-- Gradiente de fondo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE4E6" />
+      <stop offset="100%" stop-color="#FECDD3" />
+    </linearGradient>
+    <!-- Gradiente del libro -->
+    <linearGradient id="bookGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <!-- Gradiente de la página blanca -->
+    <linearGradient id="pageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#F1F5F9" />
+    </linearGradient>
+  </defs>
 
-  <!-- Burbuja de pensamiento (Historia) -->
-  <path d="M25,15 C20,15 15,18 15,24 C15,26 16,28 18,30 Q20,35 15,38 Q22,38 25,34 C28,35 32,35 35,32 C40,28 40,20 35,16 C32,14 28,15 25,15 Z" fill="#1E3A8A" />
-  <!-- Círculos pequeños de pensamiento -->
-  <circle cx="28" cy="38" r="2" fill="#1E3A8A" />
-  <circle cx="30" cy="42" r="1.5" fill="#1E3A8A" />
-  
-  <!-- Fuego -->
-  <path d="M45,45 C45,45 50,35 45,28 C45,28 42,32 42,35 C42,35 35,25 38,45 Z" fill="#E65100" />
-  <path d="M45,45 C45,45 47,38 45,35 C45,35 43,38 43,40 C43,40 40,32 41,45 Z" fill="#FFB74D" />
+  <!-- Fondo circular -->
+  <circle cx="32" cy="32" r="30" fill="url(#bgGrad)" />
 
-  <!-- Leños -->
-  <rect x="35" y="44" width="18" height="5" rx="2" fill="#8D6E63" transform="rotate(-15 44 46)" />
-  <rect x="35" y="44" width="18" height="5" rx="2" fill="#5D4037" transform="rotate(15 44 46)" />
+  <!-- Libro abierto con diálogos flotantes (Anécdotas/Historias) -->
+  <g transform="translate(32, 34)" filter="drop-shadow(0px 3px 2px rgba(190, 18, 60, 0.2))">
+    <!-- Pasta del libro (Libro abierto) -->
+    <path d="M-20,6 C-14,8 -6,6 0,0 C6,6 14,8 20,6 L22,-10 C16,-8 8,-10 0,-14 C-8,-10 -16,-8 -22,-10 Z" fill="url(#bookGrad)" />
+    
+    <!-- Páginas izquierdas -->
+    <path d="M-19,4 C-13,6 -6,4 0,-1 L-1,-11 C-7,-8 -14,-10 -20,-12 Z" fill="url(#pageGrad)" />
+    <!-- Páginas derechas -->
+    <path d="M19,4 C13,6 6,4 0,-1 L1,-11 C7,-8 14,-10 20,-12 Z" fill="url(#pageGrad)" />
+
+    <!-- Líneas de texto simuladas en las páginas -->
+    <line x1="-15" y1="-7" x2="-5" y2="-5" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+    <line x1="-15" y1="-3" x2="-7" y2="-1" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+    <line x1="-15" y1="1" x2="-9" y2="3" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+
+    <line x1="5" y1="-5" x2="15" y2="-7" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+    <line x1="7" y1="-1" x2="15" y2="-3" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+    <line x1="5" y1="3" x2="12" y2="1" stroke="#94A3B8" stroke-width="1.2" stroke-linecap="round" />
+
+    <!-- Globo de conversación flotante arriba ("Anécdotas") -->
+    <g transform="translate(10, -22)" filter="drop-shadow(0px 1px 1px rgba(225, 29, 72, 0.3))">
+      <rect x="-8" y="-6" width="16" height="11" rx="3.5" fill="#FDA4AF" />
+      <path d="M -3,5 L -5,8 L -1,5 Z" fill="#FDA4AF" />
+      <!-- Corazón/Destello pequeño en el globo -->
+      <circle cx="0" cy="-0.5" r="1.5" fill="#FFFFFF" />
+    </g>
+  </g>
 </svg>

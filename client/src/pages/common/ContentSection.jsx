@@ -3,13 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import MediaService, { ContentType } from '../../services/MediaService';
 import SectionHeader from '../../components/common/SectionHeader';
 import LoadingState from '../../components/common/LoadingState';
+import { darken } from '../../utils/colorUtils';
 import '../../styles/components/common/contentSectionStyles.css';
 
+import IconPoemas from '../../assets/svgs/diccionario/topic_poemas.svg';
+import IconLeyendas from '../../assets/svgs/diccionario/topic_leyendas.svg';
+import IconAnecdotas from '../../assets/svgs/diccionario/topic_anecdotas.svg';
+import IconCanciones from '../../assets/svgs/diccionario/topic_canciones.svg';
+
 const TABS = [
-    { id: ContentType.POEMAS, label: 'Poemas', icon: '📜' },
-    { id: ContentType.LEYENDAS, label: 'Leyendas', icon: '🗺️' },
-    { id: ContentType.CUENTOS, label: 'Cuentos', icon: '📖' },
-    { id: ContentType.CANCIONES, label: 'Canciones', icon: '🎵' }
+    { id: ContentType.POEMAS, label: 'Poemas', icon: IconPoemas, color: '#f59e0b' },
+    { id: ContentType.LEYENDAS, label: 'Leyendas', icon: IconLeyendas, color: '#7c3aed' },
+    { id: ContentType.CUENTOS, label: 'Cuentos', icon: IconAnecdotas, color: '#059669' },
+    { id: ContentType.CANCIONES, label: 'Canciones', icon: IconCanciones, color: '#db2777' }
 ];
 
 const ContentSection = ({ createRoute }) => {
@@ -18,6 +24,8 @@ const ContentSection = ({ createRoute }) => {
     const [loading, setLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const navigate = useNavigate();
+
+    const activeColor = TABS.find(t => t.id === activeTab)?.color || '#E65100';
 
     useEffect(() => {
         setLoading(true);
@@ -65,16 +73,24 @@ const ContentSection = ({ createRoute }) => {
                         )}
 
                         <div className="content-tabs">
-                            {TABS.map(tab => (
-                                <button
-                                    key={tab.id}
-                                    className={`content-tab ${activeTab === tab.id ? 'active' : ''}`}
-                                    onClick={() => setActiveTab(tab.id)}
-                                >
-                                    <span className="tab-icon">{tab.icon}</span>
-                                    {tab.label}
-                                </button>
-                            ))}
+                            {TABS.map(tab => {
+                                const isActive = activeTab === tab.id;
+                                return (
+                                    <button
+                                        key={tab.id}
+                                        className={`content-tab ${isActive ? 'active' : ''}`}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        style={isActive ? {
+                                            background: tab.color,
+                                            borderColor: darken(tab.color, 0.15),
+                                            boxShadow: `0 4px 0 ${darken(tab.color, 0.32)}`
+                                        } : { color: tab.color }}
+                                    >
+                                        <img src={tab.icon} alt="" className="tab-icon-svg" />
+                                        {tab.label}
+                                    </button>
+                                );
+                            })}
                         </div>
 
                         <div className="content-grid">
@@ -84,20 +100,29 @@ const ContentSection = ({ createRoute }) => {
                                 </div>
                             ) : mediaItems.length > 0 ? (
                                 mediaItems.map(item => (
-                                    <div key={item.id} className="media-card" onClick={() => setSelectedItem(item)}>
-                                        <div className="media-img-wrapper">
+                                    <div
+                                        key={item.id}
+                                        className="media-card"
+                                        onClick={() => setSelectedItem(item)}
+                                        style={{ '--card-color': activeColor, '--card-shadow': darken(activeColor, 0.2) }}
+                                    >
+                                        <div className="media-img-wrapper" style={item.overviewImage ? undefined : { background: activeColor + '15' }}>
                                             {item.overviewImage ? (
                                                 <img src={item.overviewImage} alt={item.title} className="media-img" />
                                             ) : (
                                                 <div className="media-img-placeholder">
-                                                    <span className="material-symbols-outlined" style={{ fontSize: '48px', color: '#cbd5e1' }}>{TABS.find(t => t.id === activeTab)?.icon}</span>
+                                                    <img
+                                                        src={TABS.find(t => t.id === activeTab)?.icon}
+                                                        alt=""
+                                                        style={{ width: '48px', height: '48px', objectFit: 'contain' }}
+                                                    />
                                                 </div>
                                             )}
                                             <div className="media-duration">{item.duration}s</div>
                                         </div>
                                         <div className="media-info">
                                             <h3 className="media-title">{item.title}</h3>
-                                            <p className="media-diff">{item.difficult}</p>
+                                            <p className="media-diff" style={{ color: activeColor }}>{item.difficult}</p>
                                         </div>
                                     </div>
                                 ))

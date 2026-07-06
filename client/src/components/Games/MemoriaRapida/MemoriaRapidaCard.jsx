@@ -78,7 +78,7 @@ function MemoriaRapidaCard({ cardProps, onSwipe, disabled }) {
             className={`mr-swipe-card mr-card-enter ${direction === 'right' ? 'swiping-right' :
                 direction === 'left' ? 'swiping-left' : ''
                 }`}
-            style={{ ...cardStyle, background: 'none', boxShadow: 'none' }}
+            style={cardStyle}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
             onMouseUp={onMouseUp}

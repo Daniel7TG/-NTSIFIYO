@@ -114,7 +114,7 @@ const VisitorProgress = ({ totalExperience = 0, level = 1 }) => {
     );
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div className="kid-card-amber p-6">
             <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2">
                 <span className="material-symbols-outlined text-amber-500">trending_up</span>
                 Progreso Actual
@@ -150,7 +150,7 @@ const VisitorProgress = ({ totalExperience = 0, level = 1 }) => {
 const RecentActivities = ({ activities }) => {
     if (!activities || activities.length === 0) {
         return (
-            <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <div className="kid-card-green p-6">
                 <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                     <span className="material-symbols-outlined text-blue-500">history</span>
                     Actividades Recientes
@@ -179,7 +179,7 @@ const RecentActivities = ({ activities }) => {
     };
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div className="kid-card-green p-6">
             <div className="flex items-center justify-between mb-6">
                 <h3 className="font-bold text-gray-800 flex items-center gap-2">
                     <span className="material-symbols-outlined text-blue-500">history</span>
@@ -300,7 +300,7 @@ const TopUsersLeaderboard = ({ topUsers, currentUserName }) => {
     };
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div className="kid-card p-6">
             <div className="flex items-center justify-between mb-5">
                 <h3 className="font-bold text-gray-800 flex items-center gap-2">
                     <span className="material-symbols-outlined text-amber-500">leaderboard</span>
@@ -408,7 +408,7 @@ const QuickActions = () => {
     ];
 
     return (
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+        <div className="kid-card-indigo p-6">
             <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="material-symbols-outlined text-indigo-500">rocket_launch</span>
                 Acciones Rápidas
@@ -419,18 +419,22 @@ const QuickActions = () => {
                     <Link
                         key={action.id}
                         to={action.path}
-                        className="group flex items-center gap-4 p-3.5 rounded-xl border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all duration-200"
+                        className={`group flex items-center gap-4 p-3.5 rounded-2xl border-2 transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0.5 ${
+                            action.id === 'map' ? 'border-blue-200 bg-blue-50/20 shadow-[0_4px_0_#3B82F6] hover:shadow-[0_6px_0_#3B82F6] active:shadow-[0_1px_0_#3B82F6]' :
+                            action.id === 'activities' ? 'border-emerald-200 bg-emerald-50/20 shadow-[0_4px_0_#10B981] hover:shadow-[0_6px_0_#10B981] active:shadow-[0_1px_0_#10B981]' :
+                            'border-purple-200 bg-purple-50/20 shadow-[0_4px_0_#8353ec] hover:shadow-[0_6px_0_#8353ec] active:shadow-[0_1px_0_#8353ec]'
+                        }`}
                     >
                         <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${action.gradient} flex items-center justify-center flex-shrink-0 shadow-sm group-hover:scale-110 transition-transform duration-300`}>
                             <span className="material-symbols-outlined text-white text-xl">{action.icon}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-gray-700 text-sm group-hover:text-gray-900 transition-colors">
+                            <h4 className="font-extrabold text-gray-800 text-sm group-hover:text-[#E65100] transition-colors">
                                 {action.title}
                             </h4>
-                            <p className="text-xs text-gray-400 truncate">{action.description}</p>
+                            <p className="text-xs text-gray-500 truncate">{action.description}</p>
                         </div>
-                        <span className="material-symbols-outlined text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all text-lg">
+                        <span className="material-symbols-outlined text-gray-400 group-hover:text-gray-600 group-hover:translate-x-0.5 transition-all text-lg font-bold">
                             chevron_right
                         </span>
                     </Link>

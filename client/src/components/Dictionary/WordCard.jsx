@@ -2,7 +2,7 @@ import React from 'react';
 
 const WordCard = ({ wordObj, renderActions }) => {
     return (
-        <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 group flex flex-col h-full relative">
+        <div className="kid-card p-5 group flex flex-col h-full relative">
 
             {/* Action buttons (e.g. Delete for admins) rendered absolutely or injected here */}
             {renderActions && (
@@ -33,25 +33,25 @@ const WordCard = ({ wordObj, renderActions }) => {
                     {wordObj.mazahuaWord || wordObj.spanishWord}
                 </h3>
                 {wordObj.mazahuaWord && (
-                    <p className="text-sm text-gray-500 font-medium mt-0.5 line-clamp-1">
+                    <p className="text-sm text-gray-500 font-bold mt-0.5 line-clamp-1">
                         {wordObj.spanishWord}
                     </p>
                 )}
 
-                <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-50">
-                    <div className="bg-primary/5 text-primary text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">
+                <div className="mt-auto pt-4 flex items-center justify-between border-t border-gray-100">
+                    <div className="bg-[#E65100]/10 text-[#E65100] text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">
                         Palabra
                     </div>
                     {wordObj.audioUrl ? (
                         <button
                             onClick={() => new Audio(wordObj.audioUrl).play().catch(e => console.log('Audio disabled/missing'))}
-                            className="w-8 h-8 rounded-full bg-blue-50 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+                            className="w-9 h-9 rounded-full bg-[#E65100]/10 text-[#E65100] flex items-center justify-center border-2 border-[#E65100]/20 shadow-[0_3px_0_#C2410C] hover:shadow-[0_4px_0_#C2410C] active:translate-y-0.5 active:shadow-[0_1px_0_#C2410C] transition-all"
                             title="Reproducir Audio"
                         >
-                            <span className="material-symbols-outlined text-[18px]">volume_up</span>
+                            <span className="material-symbols-outlined text-[18px] font-bold">volume_up</span>
                         </button>
                     ) : (
-                        <div className="w-8 h-8 rounded-full bg-gray-50 text-gray-300 flex items-center justify-center cursor-not-allowed" title="Sin Audio">
+                        <div className="w-9 h-9 rounded-full bg-gray-50 text-gray-300 flex items-center justify-center cursor-not-allowed border-2 border-gray-200" title="Sin Audio">
                             <span className="material-symbols-outlined text-[18px]">volume_off</span>
                         </div>
                     )}

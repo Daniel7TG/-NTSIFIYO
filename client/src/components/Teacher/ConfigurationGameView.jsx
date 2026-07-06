@@ -34,7 +34,14 @@ const WordSearchInput = ({ value, onSelectWord, onChangeText, placeholder, words
 
     const filtered = useMemo(() => {
         if (!value || value.length < 1) return [];
-        return words.filter(w => w.text?.toLowerCase().includes(value.toLowerCase())).slice(0, 8);
+        // Deduplicar por texto: el diccionario puede traer entradas repetidas
+        const seen = new Set();
+        return words.filter(w => {
+            const t = w.text?.toLowerCase().trim();
+            if (!t || !t.includes(value.toLowerCase().trim()) || seen.has(t)) return false;
+            seen.add(t);
+            return true;
+        }).slice(0, 8);
     }, [value, words]);
 
     return (

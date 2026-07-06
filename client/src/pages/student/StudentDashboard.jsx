@@ -38,19 +38,16 @@ const StudentDashboard = () => {
                 subtitle="Continuemos tu camino para dominar el idioma Mazahua. ¡Lo estás haciendo muy bien!"
                 onReload={reloadDashboard}
             />
-
             <button
                 onClick={() => navigate('/estudiante/mapa')}
-                className="w-full mb-8 group relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#E65100] via-[#FF8F00] to-[#FFA726] p-1 shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full mb-8 group relative overflow-hidden rounded-[24px] bg-[#FF9800] border-3 border-[#E65100] shadow-[0_6px_0_#C2410C] hover:shadow-[0_8px_0_#C2410C] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#C2410C] transition-all duration-150"
             >
-                <div className="flex items-center justify-center gap-4 rounded-xl bg-gradient-to-r from-[#E65100] via-[#FF8F00] to-[#FFA726] px-6 py-5">
-                    <span className="material-symbols-outlined text-4xl text-white drop-shadow-lg animate-bounce">sports_esports</span>
-                    <span className="text-2xl font-extrabold text-white tracking-wide drop-shadow-md">¡JUGAR!</span>
-                    <span className="material-symbols-outlined text-3xl text-white drop-shadow-lg transition-transform duration-300 group-hover:translate-x-1">arrow_forward</span>
+                <div className="flex items-center justify-center gap-4 px-6 py-5">
+                    <span className="material-symbols-outlined text-4xl text-white drop-shadow-[0_2px_0_#C2410C] animate-bounce">sports_esports</span>
+                    <span className="text-2xl font-black text-white tracking-wider drop-shadow-[0_2px_0_#C2410C]">¡JUGAR AL MAPA!</span>
+                    <span className="material-symbols-outlined text-3xl text-white drop-shadow-[0_2px_0_#C2410C] transition-transform duration-300 group-hover:translate-x-2">arrow_forward</span>
                 </div>
-                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
             </button>
-
             {isLoading && <LoadingState message="Cargando tu progreso..." />}
 
             {error && !isLoading && (
