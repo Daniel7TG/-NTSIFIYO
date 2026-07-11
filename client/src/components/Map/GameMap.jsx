@@ -36,14 +36,14 @@ const MAP_NATURAL_H = 1521;
  * categoryId must match the id used in GAME_CATEGORIES
  */
 const ZONES = [
-    { id: 'FOREST', img: forestHL, x: 278, y: 196, w: 542, h: 232 },
+    { id: 'FOREST', img: forestHL, x: 278, y: 196, w: 542, h: 232, disabled: true },
     { id: 'PARK', img: parkHL, x: 1057, y: 920, w: 1363, h: 589 },
     { id: 'COMMUNITY', img: communityHL, x: 1791, y: 119, w: 918, h: 546 },
     { id: 'SCHOOL', img: schoolHL, x: 169, y: 832, w: 660, h: 565 },
     { id: 'CLINIC', img: clinicHL, x: 2207, y: 818, w: 502, h: 406 },
     { id: 'MARKET', img: marketHL, x: 1760, y: 642, w: 504, h: 279 },
     { id: 'KITCHEN', img: kitchenHL, x: 1047, y: 474, w: 620, h: 547 },
-    { id: 'PLAIN', img: plainHL, x: 1102, y: 287, w: 656, h: 281 },
+    { id: 'PLAIN', img: plainHL, x: 1102, y: 287, w: 656, h: 281, disabled: true },
     { id: 'FARM', img: farmHL, x: 505, y: 657, w: 551, h: 299 },
 ];
 
@@ -159,6 +159,11 @@ function GameMap() {
     }
 
     const handleZoneClick = (zoneId) => {
+        const zone = ZONES.find(z => z.id === zoneId);
+        if (zone && zone.disabled) {
+            alert('Esta zona aún está en desarrollo. ¡Vuelve pronto!');
+            return;
+        }
         const cat = GAME_CATEGORIES.find(c => c.id === zoneId);
         if (cat) {
             setSelectedCategory(cat);
@@ -201,7 +206,7 @@ function GameMap() {
                             alt={zone.id}
                             draggable={false}
                             loading="lazy"
-                            className={`game-map-zone${isActive ? ' active' : ''}`}
+                            className={`game-map-zone${isActive ? ' active' : ''}${zone.disabled ? ' disabled' : ''}`}
                             style={{
                                 left: `${(zone.x / MAP_NATURAL_W) * 100}%`,
                                 top: `${(zone.y / MAP_NATURAL_H) * 100}%`,

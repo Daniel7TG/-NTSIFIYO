@@ -59,6 +59,17 @@
     filter: drop-shadow(0 0 16px rgba(255, 152, 0, 0.8)) brightness(1.1);
 }
 
+.game-map-zone.disabled {
+    cursor: not-allowed;
+    filter: grayscale(1) brightness(0.7);
+}
+
+.game-map-zone.disabled:hover {
+    opacity: 0.6;
+    transform: none;
+    filter: grayscale(1) brightness(0.7);
+}
+
 /* ── Popup overlay ──────────────────────────────────────────── */
 .map-popup-overlay {
     position: fixed;
