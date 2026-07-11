@@ -2,12 +2,12 @@ import React from 'react';
 import '../../styles/components/landing/LandingAnimations.css';
 
 const phrases = [
-    { mz: 'Nde joo ra nde ko',       es: 'Buenos días',    icon: 'wb_sunny' },
-    { mz: 'Ha ri xi?',               es: '¿Cómo estás?',   icon: 'sentiment_satisfied' },
-    { mz: 'Pa mbe jña ra kjua',      es: 'Gracias',        icon: 'favorite' },
-    { mz: 'Ki jñaa kjo',             es: 'Habla bien',     icon: 'record_voice_over' },
-    { mz: 'Nde ndixu',               es: 'Buenas noches',  icon: 'dark_mode' },
-    { mz: 'Joo ra ntee',             es: 'Adiós',          icon: 'waving_hand' },
+    { mz: 'Jiasmaji',        es: 'Buenos días',     icon: 'wb_sunny' },
+    { mz: 'Tsökuaji',        es: 'Buenas noches',   icon: 'dark_mode' },
+    { mz: 'Pokjú',           es: 'Gracias',         icon: 'favorite' },
+    { mz: '¿Jango ga chjüü?', es: '¿Cómo se llama?', icon: 'badge' },
+    { mz: '¿Joko go jichi?',  es: '¿Quién le enseñó?', icon: 'school' },
+    { mz: '¿Mbeka gi kjaji?', es: '¿Qué hacen?',    icon: 'sentiment_satisfied' },
 ];
 
 const CommonPhrases = () => (

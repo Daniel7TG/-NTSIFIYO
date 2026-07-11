@@ -38,6 +38,7 @@ const StudentDashboard = () => {
                 subtitle="Continuemos tu camino para dominar el idioma Mazahua. ¡Lo estás haciendo muy bien!"
                 onReload={reloadDashboard}
             />
+
             <button
                 onClick={() => navigate('/estudiante/mapa')}
                 className="w-full mb-8 group relative overflow-hidden rounded-[24px] bg-[#FF9800] border-3 border-[#E65100] shadow-[0_6px_0_#C2410C] hover:shadow-[0_8px_0_#C2410C] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_2px_0_#C2410C] transition-all duration-150"

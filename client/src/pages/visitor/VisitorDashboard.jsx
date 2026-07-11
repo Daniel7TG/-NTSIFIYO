@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import LoadingState from '../../components/common/LoadingState';
 import ErrorState from '../../components/common/ErrorState';
@@ -6,6 +6,8 @@ import PageShell from '../../components/common/PageShell';
 import StatCard from '../../components/common/StatCard';
 import ProgressRing from '../../components/common/ProgressRing';
 import SectionHeader from '../../components/common/SectionHeader';
+import LeaderboardModal from '../../components/common/LeaderboardModal';
+import AvatarCard from '../../components/common/AvatarCard';
 import { useAuth } from '../../context/AuthContext';
 import { useVisitorDashboardQuery, useVisitorInvalidate } from '../../hooks/useVisitorQueries';
 import { ACTIVITY_CONFIG, ActivityTypes } from '../../config/activityConfig';
@@ -271,6 +273,8 @@ const RecentActivities = ({ activities }) => {
    Sub-component: Top Users Leaderboard
    ──────────────────────────────────────────────────────────────────────────── */
 const TopUsersLeaderboard = ({ topUsers, currentUserName }) => {
+    const [isBoardOpen, setBoardOpen] = useState(false);
+
     const data = topUsers && topUsers.length > 0 ? topUsers : [];
 
     const getMedalIcon = (rank) => {
@@ -291,14 +295,6 @@ const TopUsersLeaderboard = ({ topUsers, currentUserName }) => {
         }
     };
 
-    const getUserTypeLabel = (userType) => {
-        switch (userType) {
-            case 'STUDENT': return 'Estudiante';
-            case 'VISITOR': return 'Visitante';
-            default: return userType;
-        }
-    };
-
     return (
         <div className="kid-card p-6">
             <div className="flex items-center justify-between mb-5">
@@ -306,14 +302,22 @@ const TopUsersLeaderboard = ({ topUsers, currentUserName }) => {
                     <span className="material-symbols-outlined text-amber-500">leaderboard</span>
                     Tabla de Líderes
                 </h3>
+                <button
+                    onClick={() => setBoardOpen(true)}
+                    className="text-sm font-medium text-amber-500 hover:text-amber-600 whitespace-nowrap"
+                >
+                    Ver puntuaciones
+                </button>
             </div>
 
             <div className="space-y-2">
                 {data.length > 0 ? (
                     data.map((user, index) => {
                         const isCurrentUser = user.username === currentUserName;
-                        const medal = getMedalIcon(user.rank || index + 1);
-                        const rankBg = getRankBg(user.rank || index + 1);
+                        const rank = user.rank || index + 1;
+                        const medal = getMedalIcon(rank);
+                        const rankBg = getRankBg(rank);
+                        const displayName = user.name || `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || user.username;
 
                         return (
                             <div
@@ -327,31 +331,33 @@ const TopUsersLeaderboard = ({ topUsers, currentUserName }) => {
                                     {medal ? (
                                         <span className="text-lg">{medal}</span>
                                     ) : (
-                                        <span className="text-sm font-bold text-gray-400">#{user.rank || index + 1}</span>
+                                        <span className="text-sm font-bold text-gray-400">#{rank}</span>
                                     )}
                                 </div>
 
                                 {/* Avatar */}
-                                <img
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.username}`}
-                                    alt={user.firstName}
-                                    className="w-10 h-10 rounded-full border-2 border-white shadow-sm bg-white flex-shrink-0"
-                                />
+                                <AvatarCard avatarId={user.avatarId} alt={displayName} size="sm" />
 
                                 {/* Name & Info */}
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-1.5">
                                         <span className={`font-medium truncate ${isCurrentUser ? 'text-gray-800 font-bold' : 'text-gray-600'}`}>
-                                            {user.firstName} {user.lastName}
+                                            {displayName}
                                         </span>
                                         {isCurrentUser && (
                                             <span className="text-xs text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded-full font-bold">Tú</span>
                                         )}
                                     </div>
                                     <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="text-xs text-gray-400">{getUserTypeLabel(user.userType)}</span>
-                                        <span className="text-xs text-gray-300">•</span>
-                                        <span className="text-xs text-gray-400">Nivel {user.level}</span>
+                                        <span className="text-xs text-gray-400">Nivel {user.level ?? 1}</span>
+                                        {user.finishedActivities != null && (
+                                            <>
+                                                <span className="text-xs text-gray-300">•</span>
+                                                <span className="text-xs text-gray-400">
+                                                    {user.finishedActivities} actividad{user.finishedActivities === 1 ? '' : 'es'}
+                                                </span>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
 
@@ -372,6 +378,12 @@ const TopUsersLeaderboard = ({ topUsers, currentUserName }) => {
                     </div>
                 )}
             </div>
+
+            <LeaderboardModal
+                isOpen={isBoardOpen}
+                onClose={() => setBoardOpen(false)}
+                currentUsername={currentUserName}
+            />
         </div>
     );
 };

@@ -6,21 +6,61 @@ import apiConfig from './apiConfig';
 
 class ActivityApiService {
     /**
-     * Obtener la lista de todos los juegos (vista previa para panel de asignar actividades)
-     * GET /api/games
+     * Buscar juegos con filtros. Todos los filtros son opcionales y se combinan con AND.
+     * GET /api/games?gameType=&difficult=&creator=&assignmentStatus=&groupId=&page=&size=&sort=
+     *
+     * - `gameTypes` es repetible en la query (OR entre sí).
+     * - `assignmentStatus` (ASSIGNED | UNASSIGNED | NEVER_ASSIGNED) se evalúa respecto a `groupId`;
+     *   sin `groupId` el backend responde 400, así que aquí se omite.
+     *
+     * @param {{ gameTypes?: string[], difficult?: string, creator?: string,
+     *           assignmentStatus?: string, groupId?: number|string,
+     *           page?: number, size?: number, sort?: string }} filters
+     * @returns {Promise<Object>} - { success, data: GetGamesGameDTO[], page: {...} }
      */
-    async getAllGames() {
+    async getGames({
+        gameTypes = [],
+        difficult,
+        creator,
+        assignmentStatus,
+        groupId,
+        page = 0,
+        size = 20,
+        sort = 'title,asc',
+    } = {}) {
+        const hasGroup = groupId !== undefined && groupId !== null && groupId !== '';
         try {
-            const response = await apiConfig.get('/api/games');
+            const params = new URLSearchParams();
+            gameTypes.filter(Boolean).forEach(t => params.append('gameType', t));
+            if (difficult) params.append('difficult', difficult);
+            if (creator)   params.append('creator', creator);
+            if (hasGroup)  params.append('groupId', groupId);
+            // assignmentStatus solo tiene sentido con un grupo de referencia
+            if (assignmentStatus && hasGroup) params.append('assignmentStatus', assignmentStatus);
+            params.append('page', page);
+            params.append('size', size);
+            if (sort) params.append('sort', sort);
+
+            const response = await apiConfig.get(`/api/games?${params.toString()}`);
+            const content  = Array.isArray(response) ? response : (response?.content || []);
+
             return {
                 success: true,
-                data: Array.isArray(response) ? response : []
+                data: content,
+                page: {
+                    number:        response?.number ?? page,
+                    size:          response?.size ?? size,
+                    totalElements: response?.totalElements ?? content.length,
+                    totalPages:    response?.totalPages ?? 1,
+                    last:          response?.last ?? true,
+                },
             };
         } catch (error) {
             return {
                 success: false,
                 error: error.message,
-                data: []
+                data: [],
+                page: { number: 0, size, totalElements: 0, totalPages: 0, last: true },
             };
         }
     }
@@ -449,6 +489,51 @@ class ActivityApiService {
                 success: false,
                 error: error.message,
                 data: null
+            };
+        }
+    }
+
+    /**
+     * Obtener la tabla de puntuaciones paginada.
+     * GET /api/leaderboard?page=&size=&userType=
+     *
+     * El backend filtra por el tipo del usuario autenticado (estudiante ve estudiantes,
+     * visitante ve visitantes) e ignora `userType`; solo maestro/admin lo usan para elegir tabla.
+     * `size` máximo aceptado por el backend: 50.
+     *
+     * @param {{ page?: number, size?: number, userType?: 'STUDENT'|'VISITOR' }} params
+     * @returns {Promise<Object>} - { success, data: LeaderboardRow[], currentUser, page: {...} }
+     */
+    async getLeaderboard({ page = 0, size = 20, userType } = {}) {
+        const cappedSize = Math.min(size, 50);
+        try {
+            const params = new URLSearchParams();
+            params.append('page', page);
+            params.append('size', cappedSize);
+            if (userType) params.append('userType', userType);
+
+            const response = await apiConfig.get(`/api/leaderboard?${params.toString()}`);
+            const content = Array.isArray(response) ? response : (response?.content || []);
+
+            return {
+                success: true,
+                data: content,
+                currentUser: response?.currentUser ?? null,
+                page: {
+                    number:        response?.number ?? page,
+                    size:          response?.size ?? cappedSize,
+                    totalElements: response?.totalElements ?? content.length,
+                    totalPages:    response?.totalPages ?? 1,
+                    last:          response?.last ?? true,
+                },
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message,
+                data: [],
+                currentUser: null,
+                page: { number: 0, size: cappedSize, totalElements: 0, totalPages: 0, last: true },
             };
         }
     }

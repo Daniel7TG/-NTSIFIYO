@@ -112,6 +112,34 @@ class AuthService {
     }
 
     /**
+     * Obtener el usuario autenticado con el JWT actual.
+     * GET /api/user/me — sin body, requiere Authorization: Bearer <jwt>.
+     *
+     * Respuesta 200 (UserMeResponseDTO): { username, userType, firstName, lastName,
+     * level, totalExperience, grade }. `level`/`totalExperience` solo en STUDENT y VISITOR;
+     * `grade` solo en STUDENT; el resto llega null.
+     *
+     * Respuesta 403 (sin body) si el token falta, es inválido o expiró.
+     *
+     * @returns {Promise<{success: boolean, data?: Object, error?: string, status?: number}>}
+     */
+    async getMe() {
+        try {
+            const response = await apiConfig.get('/api/user/me');
+            return {
+                success: true,
+                data: response
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message || 'Error desconocido',
+                status: error.status
+            };
+        }
+    }
+
+    /**
      * Cerrar sesión
      * Limpia el almacenamiento local
      */

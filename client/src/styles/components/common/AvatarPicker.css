@@ -1,0 +1,196 @@
+/* AvatarPicker — avatar actual + ruedo de avatares alrededor.
+   Las imágenes las pinta AvatarCard (recorte circular sobre la cara). */
+
+/* ── Vista compacta ─────────────────────────────────────────────────────────── */
+.avatar-picker-trigger {
+    position: relative;
+    border-radius: 50%;
+    border: 3px solid #E65100;
+    background: #fff;
+    padding: 0;
+    cursor: pointer;
+    overflow: visible;
+    box-shadow: 0 6px 16px rgba(230, 81, 0, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+    line-height: 0;
+}
+
+.avatar-picker-trigger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 22px rgba(230, 81, 0, 0.28);
+}
+
+.avatar-picker-edit {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #E65100;
+    color: #fff;
+    font-size: 16px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+}
+
+/* ── Ruedo ──────────────────────────────────────────────────────────────────── */
+.avatar-picker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(4px);
+    animation: avatarPickerFade 0.2s ease forwards;
+    padding: 1rem;
+}
+
+.avatar-picker-stage {
+    position: relative;
+    width: 520px;
+    height: 520px;
+    max-width: 100%;
+    /* El ruedo tiene medidas fijas en px: en pantallas chicas se escala completo. */
+    transform-origin: center;
+}
+
+.avatar-picker-hint {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.125rem;
+    letter-spacing: 0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.avatar-picker-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 4px solid #fff;
+    background: #fff;
+    line-height: 0;
+    box-shadow: 0 0 0 6px rgba(230, 81, 0, 0.35), 0 12px 30px rgba(0, 0, 0, 0.35);
+    animation: avatarPickerPop 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.avatar-picker-option {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+    background: #fff;
+    cursor: pointer;
+    opacity: 0;
+    line-height: 0;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    animation: avatarPickerIn 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* El hover no puede pisar el transform que posiciona el botón: se escala el contenido. */
+.avatar-picker-option > div {
+    transition: transform 0.15s ease;
+}
+
+.avatar-picker-option:hover:not(:disabled) > div {
+    transform: scale(1.12);
+}
+
+.avatar-picker-option:hover:not(:disabled) {
+    border-color: #E65100;
+    box-shadow: 0 8px 20px rgba(230, 81, 0, 0.45);
+}
+
+.avatar-picker-option:disabled {
+    cursor: default;
+    opacity: 0.45;
+}
+
+.avatar-picker-option.is-current {
+    border-color: #E65100;
+    box-shadow: 0 0 0 4px rgba(230, 81, 0, 0.35);
+}
+
+.avatar-picker-option.is-saving > div {
+    opacity: 0.35;
+}
+
+.avatar-picker-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #E65100;
+    font-size: 26px !important;
+    animation: avatarPickerSpin 0.9s linear infinite;
+}
+
+.avatar-picker-close {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.92);
+    color: #334155;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    transition: background 0.15s ease;
+}
+
+.avatar-picker-close:hover {
+    background: #fff;
+}
+
+@keyframes avatarPickerFade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes avatarPickerPop {
+    from { transform: translate(-50%, -50%) scale(0.7); }
+    to   { transform: translate(-50%, -50%) scale(1); }
+}
+
+/* La posición final la fija el style inline; aquí solo entra la opacidad. */
+@keyframes avatarPickerIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes avatarPickerSpin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ── Pantallas chicas: se encoge el ruedo completo ───────────────────────────── */
+@media (max-width: 560px) {
+    .avatar-picker-stage {
+        transform: scale(0.66);
+    }
+}
+
+@media (min-width: 561px) and (max-width: 720px) {
+    .avatar-picker-stage {
+        transform: scale(0.82);
+    }
+}

@@ -1,11 +1,11 @@
 import React from 'react';
 import '../../styles/components/landing/LandingAnimations.css';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 const stats = [
-    { number: 6,  label: 'Desarrolladores',            color: '#6C63FF', icon: 'code' },
-    { number: 8,  label: 'Niños que prestaron voz',     color: '#F59E0B', icon: 'child_care' },
     { number: 6,  label: 'Maestros y adultos hablantes', color: '#10B981', icon: 'school' },
+    { number: 8,  label: 'Niños que prestaron voz',     color: '#F59E0B', icon: 'child_care' },
+    { number: 6,  label: 'Desarrolladores',            color: '#6C63FF', icon: 'code' },
     { number: 6,  label: 'Otros colaboradores',         color: '#EC4899', icon: 'diversity_3' },
 ];
 
@@ -51,7 +51,7 @@ const AboutTeaser = () => (
                 ))}
             </div>
 
-            {/* CTA */}
+            {/* CTA
             <div className="text-center reveal" style={{ transitionDelay: '0.5s' }}>
                 <Link
                     to="/nosotros"
@@ -61,6 +61,7 @@ const AboutTeaser = () => (
                     <span className="material-symbols-outlined text-lg transition-transform group-hover:translate-x-1">arrow_forward</span>
                 </Link>
             </div>
+            */}
         </div>
     </section>
 );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import L1 from '../../assets/landing/L1.webp';
+// import L1 from '../../assets/landing/L1.webp';
 import L2 from '../../assets/landing/L2.webp';
 import L3 from '../../assets/landing/L3.webp';
 import L4 from '../../assets/landing/L4.webp';
@@ -10,7 +10,7 @@ import L7 from '../../assets/landing/L7.webp';
 import L8 from '../../assets/landing/L8.webp';
 import '../../styles/components/landing/HeroCinematic.css';
 
-const images = [L1, L2, L3, L4, L5, L6, L7, L8];
+const images = [L2, L3, L4, L5, L6, L7, L8];
 
 const HeroCinematic = () => {
     const [activeIndex, setActiveIndex] = useState(0);

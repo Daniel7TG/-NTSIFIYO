@@ -231,6 +231,7 @@ const GroupsSection = () => {
                         try {
                             const result = await AdminService.advanceYear();
                             fetchGroups();
+                            setHasFetchedAvailableStudents(false);
                             showAlert({
                                 mode: 'success',
                                 title: 'Año Escolar Avanzado',

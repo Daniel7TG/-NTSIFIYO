@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import L1 from '../../assets/landing/L1.webp';
+import L1 from '../../assets/landing/L2.webp';
 import '../../styles/components/landing/LandingAnimations.css';
 
 const FinalCTA = () => (

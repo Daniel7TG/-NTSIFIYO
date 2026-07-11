@@ -2,10 +2,12 @@ import React from 'react';
 import '../../styles/components/landing/LandingAnimations.css';
 
 const phrases = [
-    { mz: 'Ki jñaa kjo', es: 'Habla bien' },
-    { mz: 'Nde joo ra nde ko', es: 'Buenos días' },
-    { mz: 'Ha ri xi?', es: '¿Cómo estás?' },
-    { mz: 'Pa mbe jña ra kjua', es: 'Gracias' },
+    { mz: 'Jiasmaji', es: 'Buenos días' },
+    { mz: 'Tsökuaji', es: 'Buenas noches' },
+    { mz: 'Pokjú', es: 'Gracias' },
+    { mz: '¿Jango ga chjüü?', es: '¿Cómo se llama?' },
+    { mz: '¿Joko go jichi?', es: '¿Quién le enseñó?' },
+    { mz: '¿Mbeka gi kjaji?', es: '¿Qué hacen?' },
     { mz: 'Jñatrjo', es: 'Lengua Mazahua' },
     { mz: "Nts'i Fíyo", es: 'Aprender jugando' },
     { mz: 'Dyoji', es: 'Agua' },

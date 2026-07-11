@@ -1,56 +1,61 @@
 import React from 'react';
 import apiConfig from '../../services/apiConfig';
 import ActivityApiService from '../../services/ActivityApiService';
-import ActivitiesPanel from '../../components/common/ActivitiesPanel';
-import { useTeacherActivitiesQuery, useTeacherInstancesQuery, useAllGamesQuery, useTeacherInvalidate } from '../../hooks/useTeacherQueries';
+import GamesPanel from '../../components/common/GamesPanel';
+import PageShell from '../../components/common/PageShell';
+import { useAuth } from '../../context/AuthContext';
+import { useTeacherInstancesQuery, useTeacherInvalidate } from '../../hooks/useTeacherQueries';
 
 /**
  * Página de Recursos del Maestro.
- * Wrapper delgado: obtiene datos con TanStack Query y delega la UI a ActivitiesPanel.
+ * Wrapper de GamesPanel: mismo catálogo que el admin, pero el estado de asignación
+ * se evalúa siempre contra el grupo del maestro (sin selector de grupo), y puede
+ * asignar / activar / desactivar juegos en ese grupo.
  */
 const TeacherResources = () => {
-    const { data: activities = [], isLoading: loadingAct, error: errorAct } = useTeacherActivitiesQuery();
-    const { data: instances  = [], isLoading: loadingInst }                 = useTeacherInstancesQuery();
-    const { data: allGames = [], isLoading: loadingGames }                   = useAllGamesQuery();
-    const { reloadResources }                                                = useTeacherInvalidate();
+    const { user } = useAuth();
+    const { data: instances = [] } = useTeacherInstancesQuery();
+    const { reloadInstances }      = useTeacherInvalidate();
 
-    const loading = loadingAct || loadingInst;
-    const error   = errorAct?.message || '';
+    // El grupo del maestro: el de su perfil o, en su defecto, el de sus instancias.
+    const groupId = user?.grade
+        ?? instances[0]?.group?.id
+        ?? instances[0]?.groupId
+        ?? null;
 
     const handleDelete = async (id) => {
         await apiConfig.delete(`/api/games/${id}`);
     };
 
-    const handleAssign = async (activity) => {
-        await apiConfig.post('/api/activities/assign', { gameId: activity.id });
+    const handleAssign = async (game) => {
+        await apiConfig.post('/api/activities/assign', { gameId: game.id });
     };
 
-    const handleToggle = async (activityId, newState) => {
-        const inst    = instances.find(i => i.game?.id === activityId || i.gameId === activityId);
-        const groupId = inst?.group?.id || inst?.groupId;
-        if (!groupId) throw new Error('No se encontró el grupo de la instancia.');
-        const res = await ActivityApiService.toggleInstance(groupId, activityId, newState);
+    const handleToggle = async (gameId, newState) => {
+        const inst      = instances.find(i => i.gameId === gameId || i.game?.id === gameId);
+        const instGroup = inst?.group?.id ?? inst?.groupId ?? groupId;
+        if (!instGroup) throw new Error('No se encontró el grupo de la instancia.');
+
+        const res = await ActivityApiService.toggleInstance(instGroup, gameId, newState);
         if (!res.success) throw new Error(res.error || 'No se pudo cambiar el estado.');
     };
 
     return (
-        <ActivitiesPanel
-            activities={activities}
-            instances={instances}
-            allGames={allGames}
-            loading={loading}
-            loadingAllGames={loadingGames}
-            error={error}
-            onReload={reloadResources}
-            onDeleteActivity={handleDelete}
-            onAssignActivity={handleAssign}
-            onToggleInstance={handleToggle}
-            editRoute="/maestro/recursos/editar"
-            createRoute="/maestro/recursos/crear"
-            title="Mis Recursos"
-            subtitle="Gestiona las actividades y juegos que has creado."
-            showTabs
-        />
+        <PageShell>
+            <GamesPanel
+                title="Mis Recursos"
+                subtitle="Gestiona tus actividades y asígnalas a tu grupo."
+                createRoute="/maestro/recursos/crear"
+                editRoute="/maestro/recursos/editar"
+                currentUsername={user?.username}
+                fixedGroupId={groupId}
+                instances={instances}
+                onDelete={handleDelete}
+                onAssign={handleAssign}
+                onToggle={handleToggle}
+                onReloadExtra={reloadInstances}
+            />
+        </PageShell>
     );
 };
 

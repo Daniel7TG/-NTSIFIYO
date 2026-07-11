@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import SectionHeader from '../../components/common/SectionHeader';
 import PageShell from '../../components/common/PageShell';
+import LeaderboardModal from '../../components/common/LeaderboardModal';
 import { getActivitiesList } from '../../config/activityConfig';
 
 /**
@@ -9,6 +10,8 @@ import { getActivitiesList } from '../../config/activityConfig';
  * Muestra una tarjeta por cada tipo de juego: Memorama y Quiz
  */
 const StudentActivities = () => {
+    const [isBoardOpen, setBoardOpen] = useState(false);
+
     // Datos del usuario desde localStorage
     const userData = (() => {
         try {
@@ -94,13 +97,19 @@ const StudentActivities = () => {
                                 <p className="text-sm text-gray-500 font-bold">¡Completa actividades para mantener tu racha y ganar XP!</p>
                             </div>
                         </div>
-                        <Link
-                            to="/estudiante/leaderboard"
+                        <button
+                            onClick={() => setBoardOpen(true)}
                             className="px-6 py-3 bg-[#FF9800] border-2 border-[#E65100] text-white font-black rounded-2xl shadow-[0_4px_0_#C2410C] hover:shadow-[0_6px_0_#C2410C] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_1px_0_#C2410C] transition-all duration-150 whitespace-nowrap"
                         >
-                            Ver Tabla de Líderes
-                        </Link>
+                            Ver puntuaciones
+                        </button>
                     </div>
+
+                    <LeaderboardModal
+                        isOpen={isBoardOpen}
+                        onClose={() => setBoardOpen(false)}
+                        currentUsername={userData?.username}
+                    />
         </PageShell>
     );
 };

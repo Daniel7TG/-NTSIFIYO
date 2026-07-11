@@ -1,5 +1,6 @@
 import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import AuthPage from './pages/AuthPage';
@@ -7,6 +8,7 @@ import AdminLogin from './pages/AdminLogin';
 import apiConfig from './services/apiConfig';
 
 import { useAuth } from './context/AuthContext';
+import { useAlert } from './context/AlertContext';
 import { CoyoteProvider } from './context/CoyoteContext';
 
 import MainLayout from './components/Layout/MainLayout';
@@ -68,7 +70,24 @@ function PageContent({ children }) {
 }
 
 function App() {
-    const { user, isAuthenticated } = useAuth();
+    const { user, isAuthenticated, sessionExpired, clearSessionExpired } = useAuth();
+    const queryClient = useQueryClient();
+    const { showAlert } = useAlert();
+
+    // El token guardado ya no sirve (GET /api/user/me devolvió 403): la sesión quedó
+    // cerrada en AuthContext, aquí solo se limpia la caché de datos del usuario anterior
+    // y se avisa. Las rutas protegidas redirigen solas a /auth vía ProtectedRoute.
+    useEffect(() => {
+        if (!sessionExpired) return;
+        queryClient.clear();
+        clearSessionExpired();
+        showAlert({
+            mode: 'alert',
+            title: 'Sesión finalizada',
+            message: 'Tu sesión expiró o ya no es válida. Vuelve a iniciar sesión para continuar.',
+            buttons: [{ text: 'Entendido', type: 'accept' }],
+        });
+    }, [sessionExpired, clearSessionExpired, queryClient, showAlert]);
 
     useEffect(() => {
         const handleBeforeUnload = () => {

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import useNavigation from '../../hooks/useNavigation';
+import AvatarPicker from '../common/AvatarPicker';
+import Roles from '../../utils/roles';
 
 /**
  * Sidebar de navegación reutilizable para todos los roles.
@@ -24,7 +26,6 @@ const SideBar = ({ role, userName = '', isOpen, onClose }) => {
             activeText: 'text-primary',
             activeIcon: 'text-primary',
             roleText: 'text-secondary',
-            avatarBg: 'bg-primary',
         },
         green: {
             gradient: 'from-green-500 to-green-600',
@@ -32,7 +33,6 @@ const SideBar = ({ role, userName = '', isOpen, onClose }) => {
             activeText: 'text-green-600',
             activeIcon: 'text-green-600',
             roleText: 'text-gray-500',
-            avatarBg: 'bg-green-500',
         },
         amber: {
             gradient: 'from-amber-400 to-orange-500',
@@ -40,7 +40,6 @@ const SideBar = ({ role, userName = '', isOpen, onClose }) => {
             activeText: 'text-primary',
             activeIcon: 'text-primary',
             roleText: 'text-primary',
-            avatarBg: 'bg-amber-500',
         },
     };
 
@@ -55,22 +54,29 @@ const SideBar = ({ role, userName = '', isOpen, onClose }) => {
     };
     const roleIcon = roleIconMap[roleLabel] || 'dashboard';
 
-    // Inicial para avatar
-    const initial = userName ? userName.charAt(0).toUpperCase() : roleLabel.charAt(0).toUpperCase();
+    // Solo estudiante y visitante tienen avatar; maestro y admin conservan el ícono de rol.
+    const showAvatar = role === Roles.STUDENT || role === Roles.VISITOR;
 
     return (
         <aside className={`fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-100 flex flex-col z-30 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
             {/* Logo / Branding */}
-            <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                <Link to={homePath} className="flex items-center gap-3" onClick={onClose}>
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${colors.gradient} flex items-center justify-center`}>
-                        <span className="material-symbols-outlined text-white">{roleIcon}</span>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-bold text-lg text-gray-800">NTS'I FÍYO</span>
-                        <span className={`text-xs font-medium ${colors.roleText}`}>Panel {roleLabel}</span>
-                    </div>
-                </Link>
+            <div className="p-6 border-b border-gray-100 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                    {/* El picker es un botón: va fuera del Link para no anidar interactivos. */}
+                    {showAvatar ? (
+                        <AvatarPicker size={56} />
+                    ) : (
+                        <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${colors.gradient} flex items-center justify-center flex-shrink-0`}>
+                            <span className="material-symbols-outlined text-white text-[28px]">{roleIcon}</span>
+                        </div>
+                    )}
+                    <Link to={homePath} className="flex flex-col min-w-0" onClick={onClose}>
+                        <span className="font-bold text-lg text-gray-800 truncate">NTS'I FÍYO</span>
+                        <span className={`text-xs font-medium ${colors.roleText} truncate`}>
+                            {showAvatar && userName ? userName : `Panel ${roleLabel}`}
+                        </span>
+                    </Link>
+                </div>
                 {/* Botón de cerrar en móvil */}
                 <button
                     onClick={onClose}
@@ -105,23 +111,6 @@ const SideBar = ({ role, userName = '', isOpen, onClose }) => {
                     ))}
                 </ul>
             </nav>
-
-            {/* User Profile Card at Bottom */}
-            <div className="p-4 border-t border-gray-100">
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                    <div className={`w-10 h-10 flex items-center justify-center rounded-full ${colors.avatarBg} text-white font-bold`}>
-                        {initial}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-800 text-sm truncate">
-                            {userName || roleLabel}
-                        </h3>
-                        <p className="text-xs text-gray-500 truncate">
-                            {roleLabel}
-                        </p>
-                    </div>
-                </div>
-            </div>
         </aside>
     );
 };

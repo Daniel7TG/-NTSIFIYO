@@ -1,10 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import LeaderboardModal from '../common/LeaderboardModal';
+import AvatarCard from '../common/AvatarCard';
 
 /**
- * Componente de tabla de líderes
+ * Componente de tabla de líderes (top 5 del dashboard).
+ * "Ver puntuaciones" abre el popup paginado con la tabla completa.
  */
 const TopLearners = ({ learners, currentUserName }) => {
+    const [isBoardOpen, setBoardOpen] = useState(false);
 
     const data = learners && learners.length > 0 ? learners : [];
 
@@ -25,33 +28,35 @@ const TopLearners = ({ learners, currentUserName }) => {
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-gray-800">Mejores Estudiantes</h3>
-                <Link to="/estudiante/leaderboard" className="text-sm font-medium text-amber-500 hover:text-amber-600">
-                    Ver todos
-                </Link>
+                <button
+                    onClick={() => setBoardOpen(true)}
+                    className="text-sm font-medium text-amber-500 hover:text-amber-600 flex items-center gap-1"
+                >
+                    <span className="material-symbols-outlined text-[16px]">leaderboard</span>
+                    Ver puntuaciones
+                </button>
             </div>
 
             {/* Leaderboard List */}
             <div className="space-y-3">
                 {data.length > 0 ? (
                     data.slice(0, 5).map((learner, index) => {
-                        const isCurrentUser = learner.name === currentUserName;
+                        const isCurrentUser = learner.username
+                            ? learner.username === currentUserName
+                            : learner.name === currentUserName;
                         return (
                             <div
-                                key={index}
+                                key={learner.username || index}
                                 className={`flex items-center gap-4 p-3 rounded-xl transition-colors ${isCurrentUser ? 'bg-amber-50' : 'hover:bg-gray-50'
                                     }`}
                             >
                                 {/* Position */}
-                                <span className={`w-6 text-center font-bold ${getPositionStyle(index + 1, isCurrentUser)}`}>
-                                    {index + 1}
+                                <span className={`w-6 text-center font-bold ${getPositionStyle(learner.rank || index + 1, isCurrentUser)}`}>
+                                    {learner.rank || index + 1}
                                 </span>
 
                                 {/* Avatar */}
-                                <img
-                                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${learner.name}`}
-                                    alt={learner.name}
-                                    className="w-10 h-10 rounded-full border-2 border-white shadow-sm bg-white"
-                                />
+                                <AvatarCard avatarId={learner.avatarId} alt={learner.name} size="sm" />
 
                                 {/* Name */}
                                 <span className={`flex-1 font-medium truncate ${isCurrentUser ? 'text-gray-800' : 'text-gray-600'}`}>
@@ -70,6 +75,12 @@ const TopLearners = ({ learners, currentUserName }) => {
                     <div className="text-gray-500 text-sm text-center py-4">Aún no hay compañeros registrados.</div>
                 )}
             </div>
+
+            <LeaderboardModal
+                isOpen={isBoardOpen}
+                onClose={() => setBoardOpen(false)}
+                currentUsername={currentUserName}
+            />
         </div>
     );
 };

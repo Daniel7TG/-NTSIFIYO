@@ -3,7 +3,8 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import AdminService from '../services/AdminService';
-import apiConfig from '../services/apiConfig';
+
+// El catálogo de juegos vive en useGamesQueries (compartido con el maestro).
 
 // ── Query Keys ────────────────────────────────────────────────────────────────
 export const adminKeys = {
@@ -11,7 +12,6 @@ export const adminKeys = {
     students: () => ['admin', 'students'],
     teachers: () => ['admin', 'teachers'],
     groups: () => ['admin', 'groups'],
-    activities: () => ['admin', 'activities'],
 };
 
 // ── Fetchers ──────────────────────────────────────────────────────────────────
@@ -19,7 +19,6 @@ const fetchAdminOverview = () => AdminService.getAdminDashboard();
 const fetchAdminStudents = () => AdminService.getStudents();
 const fetchAdminTeachers = () => AdminService.getTeachers();
 const fetchAdminGroups = () => AdminService.getGroups();
-const fetchAdminActivities = () => apiConfig.get('/api/activities/teacher');
 
 // ── Hooks ─────────────────────────────────────────────────────────────────────
 
@@ -51,15 +50,6 @@ export function useAdminGroupsQuery() {
     });
 }
 
-export function useAdminActivitiesQuery() {
-    return useQuery({
-        queryKey: adminKeys.activities(),
-        queryFn:  fetchAdminActivities,
-        staleTime: 2 * 60 * 1000,
-        gcTime:    10 * 60 * 1000,
-    });
-}
-
 /**
  * Hook para invalidar manualmente datos del admin (botón "Actualizar").
  */
@@ -70,6 +60,5 @@ export function useAdminInvalidate() {
         reloadStudents: () => queryClient.invalidateQueries({ queryKey: adminKeys.students() }),
         reloadTeachers: () => queryClient.invalidateQueries({ queryKey: adminKeys.teachers() }),
         reloadGroups: () => queryClient.invalidateQueries({ queryKey: adminKeys.groups() }),
-        reloadActivities: () => queryClient.invalidateQueries({ queryKey: adminKeys.activities() }),
     };
 }

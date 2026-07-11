@@ -1,34 +1,33 @@
 import React from 'react';
 import apiConfig from '../../services/apiConfig';
-import ActivitiesPanel from '../../components/common/ActivitiesPanel';
-import { useAdminActivitiesQuery, useAdminInvalidate } from '../../hooks/useAdminQueries';
+import GamesPanel from '../../components/common/GamesPanel';
+import { useAuth } from '../../context/AuthContext';
+import { useAdminTeachersQuery, useAdminGroupsQuery } from '../../hooks/useAdminQueries';
 
 /**
  * Sección de Actividades del Administrador.
- * Wrapper delgado: obtiene datos con TanStack Query y delega la UI a ActivitiesPanel.
+ * Wrapper de GamesPanel: el admin ve el catálogo completo y puede filtrar por
+ * maestro y por estado de asignación respecto a cualquier grupo.
  */
 const AdminActivitiesSection = () => {
-    const { data: rawData, isLoading: loading, error: errorObj } = useAdminActivitiesQuery();
-    const { reloadActivities } = useAdminInvalidate();
-
-    const activities = Array.isArray(rawData) ? rawData : (rawData?.activities || []);
-    const error      = errorObj?.message || '';
+    const { user } = useAuth();
+    const { data: teachers = [] } = useAdminTeachersQuery();
+    const { data: groups   = [] } = useAdminGroupsQuery();
 
     const handleDelete = async (id) => {
         await apiConfig.delete(`/api/games/${id}`);
     };
 
     return (
-        <ActivitiesPanel
-            activities={activities}
-            loading={loading}
-            error={error}
-            onReload={reloadActivities}
-            onDeleteActivity={handleDelete}
-            editRoute="/admin/actividades/editar"
-            createRoute="/admin/actividades/crear"
+        <GamesPanel
             title="Actividades"
             subtitle="Gestiona todos los juegos y actividades del sistema."
+            createRoute="/admin/actividades/crear"
+            editRoute="/admin/actividades/editar"
+            currentUsername={user?.username}
+            onDelete={handleDelete}
+            teachers={teachers}
+            groups={groups}
         />
     );
 };

@@ -21,7 +21,8 @@ const TeacherDashboard = () => {
         totalStudents = 0,
         activeAssignments = [],
         alertStudents = [],
-        completeStudents = []
+        completeStudents = [],
+        groupId = null
     } = data || {};
 
     return (
@@ -31,6 +32,21 @@ const TeacherDashboard = () => {
                 subtitle="Monitorea el progreso de tu grupo estudiantil."
                 onReload={reloadDashboard}
             />
+
+            {/* Grupo a cargo */}
+            {!isLoading && !error && (
+                <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-2xl px-5 py-4 mb-6 shadow-sm w-fit">
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-primary/10 flex items-center justify-center text-primary font-black text-lg">
+                        {groupId ? `${groupId}º` : '—'}
+                    </div>
+                    <div>
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tu grupo</p>
+                        <p className="font-bold text-gray-800 leading-tight">
+                            {groupId ? `${groupId}º Grado` : 'Sin grupo asignado'}
+                        </p>
+                    </div>
+                </div>
+            )}
 
             {isLoading && <LoadingState message="Actualizando métricas de tu grupo..." />}
 

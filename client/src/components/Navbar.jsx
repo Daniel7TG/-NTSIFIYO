@@ -3,6 +3,8 @@ import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import Roles from '../utils/roles';
 import { useAuth } from '../context/AuthContext';
 import GoogleAuthService from '../services/GoogleAuthService';
+import { getAvatarUrl } from '../config/avatars';
+import appIcon from '../assets/app-icon.webp';
 
 /**
  * Componente de Navegación Principal.
@@ -62,6 +64,9 @@ const Navbar = () => {
         }
     }
 
+    // Solo estudiante y visitante tienen avatar; los demás siguen con la inicial.
+    const hasAvatar = user?.userType === Roles.STUDENT || user?.userType === Roles.VISITOR;
+
     // Color del badge según el rol
     const getRoleBadge = () => {
         if (!user) return null;
@@ -100,9 +105,13 @@ const Navbar = () => {
                 {/* Logo + Nav agrupados a la izquierda */}
                 <div className="flex items-center gap-8">
                     <Link to="/" className="flex items-center gap-2">
-                        <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${isTransparent ? 'bg-white/20' : 'bg-primary/20'} ${isTransparent ? 'text-white' : 'text-primary-dark dark:text-primary'}`}>
-                            <span className="material-symbols-outlined">school</span>
-                        </div>
+                        <img
+                            src={appIcon}
+                            alt="NTS'I FÍYO"
+                            width="36"
+                            height="36"
+                            className="h-9 w-9 object-contain drop-shadow-sm"
+                        />
                         <h1 className={`text-xl font-bold tracking-tight ${logoTextColor}`}>
                             NTS'I FÍYO
                         </h1>
@@ -142,9 +151,17 @@ const Navbar = () => {
                                 to={getRouteAuthenticated()}
                                 className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-colors ${isTransparent ? 'hover:bg-white/10' : 'hover:bg-gray-100 dark:hover:bg-white/5'}`}
                             >
-                                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
-                                    {getInitial()}
-                                </div>
+                                {hasAvatar ? (
+                                    <img
+                                        src={getAvatarUrl(user.avatarId)}
+                                        alt="Tu avatar"
+                                        className="w-8 h-8 rounded-full object-cover border-2 border-primary bg-white"
+                                    />
+                                ) : (
+                                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
+                                        {getInitial()}
+                                    </div>
+                                )}
                                 <span className={`hidden sm:block text-sm font-medium max-w-[120px] truncate ${logoTextColor}`}>
                                     {user.firstname}
                                 </span>

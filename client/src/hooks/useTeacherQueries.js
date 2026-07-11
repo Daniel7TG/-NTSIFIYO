@@ -5,15 +5,14 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import ActivityApiService from '../services/ActivityApiService';
 import AuthService from '../services/AuthService';
 import apiConfig from '../services/apiConfig';
+import { gamesKeys } from './useGamesQueries';
 
 // ── Query Keys ────────────────────────────────────────────────────────────────
 export const teacherKeys = {
     dashboard:   () => ['teacher', 'dashboard'],
-    activities:  () => ['teacher', 'activities'],
     instances:   () => ['teacher', 'instances'],
     assignments: () => ['teacher', 'assignments'],
     students:    () => ['teacher', 'students'],
-    allGames:    () => ['teacher', 'allGames'],
 };
 
 // ── Shared: resolve groupId ───────────────────────────────────────────────────
@@ -43,12 +42,6 @@ async function fetchTeacherDashboard() {
     return { ...result.data, groupId: gId };
 }
 
-/** Obtiene todas las actividades del teacher autenticado (mismo endpoint que admin). */
-async function fetchTeacherActivities() {
-    const data = await apiConfig.get('/api/activities/teacher');
-    return Array.isArray(data) ? data : [];
-}
-
 /** Obtiene las instancias asignadas al grupo del teacher. */
 async function fetchTeacherInstances() {
     const instData = await ActivityApiService.getGroupInstances();
@@ -74,28 +67,12 @@ async function fetchTeacherStudents() {
     return data.students || [];
 }
 
-async function fetchAllGames() {
-    const result = await ActivityApiService.getAllGames();
-    if (!result.success) throw new Error(result.error || 'Error al cargar los juegos.');
-    return result.data;
-}
-
 // ── Hooks ─────────────────────────────────────────────────────────────────────
 
 export function useTeacherDashboardQuery() {
     return useQuery({
         queryKey: teacherKeys.dashboard(),
         queryFn: fetchTeacherDashboard,
-    });
-}
-
-/** Query de actividades del teacher (lista general, cacheable). */
-export function useTeacherActivitiesQuery() {
-    return useQuery({
-        queryKey: teacherKeys.activities(),
-        queryFn:  fetchTeacherActivities,
-        staleTime: 2 * 60 * 1000,
-        gcTime:    10 * 60 * 1000,
     });
 }
 
@@ -123,15 +100,6 @@ export function useTeacherStudentsQuery() {
     });
 }
 
-export function useAllGamesQuery() {
-    return useQuery({
-        queryKey: teacherKeys.allGames(),
-        queryFn: fetchAllGames,
-        staleTime: 5 * 60 * 1000,
-        gcTime:    15 * 60 * 1000,
-    });
-}
-
 /**
  * Hook para invalidar consultas del maestro (botones "Actualizar").
  */
@@ -139,15 +107,13 @@ export function useTeacherInvalidate() {
     const queryClient = useQueryClient();
     return {
         reloadDashboard:   () => queryClient.invalidateQueries({ queryKey: teacherKeys.dashboard() }),
-        reloadActivities:  () => queryClient.invalidateQueries({ queryKey: teacherKeys.activities() }),
         reloadInstances:   () => queryClient.invalidateQueries({ queryKey: teacherKeys.instances() }),
+        // El catálogo de juegos vive bajo la key ['games'] (useGamesQueries)
         reloadResources:   () => {
-            queryClient.invalidateQueries({ queryKey: teacherKeys.activities() });
             queryClient.invalidateQueries({ queryKey: teacherKeys.instances() });
-            queryClient.invalidateQueries({ queryKey: teacherKeys.allGames() });
+            queryClient.invalidateQueries({ queryKey: gamesKeys.all() });
         },
         reloadAssignments: () => queryClient.invalidateQueries({ queryKey: teacherKeys.assignments() }),
         reloadStudents:    () => queryClient.invalidateQueries({ queryKey: teacherKeys.students() }),
-        reloadAllGames:    () => queryClient.invalidateQueries({ queryKey: teacherKeys.allGames() }),
     };
 }
