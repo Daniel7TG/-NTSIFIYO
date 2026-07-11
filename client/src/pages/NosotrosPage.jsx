@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../styles/components/nosotros/NosotrosPage.css';
 
 /* ══════════════════════════════════════════════════════════
-   DATOS – nombres ficticios por categoría
+   DATOS – colaboradores del proyecto por categoría
    ══════════════════════════════════════════════════════════ */
 
 const sections = [
@@ -14,7 +14,12 @@ const sections = [
         gradient: 'linear-gradient(135deg, #6C63FF22 0%, #a78bfa22 100%)',
         border: '#6C63FF',
         description: 'El equipo que diseñó, programó y dio vida a esta plataforma educativa.',
-        members: [],
+        members: [
+            { name: 'Marín Nava Miguel Yaimine', role: 'Desarrollador' },
+            { name: 'Gonzales Ramírez Claudia Teresa', role: 'Desarrolladora' },
+            { name: 'Ruiz Villaverde Heidi Naomi', role: 'Desarrolladora' },
+            { name: 'Torres Guido Oscar Daniel', role: 'Desarrollador' },
+        ],
     },
     {
         id: 'ninos',
@@ -24,7 +29,20 @@ const sections = [
         gradient: 'linear-gradient(135deg, #F59E0B22 0%, #fde68a22 100%)',
         border: '#F59E0B',
         description: 'Pequeños que grabaron palabras, frases y canciones en Mazahua para dar vida a los juegos.',
-        members: [],
+        members: [
+            { name: 'Alejandro Temoxtle', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Harley Contreras', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Valentina Salcedo', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Sofía García', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Erick Mondragón', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Daiana Flores', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Santiago Salguero', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Omar Báez', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Yedán Domínguez', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Lenin Mejía', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Zoe García', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+            { name: 'Kevin Colín', role: 'Ayudó con la pronunciación de palabras para el modelo de reconocimiento de voz.' },
+        ],
     },
     {
         id: 'maestros',
@@ -34,7 +52,15 @@ const sections = [
         gradient: 'linear-gradient(135deg, #10B98122 0%, #a7f3d022 100%)',
         border: '#10B981',
         description: 'Maestros bilingües y adultos de la comunidad que grabaron historias y validaron el contenido lingüístico.',
-        members: [],
+        members: [
+            { name: 'Pascuala Catarino Benítez', role: 'Ayudó con las grabaciones de palabras, cuentos, canciones, leyendas y anécdotas, aportando escritura y pronunciación.' },
+            { name: 'Norma Guzmán De Jesús', role: 'Ayudó con las grabaciones de palabras, cuentos, canciones, leyendas y anécdotas, aportando escritura y pronunciación.' },
+            { name: 'Marcos Medina Mercado', role: 'Ayudó con las grabaciones de palabras, cuentos, canciones, leyendas y anécdotas, aportando escritura y pronunciación.' },
+            { name: 'Antonio Reyes Rivera', role: 'Ayudó con las grabaciones de palabras, cuentos, canciones, leyendas y anécdotas, aportando escritura y pronunciación.' },
+            { name: 'Matilde Hernández Rodríguez', role: 'Ayudó con las grabaciones de palabras, cuentos, canciones, leyendas y anécdotas, aportando escritura y pronunciación.' },
+            { name: 'Efraín García González', role: 'Ayudó con las grabaciones de palabras, cuentos, canciones, leyendas y anécdotas, aportando escritura y pronunciación.' },
+            { name: 'Rufino Benítez Reyna', role: 'Ayudó con las grabaciones de palabras, cuentos, canciones, leyendas y anécdotas, aportando escritura y pronunciación.' },
+        ],
     },
     {
         id: 'colaboradores',

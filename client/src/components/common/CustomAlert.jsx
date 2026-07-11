@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Modes: success, error, alert, info
 const modeStyles = {
@@ -38,6 +38,18 @@ const CustomAlert = ({
 }) => {
     const style = modeStyles[mode] || modeStyles.info;
 
+    // Countdown support: a button with `countdown: N` stays disabled for N seconds.
+    const initialCountdowns = buttons.map(btn => btn.countdown || 0);
+    const [countdowns, setCountdowns] = useState(initialCountdowns);
+
+    useEffect(() => {
+        if (!countdowns.some(c => c > 0)) return;
+        const timer = setInterval(() => {
+            setCountdowns(prev => prev.map(c => (c > 0 ? c - 1 : 0)));
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [countdowns]);
+
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm backdrop-filter animate-in fade-in duration-200">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden transform transition-all animate-in zoom-in-95 duration-200 p-6">
@@ -71,17 +83,20 @@ const CustomAlert = ({
                             const btnClass = isCancel
                                 ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
                                 : `${style.buttonColor} text-white`;
+                            const remaining = countdowns[index];
+                            const isWaiting = remaining > 0;
 
                             return (
                                 <button
                                     key={index}
+                                    disabled={isWaiting}
                                     onClick={() => {
                                         if (btn.onClick) btn.onClick();
                                         if (onClose && (!btn.preserveOpen)) onClose();
                                     }}
-                                    className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-colors ${btnClass}`}
+                                    className={`flex-1 py-3 px-4 rounded-xl font-semibold transition-colors ${btnClass} ${isWaiting ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 >
-                                    {btn.text}
+                                    {isWaiting ? `${btn.text} (${remaining})` : btn.text}
                                 </button>
                             );
                         })}

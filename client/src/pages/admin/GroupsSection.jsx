@@ -30,6 +30,8 @@ const GroupsSection = () => {
     const [isSubmittingGroup, setIsSubmittingGroup] = useState(false);
     const [createGroupError, setCreateGroupError] = useState('');
 
+    const [isAdvancingYear, setIsAdvancingYear] = useState(false);
+
     const [teachersList, setTeachersList] = useState([]);
     const [isLoadingTeachers, setIsLoadingTeachers] = useState(false);
     const [teacherFetchError, setTeacherFetchError] = useState('');
@@ -206,6 +208,38 @@ const GroupsSection = () => {
                             setHasFetchedAvailableStudents(false);
                         } catch (error) {
                             showAlert({ mode: 'error', title: 'Error', message: error.message });
+                        }
+                    }
+                }
+            ]
+        });
+    };
+
+    const advanceYear = () => {
+        showAlert({
+            mode: 'alert',
+            title: 'Avanzar Año Escolar',
+            message: 'Todos los grupos avanzarán de grado (1º→2º, 2º→3º, … 5º→6º) y los alumnos de 6º grado se graduarán, quedando el 1er grado vacío. Esta acción no se puede deshacer.',
+            buttons: [
+                { text: 'Cancelar', type: 'cancel' },
+                {
+                    text: 'Avanzar Grupos',
+                    type: 'accept',
+                    countdown: 5,
+                    onClick: async () => {
+                        setIsAdvancingYear(true);
+                        try {
+                            const result = await AdminService.advanceYear();
+                            fetchGroups();
+                            showAlert({
+                                mode: 'success',
+                                title: 'Año Escolar Avanzado',
+                                message: `${result.promoted} alumnos promovidos, ${result.graduated} graduados, de ${result.processed} procesados.`
+                            });
+                        } catch (error) {
+                            showAlert({ mode: 'error', title: 'Error', message: error.message || 'No se pudo avanzar el año escolar.' });
+                        } finally {
+                            setIsAdvancingYear(false);
                         }
                     }
                 }
@@ -806,8 +840,16 @@ const GroupsSection = () => {
                     <p className="text-gray-500 mt-1">Gestiona los grupos de la escuela.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <button className="px-5 py-2.5 text-gray-500 bg-white border border-gray-200 rounded-xl font-medium hover:bg-gray-50 transition-colors cursor-not-allowed opacity-70 flex items-center gap-2" disabled title="Próximamente">
-                        <span className="material-symbols-outlined text-[18px]">fast_forward</span>Avanzar Grado
+                    <button
+                        onClick={advanceYear}
+                        disabled={isAdvancingYear}
+                        className="px-5 py-2.5 text-gray-700 bg-white border border-gray-200 rounded-xl font-medium hover:bg-gray-50 hover:border-primary/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                        {isAdvancingYear ? (
+                            <><span className="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>Avanzando...</>
+                        ) : (
+                            <><span className="material-symbols-outlined text-[18px]">fast_forward</span>Avanzar Grado</>
+                        )}
                     </button>
                     <button className="px-5 py-2.5 text-red-500 bg-red-50/50 rounded-xl font-medium hover:bg-red-50 transition-colors cursor-not-allowed opacity-70 flex items-center gap-2" disabled title="Próximamente">
                         <span className="material-symbols-outlined text-[18px]">delete</span>Eliminar

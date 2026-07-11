@@ -194,6 +194,15 @@ class AdminService {
         );
         return results;
     }
+
+    /**
+     * Avanzar de año escolar: sube de grado a todos los alumnos y gradúa a los de 6º.
+     * POST /api/groups/advance-year
+     * @returns {Promise<{ promoted: number, graduated: number, processed: number }>}
+     */
+    async advanceYear() {
+        return apiConfig.post('/api/groups/advance-year');
+    }
 }
 
 export default new AdminService();
