@@ -1,7 +1,7 @@
 // client/src/services/apiConfig.js
 // Configuración central del API
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://mild-donella-daniel7g-b3e46241.koyeb.app';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://bottom-scenic-outcast.ngrok-free.dev/';
 
 // TEMPORAL: mientras el backend se sirva desde un túnel ngrok gratuito, éste
 // devuelve una página HTML de advertencia en lugar de la respuesta real.
