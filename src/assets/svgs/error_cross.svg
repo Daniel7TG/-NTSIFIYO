@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gradCrossBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="100%" stop-color="#991b1b" />
+    </linearGradient>
+    <filter id="shadowCross">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#991b1b" flood-opacity="0.5" />
+    </filter>
+  </defs>
+  <!-- Perfect symmetrical circle -->
+  <circle cx="50" cy="50" r="40" fill="url(#gradCrossBg)" filter="url(#shadowCross)" />
+  
+  <!-- Symmetrical Cross -->
+  <path d="M 35 35 L 65 65 M 65 35 L 35 65" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Subtle specular highlight -->
+  <path d="M 50 10 A 40 40 0 0 0 10 50 A 40 40 0 0 1 50 18 A 40 40 0 0 1 90 50 A 40 40 0 0 0 50 10 Z" fill="#ffffff" opacity="0.2" />
+</svg>

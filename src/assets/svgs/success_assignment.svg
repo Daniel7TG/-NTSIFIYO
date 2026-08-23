@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <filter id="docShadow">
+      <feDropShadow dx="2" dy="6" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.2"/>
+    </filter>
+    <linearGradient id="sealGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <!-- Document -->
+  <rect x="25" y="15" width="50" height="70" rx="4" fill="url(#docGrad)" filter="url(#docShadow)"/>
+  <!-- Folded corner -->
+  <polygon points="75,15 60,15 60,30" fill="#94a3b8" opacity="0.3"/>
+  <polygon points="75,30 60,15 75,15" fill="#f8fafc"/>
+  
+  <!-- Lines -->
+  <line x1="35" y1="35" x2="65" y2="35" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  <line x1="35" y1="45" x2="55" y2="45" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  <line x1="35" y1="55" x2="65" y2="55" stroke="#94a3b8" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Large Checkmark over document -->
+  <path d="M 30 60 L 45 75 L 80 40" fill="none" stroke="url(#checkGrad)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Wax Seal -->
+  <circle cx="70" cy="70" r="14" fill="url(#sealGrad)"/>
+  <circle cx="70" cy="70" r="11" fill="none" stroke="#fca5a5" stroke-width="2" stroke-dasharray="3 3"/>
+  <path d="M 66 81 L 68 95 L 74 88 L 80 95 L 78 81 Z" fill="#ef4444"/>
+</svg>

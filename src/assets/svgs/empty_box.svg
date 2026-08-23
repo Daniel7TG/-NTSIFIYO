@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <filter id="dropShadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.2" />
+    </filter>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="50" cy="95" rx="35" ry="4" fill="#000000" opacity="0.15" />
+
+  <!-- Post Back -->
+  <rect x="48" y="65" width="8" height="32" fill="#64748b" />
+  <!-- Post Front -->
+  <rect x="40" y="65" width="8" height="32" fill="#94a3b8" />
+
+  <!-- Mailbox Body Side (Square) -->
+  <rect x="15" y="30" width="55" height="35" rx="4" fill="url(#boxGrad)" />
+  
+  <!-- Top Edge Highlight -->
+  <rect x="17" y="32" width="51" height="3" rx="1" fill="#93c5fd" opacity="0.8"/>
+
+  <!-- Inside Opening -->
+  <rect x="62" y="34" width="10" height="27" rx="2" fill="#0f172a" />
+  <!-- Inner side depth -->
+  <path d="M 62 34 L 72 34 L 72 36 L 62 36 Z" fill="#1e3a8a" />
+
+  <!-- Door Hinge -->
+  <rect x="60" y="65" width="14" height="4" rx="2" fill="#1e3a8a" />
+  
+  <!-- Hanging Door -->
+  <g filter="url(#dropShadow)">
+    <rect x="62" y="69" width="10" height="27" rx="2" fill="#2563eb" />
+    <rect x="64" y="71" width="6" height="23" rx="1" fill="none" stroke="#1d4ed8" stroke-width="1.5" />
+    <!-- Door Handle -->
+    <rect x="65" y="90" width="4" height="2" fill="#94a3b8" />
+  </g>
+
+  <!-- Flag (Lowered) -->
+  <rect x="35" y="55" width="22" height="5" rx="2.5" fill="#ef4444" />
+  <circle cx="38" cy="57.5" r="4" fill="#b91c1c" />
+</svg>

@@ -1,0 +1,676 @@
+/* client/src/components/Games/Loteria/Loteria.css */
+/* Estilo visual para la Lotería */
+/* Variables y estilos base -> GameBase.css */
+
+/* .lot-container y .lot-topbar → GameBase.css */
+
+/* Elementos propios (puntos y penalización) debajo del topbar */
+.lot-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    backdrop-filter: blur(6px);
+}
+
+.lot-badge-points {
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--lot-blue);
+    border: 1.5px solid rgba(30, 58, 138, 0.15);
+}
+
+.lot-badge-timer {
+    background: var(--lot-orange);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(232, 76, 10, 0.3);
+}
+
+.lot-badge-penalty {
+    background: rgba(255, 200, 200, 0.9);
+    color: var(--lot-error);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    animation: shake 0.4s ease;
+}
+
+.lot-topbar-icon-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--lot-blue);
+    transition: background 0.15s, transform 0.15s;
+}
+
+.lot-topbar-icon-btn:hover {
+    background: #fff;
+    transform: scale(1.08);
+}
+
+/* ============================================
+   ÁREA PRINCIPAL
+   ============================================ */
+.lot-main {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 28px;
+    padding: 28px 32px;
+    flex: 1;
+    align-items: start;
+}
+
+/* ============================================
+   COLUMNA IZQUIERDA — BARAJA
+   ============================================ */
+.lot-baraja-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.lot-baraja-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lot-orange);
+    text-align: center;
+}
+
+/* Tarjeta grande de la baraja */
+.lot-baraja-card {
+    width: 100%;
+    max-width: 280px;
+    background: #fff;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    animation: lotCardReveal 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lot-baraja-card-image-area {
+    background: #FFF8E8;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.lot-baraja-card-image {
+    width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.lot-baraja-card-emoji {
+    font-size: 80px;
+    line-height: 1;
+}
+
+.lot-baraja-card-footer {
+    background: var(--lot-orange);
+    padding: 14px 16px 10px;
+    text-align: center;
+}
+
+.lot-baraja-card-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+}
+
+.lot-baraja-card-subtitle {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.85);
+    font-style: italic;
+    margin-top: 3px;
+}
+
+/* Tarjeta de espera (aún no comienza) */
+.lot-baraja-waiting {
+    width: 100%;
+    max-width: 280px;
+    min-height: 280px;
+    background: linear-gradient(145deg, #FFF8E8, #FFE0B2);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 2px dashed rgba(232, 76, 10, 0.3);
+}
+
+.lot-baraja-waiting-icon {
+    font-size: 64px;
+}
+
+.lot-baraja-waiting-text {
+    font-size: 13px;
+    color: var(--lot-orange);
+    font-weight: 600;
+}
+
+/* Botón "¡Busca esta carta en tu tabla!" */
+.lot-find-btn {
+    width: 100%;
+    max-width: 280px;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1.5px solid rgba(232, 76, 10, 0.25);
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--lot-orange);
+    cursor: default;
+    text-align: center;
+    backdrop-filter: blur(4px);
+}
+
+.lot-pile-counter {
+    font-size: 12px;
+    color: var(--lot-text-secondary);
+    font-weight: 600;
+}
+
+/* Botón reproducir audio */
+.lot-audio-btn {
+    background: rgba(232, 76, 10, 0.1);
+    border: 2px solid var(--lot-orange);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.lot-audio-btn:hover {
+    background: rgba(232, 76, 10, 0.2);
+    transform: scale(1.1);
+}
+
+/* ============================================
+   COLUMNA DERECHA — TABLA (3×3)
+   ============================================ */
+.lot-tabla-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+
+
+.lot-tabla-board {
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 24px;
+    border: 1.5px solid rgba(255, 255, 255, 0.75);
+    padding: 20px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+    width: 100%;
+    min-width: 380px;
+    max-width: 480px;
+}
+
+.lot-board-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+/* ── Carta del tablero — estilo naipe ── */
+.lot-board-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    box-shadow: var(--lot-card-shadow);
+    padding: 10px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+    position: relative;
+    min-height: 150px;
+    justify-content: center;
+}
+
+/* Variantes de fondo estilo naipe */
+.lot-board-card:nth-child(3n+1) {
+    background: #f5f0e6;
+}
+
+.lot-board-card:nth-child(3n+2) {
+    background: #ffffff;
+}
+
+.lot-board-card:nth-child(3n+3) {
+    background: #e8eedc;
+}
+
+.lot-board-card:nth-child(6) {
+    background: #2d3b2a;
+    color: #fff;
+}
+
+.lot-board-card:nth-child(9) {
+    background: #f5f0e6;
+}
+
+/* Símbolo de naipe en esquina */
+.lot-board-card::before {
+    content: 'A ♠';
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--lot-orange);
+    letter-spacing: -0.5px;
+    opacity: 0.6;
+}
+
+.lot-board-card:hover:not(.matched):not(.wrong) {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    border-color: rgba(232, 76, 10, 0.3);
+}
+
+.lot-board-card.matched {
+    border-color: var(--lot-orange);
+    cursor: default;
+}
+
+/* Overlay de checkmark en carta seleccionada */
+.lot-board-card.matched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+}
+
+.lot-board-card-check {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.lot-board-card-check-circle {
+    width: 44px;
+    height: 44px;
+    background: var(--lot-orange);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(232, 76, 10, 0.4);
+}
+
+.lot-board-card.wrong {
+    border-color: var(--lot-error);
+    background: #FEF2F2 !important;
+    animation: lotShake 0.4s ease-out;
+}
+
+.lot-board-card.highlighted {
+    border-color: var(--lot-orange);
+    box-shadow: 0 0 0 3px rgba(232, 76, 10, 0.25), var(--lot-card-shadow);
+    transform: translateY(-2px);
+}
+
+.lot-board-card-image {
+    width: 100%;
+    flex: 1;
+    object-fit: contain;
+    border-radius: 6px;
+    max-height: 90px;
+}
+
+.lot-board-card-emoji {
+    font-size: 42px;
+    line-height: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.lot-board-card-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-align: center;
+    line-height: 1.2;
+    color: var(--lot-blue);
+}
+
+.lot-board-card:nth-child(6) .lot-board-card-label {
+    color: #c8e6c9;
+}
+
+.lot-board-card.matched .lot-board-card-label {
+    color: var(--lot-orange);
+}
+
+/* ============================================
+   WRAPPER PARA GAMECARD EN EL TABLERO
+   ============================================ */
+.lot-gameboard-cell {
+    cursor: pointer;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: transform 0.15s;
+}
+
+.lot-gameboard-cell:hover {
+    transform: translateY(-3px);
+}
+
+.lot-gameboard-cell.wrong {
+    animation: lotShake 0.4s ease-out;
+}
+
+/* ============================================
+   BOTÓN ¡LOTERÍA!
+   ============================================ */
+.lot-loteria-btn-row {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0 20px;
+}
+
+.lot-loteria-btn {
+    background: var(--lot-orange);
+    color: #fff;
+    border: none;
+    border-radius: 32px;
+    padding: 16px 40px;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 6px 20px rgba(232, 76, 10, 0.4);
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+    font-family: 'Poppins', sans-serif;
+}
+
+.lot-loteria-btn:hover {
+    background: #c43d07;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(232, 76, 10, 0.45);
+}
+
+.lot-loteria-btn--waiting {
+    background: #aaa;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.lot-loteria-btn--waiting:hover {
+    background: #999;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================
+   MODAL DE VALIDACIÓN LOTERÍA
+   ============================================ */
+.lot-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 400;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.lot-modal {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2rem 2rem 1.5rem;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lot-modal-icon {
+    font-size: 56px;
+    margin-bottom: 0.5rem;
+}
+
+.lot-modal-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1E3A8A;
+    margin: 0 0 0.5rem;
+    line-height: 1.3;
+}
+
+.lot-modal-desc {
+    font-size: 13px;
+    color: #6B7280;
+    margin: 0 0 1.25rem;
+    line-height: 1.5;
+}
+
+.lot-modal-btn {
+    background: var(--lot-orange);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    transition: background 0.15s;
+}
+
+.lot-modal-btn:hover {
+    background: #c43d07;
+}
+
+/* ============================================
+   FEEDBACK FLASH
+   ============================================ */
+.lot-feedback-banner {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 800;
+    color: #FFFFFF;
+    z-index: 300;
+    animation: feedbackSlideUp 0.3s ease-out;
+    white-space: nowrap;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+}
+
+.lot-feedback-banner.correct {
+    background: var(--lot-success);
+}
+
+.lot-feedback-banner.incorrect {
+    background: var(--lot-error);
+}
+
+/* ============================================
+   LOADING / ERROR
+   ============================================ */
+.game-loading-container,
+.game-error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #a8edcc 0%, #d4f5c0 40%, #fffde7 100%);
+    gap: 1rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+.lot-spinner {
+    border: 4px solid rgba(30, 58, 138, 0.15);
+    border-top: 4px solid var(--lot-blue);
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    animation: spin 1s linear infinite;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .lot-main {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 20px;
+    }
+
+    .lot-baraja-card,
+    .lot-baraja-waiting,
+    .lot-find-btn {
+        max-width: 100%;
+    }
+
+    .lot-baraja-col {
+        align-items: center;
+    }
+
+    .lot-board-card {
+        min-height: 110px;
+    }
+
+    .lot-board-card-emoji {
+        font-size: 30px;
+    }
+
+    .lot-topbar-right .lot-badge {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .lot-final-stats {
+        flex-direction: column;
+    }
+
+    .lot-final-stat-value {
+        font-size: 34px;
+    }
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes lotCardReveal {
+    from {
+        transform: rotateY(90deg) scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: rotateY(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes lotShake {
+    0% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-8px);
+    }
+
+    40% {
+        transform: translateX(8px);
+    }
+
+    60% {
+        transform: translateX(-5px);
+    }
+
+    80% {
+        transform: translateX(5px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes feedbackSlideUp {
+    from {
+        transform: translateX(-50%) translateY(16px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes trophyPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    65% {
+        transform: scale(1.12);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

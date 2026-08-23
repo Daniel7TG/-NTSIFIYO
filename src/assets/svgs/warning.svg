@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="gradWarn" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fcd34d" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="shadowWarn">
+      <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#d97706" flood-opacity="0.5" />
+    </filter>
+  </defs>
+  <path d="M 50 15 L 10 85 L 90 85 Z" fill="url(#gradWarn)" filter="url(#shadowWarn)" stroke="#d97706" stroke-width="2" stroke-linejoin="round" />
+  <!-- Exclamation mark -->
+  <path d="M 50 35 L 50 60" fill="none" stroke="#78350f" stroke-width="8" stroke-linecap="round" />
+  <circle cx="50" cy="75" r="4" fill="#78350f" />
+</svg>

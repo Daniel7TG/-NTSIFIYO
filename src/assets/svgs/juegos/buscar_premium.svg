@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <filter id="shadow-iso" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="5" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="glow-gold" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="boardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A" />
+      <stop offset="100%" stop-color="#0F172A" />
+    </linearGradient>
+    <linearGradient id="highlightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFD54F" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#E65100" stop-opacity="0.8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Transformación isométrica más plana y centrada -->
+  <g transform="translate(60, 50) scale(1, 0.4) rotate(45)" filter="url(#shadow-iso)">
+    
+    <!-- Tablero base -->
+    <rect x="-40" y="-40" width="80" height="80" rx="4" fill="url(#boardGrad)" stroke="#38BDF8" stroke-width="2"/>
+    
+    <!-- Cuadrícula -->
+    <path d="M-20,-40 L-20,40 M0,-40 L0,40 M20,-40 L20,40" stroke="#38BDF8" stroke-width="1" opacity="0.3"/>
+    <path d="M-40,-20 L40,-20 M-40,0 L40,0 M-40,20 L40,20" stroke="#38BDF8" stroke-width="1" opacity="0.3"/>
+
+    <!-- Resaltador de palabra -->
+    <rect x="-35" y="-15" width="70" height="30" rx="15" fill="url(#highlightGrad)" filter="url(#glow-gold)"/>
+    
+    <!-- Letras -->
+    <g transform="translate(-20, 0)">
+      <text x="0" y="5" font-family="sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle" transform="rotate(-45) scale(1, 2.5)">M</text>
+    </g>
+    <g transform="translate(0, 0)">
+      <text x="0" y="5" font-family="sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle" transform="rotate(-45) scale(1, 2.5)">A</text>
+    </g>
+    <g transform="translate(20, 0)">
+      <text x="0" y="5" font-family="sans-serif" font-size="20" font-weight="bold" fill="#FFFFFF" text-anchor="middle" transform="rotate(-45) scale(1, 2.5)">Z</text>
+    </g>
+
+    <g transform="translate(-20, -20)" opacity="0.5">
+      <text x="0" y="5" font-family="sans-serif" font-size="16" font-weight="bold" fill="#94A3B8" text-anchor="middle" transform="rotate(-45) scale(1, 2.5)">X</text>
+    </g>
+    <g transform="translate(20, 20)" opacity="0.5">
+      <text x="0" y="5" font-family="sans-serif" font-size="16" font-weight="bold" fill="#94A3B8" text-anchor="middle" transform="rotate(-45) scale(1, 2.5)">P</text>
+    </g>
+  </g>
+
+  <!-- Puntero -->
+  <g transform="translate(85, 75)">
+    <path d="M0,0 L15,5 L5,15 Z" fill="#FFFFFF" filter="url(#shadow-iso)"/>
+    <path d="M10,10 L25,25" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" filter="url(#shadow-iso)"/>
+  </g>
+</svg>

@@ -1,0 +1,583 @@
+/* client/src/components/Games/Rompecabezas/Rompecabezas.css */
+/* Estilos específicos de Rompecabezas — Completar la frase */
+/* Variables y estilos base -> GameBase.css */
+
+/* .rp-container y .rp-top-bar y .rp-progress-* → GameBase.css */
+
+/* ============================================
+   INSTRUCCIÓN DEL JUEGO
+   ============================================ */
+.rp-instruction {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+}
+
+/* ============================================
+   ÁREA DE PIEZAS SUPERIORES (pregunta + slot)
+   ============================================ */
+.rp-question-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 2.5rem;
+    width: 100%;
+    max-width: 420px;
+}
+
+/* PIEZA DE ROMPECABEZAS — forma base */
+.rp-piece {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    transition: transform 0.2s;
+    /* Sin border-radius, la forma la da la imagen */
+    background: transparent;
+}
+
+/* PIEZA SUPERIOR — imagen puzzle_left (pestaña derecha) */
+.rp-piece-question {
+    color: #FFFFFF;
+    width: 170px;
+    height: 140px;
+    background-image: url('../../../../assets/puzzle_left.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    /* Padding para que el texto no toque el borde de la pestaña */
+    padding-right: 22px;
+    padding-left: 10px;
+    animation: pieceAppear 0.4s ease-out;
+    filter: drop-shadow(0 6px 12px rgba(230, 81, 0, 0.4));
+    /* Eliminar cualquier sombra de caja que desvirtúe la forma */
+    box-shadow: none;
+}
+
+/* SLOT — imagen puzzle_right semitransparente (encaje izquierdo) */
+.rp-piece-slot {
+    width: 160px;
+    height: 140px;
+    background-image: url('../../../../assets/puzzle_right.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: rgba(0, 0, 0, 0.25);
+    position: relative;
+    opacity: 0.45;
+    filter: grayscale(0.3);
+    transition: opacity 0.3s, filter 0.3s;
+    /* Padding para centrar el texto dentro del área sólida de la pieza */
+    padding-left: 20px;
+}
+
+/* PIEZA SELECCIONADA en el slot (colocada) */
+.rp-piece-slot.filled {
+    opacity: 1;
+    filter: none;
+}
+
+/* ============================================
+   ÁREA DE OPCIONES (piezas inferiores)
+   ============================================ */
+.rp-options-section {
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 20px;
+    padding: 1.2rem;
+    width: 100%;
+    max-width: 380px;
+    margin-bottom: 2rem;
+    backdrop-filter: blur(4px);
+}
+
+.rp-options-grid {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* PIEZA OPCIÓN (respuesta) — imagen puzzle_right */
+.rp-option-piece {
+    flex: 1;
+    max-width: 170px;
+    min-height: 130px;
+    background-image: url('../../../../assets/puzzle_right.webp');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: #5D3A00;
+    cursor: pointer;
+    box-shadow: none;
+    transition: all 0.2s;
+    position: relative;
+    /* Padding para que el texto quede dentro del área sólida */
+    padding-left: 18px;
+    padding-right: 8px;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.rp-option-piece:hover:not(:disabled) {
+    transform: translateY(-3px) scale(1.04);
+    filter: drop-shadow(0 8px 16px rgba(230, 81, 0, 0.35));
+}
+
+.rp-option-piece.selected {
+    filter: drop-shadow(0 8px 18px rgba(230, 81, 0, 0.45)) brightness(1.08);
+    transform: translateY(-4px);
+    animation: pieceSnap 0.25s ease-out;
+}
+
+.rp-option-piece.correct {
+    filter: drop-shadow(0 6px 14px rgba(16, 185, 129, 0.5)) sepia(0.3) hue-rotate(80deg);
+    color: #065F46;
+    animation: pieceCorrect 0.4s ease-out;
+}
+
+.rp-option-piece.incorrect {
+    filter: drop-shadow(0 6px 14px rgba(239, 68, 68, 0.5)) sepia(0.5) hue-rotate(-30deg);
+    color: #7F1D1D;
+    animation: pieceShake 0.4s ease-out;
+}
+
+.rp-option-piece:disabled {
+    cursor: default;
+}
+
+.rp-option-text {
+    text-align: center;
+    padding: 0 0.5rem;
+}
+
+/* ============================================
+   BOTÓN COMPROBAR RESPUESTA
+   ============================================ */
+.rp-check-btn {
+    width: 100%;
+    max-width: 380px;
+    padding: 1.1rem 1rem;
+    background: var(--primary-orange);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(230, 81, 0, 0.35);
+    transition: all 0.2s;
+    margin-top: auto;
+}
+
+.rp-check-btn:hover:not(:disabled) {
+    background: #BF360C;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(230, 81, 0, 0.45);
+}
+
+.rp-check-btn:disabled {
+    background: #D1D5DB;
+    color: #9CA3AF;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ============================================
+   FEEDBACK BANNER
+   ============================================ */
+.rp-feedback-banner {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: 800;
+    color: #FFFFFF;
+    z-index: 200;
+    animation: feedbackSlideUp 0.3s ease-out;
+    white-space: nowrap;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.rp-feedback-banner.correct {
+    background: var(--success);
+}
+
+.rp-feedback-banner.incorrect {
+    background: var(--error);
+}
+
+/* ============================================
+   PANTALLA DE ERROR Y CARGA
+   ============================================ */
+.game-error-container,
+.game-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #b8f0d5 0%, #e8f5c8 40%, #fef9c3 100%);
+    gap: 1rem;
+}
+
+.spinner {
+    border: 4px solid rgba(30, 58, 138, 0.3);
+    border-top: 4px solid var(--primary-blue);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================================
+   PANEL DE ACCESO (Access Panel)
+   Los estilos principales vienen de GameAccessPanel.css
+   ============================================ */
+
+/* ============================================
+   VISTA FINAL
+   ============================================ */
+.rp-final-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #b8f0d5 0%, #e8f5c8 40%, #fef9c3 100%);
+    padding: 1.5rem 1rem 2rem;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+.rp-final-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 420px;
+    margin-bottom: 1.5rem;
+}
+
+.rp-final-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--avatar-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.rp-final-header-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--primary-blue);
+}
+
+.rp-final-close-btn {
+    background: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: transform 0.15s;
+}
+
+.rp-final-close-btn:hover {
+    transform: scale(1.1);
+}
+
+.rp-final-lesson-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+/* Trofeo */
+.rp-trophy-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 6px solid #FFF9C4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+    animation: trophyPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Card de resultados */
+.rp-results-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.rp-results-card-header {
+    background: var(--primary-orange);
+    margin: -1.5rem -1.5rem 1.2rem -1.5rem;
+    padding: 0.6rem 1.5rem;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+.rp-results-message {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--primary-blue);
+    text-align: center;
+    margin-bottom: 1.2rem;
+}
+
+.rp-results-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.rp-results-row:last-child {
+    border-bottom: none;
+}
+
+.rp-results-row-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.rp-results-row-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #EFF6FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.rp-results-row-value {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--primary-blue);
+}
+
+/* Botones finales */
+.rp-final-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 380px;
+}
+
+.rp-btn-repeat {
+    width: 100%;
+    padding: 1rem;
+    background: #FFFFFF;
+    color: var(--primary-orange);
+    border: 2px solid var(--primary-orange);
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rp-btn-repeat:hover {
+    background: #fff7f0;
+    transform: translateY(-2px);
+}
+
+.rp-btn-next {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-orange);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(230, 81, 0, 0.35);
+    transition: all 0.2s;
+}
+
+.rp-btn-next:hover {
+    background: #BF360C;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(230, 81, 0, 0.45);
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes pieceAppear {
+    from {
+        transform: scale(0.7) translateY(-20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pieceSnap {
+    0% {
+        transform: scale(1.12) translateY(-6px);
+    }
+
+    60% {
+        transform: scale(0.96) translateY(-3px);
+    }
+
+    100% {
+        transform: scale(1) translateY(-4px);
+    }
+}
+
+@keyframes pieceCorrect {
+    0% {
+        transform: scale(1);
+    }
+
+    40% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pieceShake {
+    0% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-8px);
+    }
+
+    40% {
+        transform: translateX(8px);
+    }
+
+    60% {
+        transform: translateX(-6px);
+    }
+
+    80% {
+        transform: translateX(6px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes feedbackSlideUp {
+    from {
+        transform: translateX(-50%) translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes trophyPop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de la pregunta al cambiar */
+.rp-question-area {
+    animation: slideUp 0.3s ease-out;
+}

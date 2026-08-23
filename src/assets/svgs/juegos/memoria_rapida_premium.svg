@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <filter id="glow-lightning" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="motion-blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4 0" result="blur"/>
+    </filter>
+    <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/> <!-- Yellow 200 -->
+      <stop offset="50%" stop-color="#F59E0B"/> <!-- Amber 500 -->
+      <stop offset="100%" stop-color="#EA580C"/> <!-- Amber 600 -->
+    </linearGradient>
+    <linearGradient id="bgSpeed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Círculo de fondo dinámico -->
+  <circle cx="60" cy="60" r="50" fill="url(#bgSpeed)" />
+  
+  <!-- Líneas de velocidad (Speed lines) -->
+  <g stroke="#38BDF8" stroke-width="2" stroke-linecap="round" opacity="0.4" filter="url(#motion-blur)">
+    <line x1="10" y1="20" x2="40" y2="40"/>
+    <line x1="90" y1="10" x2="70" y2="30"/>
+    <line x1="5" y1="80" x2="30" y2="70"/>
+    <line x1="105" y1="90" x2="80" y2="75"/>
+    <line x1="110" y1="50" x2="85" y2="55"/>
+  </g>
+
+  <!-- Relámpago Secundario (Sombra/Resplandor interno) -->
+  <path d="M65,15 L35,65 L55,65 L45,105 L85,45 L60,45 Z" fill="#FDE047" opacity="0.3" filter="url(#glow-lightning)" transform="translate(4, 2)"/>
+
+  <!-- Relámpago Principal -->
+  <path d="M65,15 L35,65 L55,65 L45,105 L85,45 L60,45 Z" fill="url(#boltGrad)" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round" filter="url(#glow-lightning)"/>
+
+  <!-- Destellos/Chispas de energía -->
+  <circle cx="40" cy="30" r="3" fill="#FFFFFF" filter="url(#glow-lightning)"/>
+  <circle cx="80" cy="80" r="2" fill="#FDE047" filter="url(#glow-lightning)"/>
+  <circle cx="30" cy="90" r="4" fill="#F59E0B" filter="url(#glow-lightning)"/>
+  <circle cx="95" cy="40" r="2.5" fill="#FFFFFF" filter="url(#glow-lightning)"/>
+  
+  <!-- Anillos de impacto -->
+  <circle cx="60" cy="60" r="35" fill="none" stroke="#FCD34D" stroke-width="1" opacity="0.5" stroke-dasharray="10 5" transform="rotate(45 60 60)"/>
+  <circle cx="60" cy="60" r="45" fill="none" stroke="#38BDF8" stroke-width="1" opacity="0.3" stroke-dasharray="5 15" transform="rotate(-30 60 60)"/>
+</svg>

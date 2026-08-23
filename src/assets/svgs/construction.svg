@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <filter id="glowLight">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#ef4444" flood-opacity="0.8" />
+    </filter>
+    <clipPath id="boardClip">
+      <rect x="15" y="45" width="70" height="20" rx="3" />
+    </clipPath>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="50" cy="92" rx="35" ry="3" fill="#000000" opacity="0.15" />
+
+  <!-- Back Legs -->
+  <line x1="30" y1="45" x2="20" y2="90" stroke="#64748b" stroke-width="6" stroke-linecap="round" />
+  <line x1="70" y1="45" x2="80" y2="90" stroke="#64748b" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Front Legs -->
+  <line x1="30" y1="45" x2="40" y2="90" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+  <line x1="70" y1="45" x2="60" y2="90" stroke="#94a3b8" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Leg braces -->
+  <line x1="23" y1="75" x2="37" y2="75" stroke="#475569" stroke-width="4" stroke-linecap="round" />
+  <line x1="63" y1="75" x2="77" y2="75" stroke="#475569" stroke-width="4" stroke-linecap="round" />
+
+  <!-- Main Board Background (Vibrant Yellow) -->
+  <rect x="15" y="45" width="70" height="20" rx="3" fill="#ffe000" />
+  
+  <!-- Highlight on top edge of the board -->
+  <rect x="15" y="45" width="70" height="3" fill="#ffffff" opacity="0.4" />
+
+  <!-- Main Board Stripes (Clipped) -->
+  <g clip-path="url(#boardClip)">
+    <path d="M 10 40 L 30 70 M 25 40 L 45 70 M 40 40 L 60 70 M 55 40 L 75 70 M 70 40 L 90 70 M 85 40 L 105 70" stroke="#1e293b" stroke-width="8" />
+  </g>
+
+</svg>

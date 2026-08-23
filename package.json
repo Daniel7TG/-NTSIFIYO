@@ -1,0 +1,43 @@
+{
+  "name": "mazahua-connect-client",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@fontsource-variable/material-symbols-outlined": "^5.2.43",
+    "@fontsource/poppins": "^5.2.7",
+    "@fontsource/public-sans": "^5.2.7",
+    "@tanstack/react-query": "^5.99.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.20.0",
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "start": "npm run build:css && react-scripts start",
+    "build": "npm run build:css && react-scripts build",
+    "build:css": "tailwindcss -i ./src/index.css -o ./src/tailwind.output.css --minify",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.5.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^3.4.19"
+  },
+  "optionalDependencies": {
+    "yaml": "^2.8.4"
+  }
+}

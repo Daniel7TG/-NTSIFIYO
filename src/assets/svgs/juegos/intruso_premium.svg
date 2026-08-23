@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <filter id="drop-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="3" dy="5" stdDeviation="4" flood-color="#000000" flood-opacity="0.4"/>
+    </filter>
+    <linearGradient id="lensGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="frameGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#475569"/>
+      <stop offset="50%" stop-color="#94A3B8"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E65100"/>
+      <stop offset="100%" stop-color="#9A3412"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Elementos de fondo (Normales) -->
+  <rect x="15" y="20" width="20" height="20" rx="4" fill="#1E3A8A" opacity="0.6"/>
+  <rect x="85" y="20" width="20" height="20" rx="4" fill="#1E3A8A" opacity="0.6"/>
+  <rect x="15" y="80" width="20" height="20" rx="4" fill="#1E3A8A" opacity="0.6"/>
+  
+  <!-- El intruso (Resaltado bajo la lupa teórica) -->
+  <g transform="translate(60, 50)">
+    <!-- Olas de revelación -->
+    <circle cx="0" cy="0" r="25" fill="none" stroke="#E65100" stroke-width="2" opacity="0.3">
+      <animate attributeName="r" values="0;25" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.8;0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Elemento Intruso -->
+    <path d="M0,-15 L15,10 L-15,10 Z" fill="#E65100" filter="url(#drop-shadow)"/>
+  </g>
+
+  <!-- Lupa -->
+  <g transform="translate(10, 10)" filter="url(#drop-shadow)">
+    <!-- Mango -->
+    <rect x="65" y="65" width="12" height="35" rx="6" fill="url(#handleGrad)" transform="rotate(-45 71 82.5)"/>
+    <rect x="67" y="66" width="4" height="33" rx="2" fill="#FFFFFF" opacity="0.2" transform="rotate(-45 71 82.5)"/>
+    
+    <!-- Marco -->
+    <circle cx="50" cy="40" r="30" fill="none" stroke="url(#frameGrad)" stroke-width="8"/>
+    
+    <!-- Lente de cristal -->
+    <circle cx="50" cy="40" r="26" fill="url(#lensGrad)"/>
+    <!-- Reflejo del lente -->
+    <path d="M30,30 Q50,20 65,35" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+  </g>
+</svg>

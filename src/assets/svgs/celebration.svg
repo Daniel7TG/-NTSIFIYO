@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
+  <defs>
+    <radialGradient id="starGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#eab308" />
+    </radialGradient>
+    <filter id="glowStar">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#eab308" flood-opacity="0.8" />
+    </filter>
+  </defs>
+  
+  <!-- Confetti Elements -->
+  <g>
+    <rect x="20" y="-20" width="6" height="12" fill="#ef4444" transform="rotate(30 23 -14)">
+      <animate attributeName="y" values="-20; 120" dur="2.5s" repeatCount="indefinite" />
+    </rect>
+    <circle cx="60" cy="-20" r="5" fill="#3b82f6">
+      <animate attributeName="cy" values="-20; 120" dur="1.8s" repeatCount="indefinite" />
+    </circle>
+    <rect x="100" y="-20" width="8" height="8" fill="#10b981" transform="rotate(45 104 -16)">
+      <animate attributeName="y" values="-20; 120" dur="2.2s" repeatCount="indefinite" />
+    </rect>
+    <rect x="140" y="-20" width="5" height="15" fill="#f97316" transform="rotate(-15 142 -12)">
+      <animate attributeName="y" values="-20; 120" dur="1.5s" repeatCount="indefinite" />
+    </rect>
+    <circle cx="180" cy="-20" r="6" fill="#ef4444">
+      <animate attributeName="cy" values="-20; 120" dur="2s" repeatCount="indefinite" />
+    </circle>
+    <rect x="220" y="-20" width="6" height="6" fill="#8b5cf6" transform="rotate(60 223 -17)">
+      <animate attributeName="y" values="-20; 120" dur="2.4s" repeatCount="indefinite" />
+    </rect>
+    <circle cx="260" cy="-20" r="4" fill="#fde047">
+      <animate attributeName="cy" values="-20; 120" dur="1.7s" repeatCount="indefinite" />
+    </circle>
+    <rect x="280" y="-20" width="4" height="12" fill="#3b82f6" transform="rotate(-30 282 -14)">
+      <animate attributeName="y" values="-20; 120" dur="2.1s" repeatCount="indefinite" />
+    </rect>
+  </g>
+
+  <!-- Left Balloon -->
+  <g transform="translate(40, 40)">
+    <animateTransform attributeName="transform" type="translate" values="40,40; 40,35; 40,40" dur="3s" repeatCount="indefinite" />
+    <path d="M 0 16 L -3 22 L 3 22 Z" fill="#ef4444" />
+    <ellipse cx="0" cy="0" rx="12" ry="16" fill="#ef4444" />
+    <path d="M -4 -5 A 6 8 0 0 1 0 -12" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+    <path d="M 0 22 Q -5 40 5 60" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+  </g>
+
+  <!-- Right Balloon -->
+  <g transform="translate(260, 30)">
+    <animateTransform attributeName="transform" type="translate" values="260,30; 260,38; 260,30" dur="4s" repeatCount="indefinite" />
+    <path d="M 0 16 L -3 22 L 3 22 Z" fill="#10b981" />
+    <ellipse cx="0" cy="0" rx="12" ry="16" fill="#10b981" />
+    <path d="M -4 -5 A 6 8 0 0 1 0 -12" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+    <path d="M 0 22 Q 5 40 -5 60" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+  </g>
+
+  <!-- Central Glowing Star -->
+  <g transform="translate(150, 50)" filter="url(#glowStar)">
+    <g>
+      <animateTransform attributeName="transform" type="scale" values="0.8; 0.9; 0.8" dur="2s" repeatCount="indefinite" />
+      <g>
+        <animateTransform attributeName="transform" type="rotate" values="-10; 10; -10" dur="3s" repeatCount="indefinite" />
+        <path d="M 0 -35 L 9 -12 L 34 -12 L 14 3 L 21 28 L 0 13 L -21 28 L -14 3 L -34 -12 L -9 -12 Z" fill="url(#starGrad)" />
+      </g>
+    </g>
+  </g>
+
+</svg>

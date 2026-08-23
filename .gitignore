@@ -1,11 +1,10 @@
-client/node_modules/
+node_modules/
 CLAUDE.md
-client/.env
+.env
 server
-client/.env
+.env
 Cronograma_NtsiFiyo.md
-cliente_clase/ 
-client/build/
+build/
 imagenesAnimales/
 imagenesPronombres/
 imagenesFrutas/

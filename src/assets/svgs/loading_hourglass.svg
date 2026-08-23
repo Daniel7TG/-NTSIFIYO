@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="glass" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.4" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#e0f2fe" stop-opacity="0.4" />
+    </linearGradient>
+    <linearGradient id="sand" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <linearGradient id="wood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6d28d9" />
+    </linearGradient>
+    <filter id="glowSand">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#fbbf24" flood-opacity="0.6" />
+    </filter>
+  </defs>
+  <!-- Top and Bottom bases -->
+  <rect x="25" y="10" width="50" height="10" rx="3" fill="url(#wood)" />
+  <rect x="25" y="80" width="50" height="10" rx="3" fill="url(#wood)" />
+  <!-- Glass body -->
+  <path d="M 30 20 Q 30 40 45 50 Q 30 60 30 80 L 70 80 Q 70 60 55 50 Q 70 40 70 20 Z" fill="url(#glass)" stroke="#bae6fd" stroke-width="2" />
+  <!-- Top Sand -->
+  <path d="M 35 25 Q 35 35 46 48 Q 54 48 65 25 Z" fill="url(#sand)" filter="url(#glowSand)">
+    <animate attributeName="d" values="M 35 25 Q 35 35 46 48 Q 54 48 65 25 Z; M 45 45 Q 48 48 50 50 Q 52 48 55 45 Z" dur="2s" repeatCount="indefinite" />
+  </path>
+  <!-- Bottom Sand -->
+  <path d="M 35 80 L 65 80 Q 60 65 50 60 Q 40 65 35 80 Z" fill="url(#sand)" filter="url(#glowSand)">
+    <animate attributeName="d" values="M 45 80 L 55 80 Q 50 75 50 75 Q 50 75 45 80 Z; M 35 80 L 65 80 Q 60 65 50 60 Q 40 65 35 80 Z" dur="2s" repeatCount="indefinite" />
+  </path>
+  <!-- Falling stream -->
+  <line x1="50" y1="48" x2="50" y2="70" stroke="#fcd34d" stroke-width="2" stroke-dasharray="4 2">
+    <animate attributeName="stroke-dashoffset" from="0" to="-6" dur="0.2s" repeatCount="indefinite" />
+  </line>
+  <!-- Stars -->
+  <circle cx="20" cy="30" r="2" fill="#fbbf24" />
+  <circle cx="80" cy="70" r="3" fill="#fbbf24" />
+</svg>
