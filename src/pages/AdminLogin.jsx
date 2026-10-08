@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
-import UserService from '../services/UserService';
 import Roles from '../utils/roles';
 import { useAuth } from '../context/AuthContext';
 
@@ -39,7 +38,6 @@ const AdminLogin = () => {
                 };
                 login(userData, jwtToken);
 
-                await UserService.startSession();
                 window.dispatchEvent(new Event('authChanged'));
                 navigate('/admin/dashboard');
             } else {

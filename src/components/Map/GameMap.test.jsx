@@ -4,7 +4,8 @@ import GameMap from './GameMap';
 import geometry from './mapGeometry.json';
 import ActivityApiService from '../../services/ActivityApiService';
 
-jest.mock('react-router-dom', () => ({ useNavigate: () => jest.fn() }));
+let mockLocation = { pathname: '/estudiante/mapa', state: null };
+jest.mock('react-router-dom', () => ({ useLocation: () => mockLocation, useNavigate: () => jest.fn() }));
 jest.mock('../../context/GameContext', () => ({ useGame: () => ({ saveGameData: jest.fn() }) }));
 jest.mock('../../services/ActivityApiService', () => ({
     getGamesByTopic: jest.fn().mockResolvedValue({ success: true, data: { content: [] } }),
@@ -41,5 +42,21 @@ it('mantiene las nueve zonas dentro del lienzo y recorta sus áreas pulsables', 
     } finally {
         await act(async () => root.unmount());
         host.remove();
+    }
+});
+
+it('conserva el segundo tema al volver a una zona del mapa', async () => {
+    ActivityApiService.getGamesByTopic.mockResolvedValue({ success: true, data: { content: [] } });
+    ActivityApiService.getMyGameStars.mockResolvedValue({ success: true, data: [] });
+    mockLocation = { pathname: '/visitante/mapa', state: { selectedCategory: { id: 'PARK', label: 'Parque' }, activeTopic: 'COLORS' } };
+    const host = document.createElement('div'); document.body.appendChild(host);
+    const root = createRoot(host);
+    try {
+        await act(async () => root.render(<GameMap />));
+        expect(host.querySelector('.map-popup-title').textContent).toBe('Parque');
+        expect(host.querySelector('.map-tab.active').textContent).toBe('Colores');
+    } finally {
+        await act(async () => root.unmount()); host.remove();
+        mockLocation = { pathname: '/estudiante/mapa', state: null };
     }
 });

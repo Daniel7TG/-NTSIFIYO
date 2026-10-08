@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GoogleAuthService from '../../services/GoogleAuthService';
 import GoogleRegisterModal from './GoogleRegisterModal';
-import UserService from '../../services/UserService';
 import { useAuth } from '../../context/AuthContext';
 import { useAlert } from '../../context/AlertContext';
 import Roles from '../../utils/roles';
@@ -89,7 +88,6 @@ const GoogleLoginButton = () => {
             login(userData, jwtToken);
 
             // Iniciar sesión en el backend (tracking)
-            await UserService.startSession();
 
             // Notificar a otros componentes
             window.dispatchEvent(new Event('authChanged'));

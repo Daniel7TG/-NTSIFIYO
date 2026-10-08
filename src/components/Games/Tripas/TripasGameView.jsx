@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameService from '../../../services/GameService';
 import GameSummary from '../GamePanel/GameSummary';
 import GameCard from '../GameCard/GameCard';
@@ -42,6 +43,7 @@ const TripasGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [loading, setLoading] = useState(true);
@@ -273,6 +275,8 @@ const TripasGameView = () => {
         const logs = (gameWords || []).map(w => ({
             questionId: null,
             answerId: w.id,
+                promptWordId: w.id,
+                selectedWordId: finalPairs.some(p => p.wordId === w.id) ? w.id : null,
             isCorrect: finalPairs.some(p => p.wordId === w.id),
             wordText: w.spanishWord || w.mazahuaWord,
         }));
@@ -315,7 +319,7 @@ const TripasGameView = () => {
                 correctAnswers={matchedPairs.length}
                 totalQuestions={gameWords.length}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/tripas')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/tripas')}
                 onRetry={initGame}
             />
         );
@@ -354,7 +358,7 @@ const TripasGameView = () => {
             <div className="game-top-bar">
                 <button
                     className="game-top-bar__back-btn"
-                    onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/tripas')}
+                    onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/tripas')}
                 >‹</button>
                 <span className="game-top-bar__title">Tripas del Gato</span>
                 <div className={`game-top-bar__timer ${lowTime ? 'timer-low' : ''}`}>⏱ {formatTime(timeLeft)}</div>

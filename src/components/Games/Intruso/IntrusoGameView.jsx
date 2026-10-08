@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
 import GameCard from '../GameCard/GameCard';
@@ -15,6 +16,7 @@ const IntrusoGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [activity, setActivity] = useState(null);
@@ -181,7 +183,7 @@ const IntrusoGameView = () => {
                 correctAnswers={correctCount}
                 totalQuestions={activity?.questions?.length || 0}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/estudiante/actividades')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/estudiante/actividades')}
                 onRetry={initGame}
             />
         );
@@ -197,7 +199,7 @@ const IntrusoGameView = () => {
         <div className="game-container">
             {/* Top Bar */}
             <div className="game-top-bar">
-                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate(-1)}>
+                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate(-1)}>
                     ⏸
                 </button>
                 <div className="intruso-score-badge">

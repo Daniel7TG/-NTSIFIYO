@@ -92,7 +92,7 @@ function GameAccessPanel({
                 // Save in memory (Context)
                 saveGameData(result.data);
                 // Navigate to the game
-                navigate(`${gameBasePath}/jugar/${activityId}`);
+                navigate(`${gameBasePath}/jugar/${result.data.activityId}`);
             } else {
                 alert(`Error al iniciar el juego: ${result.error}`);
             }

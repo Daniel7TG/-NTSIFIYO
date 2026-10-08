@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import IconHourglass from '../../../assets/svgs/loading_hourglass.svg';
 import IconQuiz from '../../../assets/svgs/juegos/quiz_premium.svg';
 import GameSummary from '../GamePanel/GameSummary';
@@ -15,6 +16,7 @@ function QuizGameView() {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [activity, setactivity] = useState(null);
@@ -145,7 +147,7 @@ function QuizGameView() {
 
     const handleExit = () => {
         if (returnToMap) {
-            navigate('/estudiante/mapa');
+            navigate(returnMapPath, { state: location.state });
         } else {
             navigate('/games/quiz');
         }

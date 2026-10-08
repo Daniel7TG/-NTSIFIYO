@@ -1,5 +1,6 @@
 // GameSummary.jsx - Rediseño v2
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ActivityApiService from '../../../services/ActivityApiService';
 import '../../../styles/components/games/gamePanel/GameSummary.css';
 import { useGame } from '../../../context/GameContext';
@@ -49,12 +50,17 @@ const GameSummary = ({
     onExit,
     onRetry
 }) => {
-    const { currentGameData } = useGame();
+    const { currentGameData, saveGameData } = useGame();
+    const navigate = useNavigate();
+    const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
     const [expandedLogs, setExpandedLogs] = useState(false);
     const [timeElapsed, setTimeElapsed] = useState(0);
+    const [retrying, setRetrying] = useState(false);
+    const [retryError, setRetryError] = useState(null);
+    const retryPending = useRef(false);
 
     // Game type detection using activityConfig.
     // Fallback: if the start payload didn't carry gameType, treat logs that
@@ -67,7 +73,7 @@ const GameSummary = ({
     const percentage = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
     const performance = getPerformance(percentage);
     const headerContent = getHeaderContent(percentage);
-    const starsCount = Math.round((percentage / 100) * 5);
+    const starsCount = Math.floor((percentage / 100) * 5);
 
     useEffect(() => {
         if (startDate) {
@@ -81,6 +87,7 @@ const GameSummary = ({
     const calculateResults = async () => {
         setLoading(true);
         setError(null);
+        setResult(null);
         try {
             const trueActivityId = currentGameData?.activityId ? parseInt(currentGameData.activityId, 10) : parseInt(activityId, 10);
             const trueGameId = parseInt(currentGameData?.gameId || gameId || activityId, 10);
@@ -93,7 +100,10 @@ const GameSummary = ({
                 gameId: trueGameId,
                 responseLogs: (responseLogs || []).map(log => ({
                     questionId: log.questionId,
-                    responseAnswerId: log.answerId,
+                    responseAnswerId: Object.prototype.hasOwnProperty.call(log, 'selectedWordId') ? log.selectedWordId : log.answerId,
+                    ...(log.promptWordId == null ? {} : { promptWordId: log.promptWordId }),
+                    ...(Object.prototype.hasOwnProperty.call(log, 'selectedWordId') ? { selectedWordId: log.selectedWordId } : {}),
+                    ...(Object.prototype.hasOwnProperty.call(log, 'claimedMatch') ? { claimedMatch: log.claimedMatch } : {}),
                     isCorrect: log.isCorrect
                 }))
             };
@@ -101,13 +111,11 @@ const GameSummary = ({
             const apiResult = await ActivityApiService.completeActivity(payload);
 
             if (apiResult.success && apiResult.data) {
-                setResult(apiResult.data);
-                if (trueGameId && totalQuestions > 0) {
-                    await ActivityApiService.saveGameStars(trueGameId, correctAnswers, totalQuestions);
+                if (payload.attemptId != null && String(apiResult.data.attemptId) !== String(payload.attemptId)) {
+                    throw new Error('El servidor no confirmó el intento actual.');
                 }
-            } else if (apiResult.success) {
-                // Si tuvo éxito pero no hay datos (fallback visual mínimo)
-                setResult({ xpGained: 0, actualXp: 0, currentLevel: 1, isLevelUp: false });
+                setResult(apiResult.data);
+                window.dispatchEvent(new CustomEvent('game-stars-updated'));
             } else {
                 setError(apiResult.error || "No se pudo guardar el progreso.");
             }
@@ -122,6 +130,33 @@ const GameSummary = ({
     useEffect(() => {
         calculateResults();
     }, [activityId, gameId, startDate, correctAnswers, responseLogs]);
+
+    const retry = async () => {
+        if (retryPending.current || !onRetry || !result || error) return;
+        retryPending.current = true; setRetrying(true); setRetryError(null);
+        try {
+            const next = currentGameData?.fromAssignment
+                ? await ActivityApiService.startStudentActivity(currentGameData.activityId)
+                : await ActivityApiService.startGame(currentGameData?.gameId || gameId);
+            if (!next.success || !next.data?.activityId || !next.data?.attemptId) {
+                throw new Error(next.error || 'No se pudo iniciar otro intento.');
+            }
+            if (String(next.data.attemptId) === String(currentGameData?.attemptId)) {
+                throw new Error('El servidor no abrió un nuevo intento. Vuelve a intentarlo.');
+            }
+            saveGameData(next.data);
+            if (String(next.data.activityId) !== String(currentGameData?.activityId)) {
+                navigate(location.pathname.replace(/\/jugar\/[^/]+$/, `/jugar/${next.data.activityId}`), {
+                    replace: true, state: location.state,
+                });
+            }
+            onRetry();
+        } catch (cause) {
+            setRetryError(cause.message || 'No se pudo iniciar otro intento.');
+        } finally {
+            retryPending.current = false; setRetrying(false);
+        }
+    };
 
     const playAudio = (audioUrl) => {
         if (audioUrl) {
@@ -173,10 +208,10 @@ const GameSummary = ({
             <div className="gs-card">
                 {/* Dynamic Header */}
                 <div className={`gs-header gs-header-centered ${performance}`}>
-                    {performance === 'perfecto' && <Confetti />}
+                    {!error && performance === 'perfecto' && <Confetti />}
                     <span className="gs-header-icon">{headerContent.icon}</span>
-                    <h2>{headerContent.title}</h2>
-                    <p>{headerContent.sub}</p>
+                    <h2>{error ? 'No se guardó el progreso' : headerContent.title}</h2>
+                    <p>{error ? 'Reintenta guardar antes de comenzar otra partida.' : headerContent.sub}</p>
                 </div>
 
                 {/* Content Row */}
@@ -359,8 +394,9 @@ const GameSummary = ({
 
                 {/* Actions */}
                 <div className="gs-actions">
-                    {onRetry && (
-                        <button className="gs-btn gs-btn-retry" onClick={onRetry}>🔄 Reintentar</button>
+                    {retryError && <p role="alert">{retryError}</p>}
+                    {onRetry && !(currentGameData?.fromAssignment && percentage === 100 && !error) && (
+                        <button className="gs-btn gs-btn-retry" onClick={retry} disabled={retrying || !result || Boolean(error)}>{retrying ? 'Iniciando intento…' : '🔄 Reintentar'}</button>
                     )}
                     <button className="gs-btn gs-btn-exit" onClick={onExit}>✓ Continuar</button>
                 </div>

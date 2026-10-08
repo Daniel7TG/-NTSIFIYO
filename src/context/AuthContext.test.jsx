@@ -1,8 +1,10 @@
 import React, { act } from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import UserService from '../services/UserService';
 import { AuthProvider, useAuth } from './AuthContext';
 
+jest.mock('../services/UserService', () => ({ startSession: jest.fn().mockResolvedValue({ success: true }), endSession: jest.fn().mockResolvedValue({ success: true }) }));
 jest.mock('../services/GoogleAuthService', () => ({ disableAutoSelect: jest.fn() }));
 global.IS_REACT_ACT_ENVIRONMENT = true;
 
@@ -19,6 +21,7 @@ async function mount() {
 }
 
 beforeEach(() => {
+    jest.clearAllMocks();
     localStorage.clear();
     jest.useFakeTimers();
     host = document.createElement('div');
@@ -80,4 +83,34 @@ it('cierra la sesión ante un 401 del token actual e ignora respuestas de otra s
     await act(async () => window.dispatchEvent(new CustomEvent('sessionUnauthorized', { detail: { token } })));
     expect(auth.isAuthenticated).toBe(false);
     expect(auth.sessionExpired).toBe(true);
+});
+
+it('espera el cierre del backend antes de borrar el token y la caché', async () => {
+    await mount();
+    const token = jwt('teacher');
+    await act(async () => auth.login({ userType: 'TEACHER' }, token));
+    let finish;
+    UserService.endSession.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    let closing;
+    await act(async () => { closing = auth.logout(); });
+    expect(UserService.endSession).toHaveBeenCalledWith(token);
+    expect(localStorage.getItem('authToken')).toBe(token);
+    expect(auth.isAuthenticated).toBe(true);
+    await act(async () => { finish({ success: true }); await closing; });
+    expect(localStorage.getItem('authToken')).toBeNull();
+    expect(auth.isAuthenticated).toBe(false);
+});
+
+it('el cierre anterior no borra una sesión nueva', async () => {
+    await mount();
+    await act(async () => auth.login({ userType: 'TEACHER' }, jwt('teacher')));
+    let finish;
+    UserService.endSession.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+    let closing;
+    await act(async () => { closing = auth.logout(); });
+    const newToken = jwt('other-teacher');
+    await act(async () => auth.login({ userType: 'TEACHER' }, newToken));
+    await act(async () => { finish({ success: true }); await closing; });
+    expect(localStorage.getItem('authToken')).toBe(newToken);
+    expect(auth.user.username).toBe('other-teacher');
 });

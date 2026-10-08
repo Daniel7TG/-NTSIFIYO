@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/components/teacher/configurationGameStyles.css';
 import DictionaryService from '../../services/DictionaryService';
 import GameService from '../../services/GameService';
@@ -170,14 +170,16 @@ const ConfigBadges = ({ config, hasWord }) => (
 /* ═══════════════ MAIN COMPONENT ═══════════════ */
 const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
     const { editId } = useParams();
+    const location = useLocation();
+    const initialType = Object.values(ACTIVITY_CONFIG).find(item => `${item.basePath}/crear` === location.pathname)?.type || 'QUESTIONNAIRE';
     const { showAlert } = useAlert();
     const isEditMode = !!editId;
 
     const [loadingEdit, setLoadingEdit] = useState(isEditMode);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [alertConfig, setAlertConfig] = useState(null);
-    const [interactionType, setInteractionType] = useState('QUESTIONNAIRE');
-    const [gameType, setGameType] = useState('QUESTIONNAIRE');
+    const [interactionType, setInteractionType] = useState(PAIR_TYPES.includes(initialType) ? 'PAIRS' : MEDIA_TYPES.includes(initialType) ? 'MEDIA' : 'QUESTIONNAIRE');
+    const [gameType, setGameType] = useState(initialType);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [difficult, setDifficult] = useState('EASY');
@@ -195,6 +197,12 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
     // Media mode state
     const [mediaId, setMediaId] = useState(null);
     const [allowSpanishToggle, setAllowSpanishToggle] = useState(false);
+
+    useEffect(() => {
+        if (isEditMode) return;
+        setGameType(initialType);
+        setInteractionType(PAIR_TYPES.includes(initialType) ? 'PAIRS' : MEDIA_TYPES.includes(initialType) ? 'MEDIA' : 'QUESTIONNAIRE');
+    }, [initialType, isEditMode]);
 
     // When interaction type changes, reset gameType to the first subtype of that interaction
     const handleInteractionChange = (type) => {
@@ -257,12 +265,12 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
                     }
                 }
 
-                if (game.gameCategory) {
-                    const topic = GAME_TOPICS.find(t => t.id === game.gameCategory);
+                if (game.gameTopic) {
+                    const topic = GAME_TOPICS.find(t => t.id === game.gameTopic);
                     if (topic) {
                         setSelectedTopic(topic.id);
                     } else {
-                        setSelectedTopic(game.gameCategory);
+                        setSelectedTopic(game.gameTopic);
                     }
                 }
 
@@ -390,6 +398,9 @@ const ConfigurationGameView = ({ onActivityCreated, redirectPath }) => {
                 for (let j = 0; j < q.answers.length; j++) {
                     const a = q.answers[j];
                     if (a.isCorrect) correctCount++;
+                    if (!a.wordId && !a.answerText?.trim()) {
+                        return `La opción ${j + 1} de la pregunta ${i + 1} requiere texto o una palabra válida.`;
+                    }
                     if ((config2.showImage || config2.playAudio) && !a.wordId) {
                         return `La opción ${j + 1} de la pregunta ${i + 1} requiere seleccionar una palabra base porque tiene habilitado Imagen o Audio.`;
                     }

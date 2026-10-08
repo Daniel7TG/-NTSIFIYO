@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ActivityTypes from '../../config/activityConfig';
 
 /**
  * Tarjeta de la próxima lección con preview (actividades pendientes)
@@ -21,7 +20,7 @@ const NextLessonCard = ({ pendingActivities }) => {
 
     // Tomar la primera actividad pendiente
     const nextGame = pendingActivities[0];
-    const isMemory = nextGame.gameType === ActivityTypes.fastMemory?.value || nextGame.gameType === ActivityTypes.memoryGame?.value;
+    const isMemory = ['FAST_MEMORY', 'MEMORY_GAME'].includes(nextGame.gameType);
 
     return (
         <div className="kid-card-green p-6">
@@ -56,10 +55,10 @@ const NextLessonCard = ({ pendingActivities }) => {
 
                         {/* Resume Button */}
                         <Link
-                            to={`/games/${isMemory ? 'memorama' : 'quiz'}/jugar/${nextGame.gameId}`}
+                            to="/estudiante/asignaciones"
                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FF9800] border-2 border-[#E65100] text-white font-bold rounded-2xl shadow-[0_4px_0_#C2410C] hover:shadow-[0_6px_0_#C2410C] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_1px_0_#C2410C] transition-all duration-150"
                         >
-                            <span>Comenzar</span>
+                            <span>Ir a mis asignaciones</span>
                             <span className="material-symbols-outlined text-lg">arrow_forward</span>
                         </Link>
                     </div>

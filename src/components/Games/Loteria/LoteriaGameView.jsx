@@ -1,8 +1,9 @@
+import useGameMapPath from '../../../hooks/useGameMapPath';
 // client/src/components/Games/Loteria/LoteriaGameView.jsx
 // Fase 2 — Juego: Baraja (izquierda) + Tabla 3×3 (derecha)
 // Usa GameCard para las cartas del tablero
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
 import GameService from '../../../services/GameService';
 import GameCard from '../GameCard/GameCard';
@@ -66,6 +67,9 @@ function buildGameData(words, gameConfigs) {
 const LoteriaGameView = () => {
     const { activityId } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnMapPath = useGameMapPath();
+    const returnToMap = Boolean(location.state?.returnToMap);
     const { currentGameData } = useGame();
 
     const [loading, setLoading] = useState(true);
@@ -261,7 +265,7 @@ const LoteriaGameView = () => {
                 <p style={{ fontSize: '48px', marginBottom: '0.5rem' }}>😕</p>
                 <h2 style={{ color: '#E84C0A', fontFamily: 'Poppins,sans-serif' }}>Actividad no encontrada</h2>
                 <p style={{ color: '#374151', margin: '0.5rem 0 1.5rem' }}>{loadError}</p>
-                <button onClick={() => navigate('/games/loteria')} style={{ background: '#1E3A8A', color: '#fff', padding: '0.75rem 2rem', border: 'none', borderRadius: '8px', cursor: 'pointer', fontFamily: 'Poppins,sans-serif', fontWeight: 700 }}>
+                <button onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/loteria')} style={{ background: '#1E3A8A', color: '#fff', padding: '0.75rem 2rem', border: 'none', borderRadius: '8px', cursor: 'pointer', fontFamily: 'Poppins,sans-serif', fontWeight: 700 }}>
                     Volver
                 </button>
             </div>
@@ -276,6 +280,8 @@ const LoteriaGameView = () => {
         const finalResponseLogs = board.map(card => ({
             questionId: null,
             answerId: card.wordId,
+                promptWordId: card.wordId,
+                selectedWordId: matchedIds.has(card.wordId) ? card.wordId : null,
             isCorrect: matchedIds.has(card.wordId),
             wordText: card.text
         }));
@@ -288,7 +294,7 @@ const LoteriaGameView = () => {
                 correctAnswers={matchedIds.size}
                 totalQuestions={board.length}
                 responseLogs={finalResponseLogs}
-                onExit={() => navigate('/games/loteria')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/loteria')}
                 onRetry={initGame}
             />
         );
@@ -302,7 +308,7 @@ const LoteriaGameView = () => {
 
             {/* ── Barra superior ── */}
             <div className="game-top-bar">
-                <button className="game-top-bar__back-btn" onClick={() => navigate('/games/loteria')} title="Salir">‹</button>
+                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/loteria')} title="Salir">‹</button>
                 <span className="game-top-bar__title">Lotería</span>
                 <div className="game-top-bar__timer">⏱ {formatTime(elapsed)}</div>
             </div>

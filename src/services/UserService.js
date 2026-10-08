@@ -9,49 +9,32 @@ class UserService {
      * POST /api/user/session/start
      * @returns {Promise<Object>}
      */
-    async startSession() {
-        try {
-            await apiConfig.post('/api/user/session/start');
-            return { success: true };
-        } catch (error) {
-            return {
-                success: false,
-                error: error.message
-            };
-        }
+    async startSession(token = localStorage.getItem('authToken')) {
+        return this.updateSession('/api/user/session/start', 'POST', token);
     }
 
-    /**
-     * Terminar sesión de usuario
-     * PUT /api/user/session/end
-     * @returns {Promise<Object>}
-     */
-    async endSession() {
-        try {
-            await apiConfig.put('/api/user/session/end');
-            return { success: true };
-        } catch (error) {
-            return {
-                success: false,
-                error: error.message
-            };
-        }
+    async endSession(token = localStorage.getItem('authToken')) {
+        return this.updateSession('/api/user/session/end', 'PUT', token);
     }
 
-    /**
-     * Terminar sesión durante `beforeunload`.
-     * Misma petición que endSession(), pero con `keepalive` para que el navegador
-     * la deje salir mientras descarga la página (apiConfig.put no lo soporta).
-     * No-op si no hay token guardado.
-     * @returns {void}
-     */
-    endSessionOnUnload() {
-        if (!localStorage.getItem('authToken')) return;
-        fetch(`${apiConfig.baseUrl}/api/user/session/end`, {
-            method: 'PUT',
-            headers: apiConfig.getHeaders(),
-            keepalive: true
-        }).catch(console.error);
+    async updateSession(path, method, token) {
+        if (!token) return { success: false, error: 'No hay sesión autenticada' };
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        try {
+            const response = await fetch(`${apiConfig.baseUrl}${path}`, {
+                method,
+                headers: { 'Content-Type': 'application/json', ...apiConfig.ngrokHeaders, Authorization: `Bearer ${token}` },
+                signal: controller.signal,
+                keepalive: true,
+            });
+            await apiConfig.handleResponse(response, token);
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error.message };
+        } finally {
+            clearTimeout(timeout);
+        }
     }
 
     /**

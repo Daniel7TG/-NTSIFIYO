@@ -1,10 +1,13 @@
 export const getMazeDimensions = (difficulty) => {
-    switch (difficulty) {
-        case 'Fácil':
+    switch (String(difficulty).toUpperCase()) {
+        case 'EASY':
+        case 'FÁCIL':
             return { width: 5, height: 5 };
-        case 'Difícil':
+        case 'HARD':
+        case 'DIFÍCIL':
             return { width: 10, height: 10 };
-        case 'Medio':
+        case 'MEDIUM':
+        case 'MEDIO':
         default:
             return { width: 7, height: 7 };
     }

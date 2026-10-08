@@ -41,8 +41,8 @@ const Navbar = () => {
         return () => window.removeEventListener('scroll', onScroll);
     }, [user]);
 
-    const handleLogout = () => {
-        logout();
+    const handleLogout = async () => {
+        if (await logout() === false) return;
         GoogleAuthService.disableAutoSelect();
         navigate('/');
     };
