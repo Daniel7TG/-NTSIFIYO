@@ -32,6 +32,7 @@ const Breadcrumb = () => {
         '/estudiante/diccionario': 'Diccionario',
         '/maestro/estudiantes': 'Estudiantes',
         '/maestro/asignaciones': 'Asignaciones',
+        '/maestro/reportes': 'Reportes',
         '/maestro/recursos': 'Recursos',
         '/maestro/contenido': 'Contenido',
         '/maestro/diccionario': 'Diccionario',

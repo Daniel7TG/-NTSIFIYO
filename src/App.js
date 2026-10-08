@@ -40,6 +40,7 @@ const GameMap = lazy(() => import('./components/Map/GameMap'));
 const TeacherResources = lazy(() => import('./pages/teacher/TeacherResources'));
 const TeacherStudents = lazy(() => import('./pages/teacher/TeacherStudents'));
 const TeacherAssignments = lazy(() => import('./pages/teacher/TeacherAssignments'));
+const TeacherReports = lazy(() => import('./pages/teacher/TeacherReports'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 const AdminMediaCreate = lazy(() => import('./pages/admin/AdminMediaCreate'));
 const TeacherContent = lazy(() => import('./pages/teacher/TeacherContent'));
@@ -75,7 +76,7 @@ function App() {
     const queryClient = useQueryClient();
     const { showAlert } = useAlert();
 
-    // El token guardado ya no sirve (GET /api/user/me devolvió 403): la sesión quedó
+    // El JWT caducó o una petición protegida devolvió 401: la sesión quedó
     // cerrada en AuthContext, aquí solo se limpia la caché de datos del usuario anterior
     // y se avisa. Las rutas protegidas redirigen solas a /auth vía ProtectedRoute.
     useEffect(() => {
@@ -158,6 +159,7 @@ function App() {
                                 <Route path="/maestro/dashboard" element={<Navigate to="/dashboard" replace />} />
                                 <Route path="/maestro/estudiantes" element={<TeacherStudents />} />
                                 <Route path="/maestro/asignaciones" element={<TeacherAssignments />} />
+                                <Route path="/maestro/reportes" element={<TeacherReports />} />
                                 <Route path="/maestro/recursos" element={<TeacherResources />} />
                                 <Route path="/maestro/contenido" element={<ContentSection />} />
                                 <Route path="/maestro/diccionario" element={<DictionaryPage />} />

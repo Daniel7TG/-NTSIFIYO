@@ -1,63 +1,42 @@
 import { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import GoogleAuthService from '../services/GoogleAuthService';
-import AuthService from '../services/AuthService';
+import { readJwtClaims, readStoredSession } from '../utils/authSession';
 
 const AuthContext = createContext();
 
-/**
- * Normaliza UserMeResponseDTO (GET /api/user/me) al shape que ya usa la app.
- * El DTO manda `firstName`/`lastName`; el resto de la app lee `firstname`/`lastname`.
- * Los campos por rol (level, totalExperience, grade) llegan null cuando no aplican,
- * así que solo se sobrescriben si vienen con valor (p. ej. el `grade` del maestro
- * —su grupo— no debe borrarse con el null que /me devuelve para TEACHER).
- */
-const mergeMe = (prev, me) => ({
-    ...(prev || {}),
-    username:  me.username,
-    userType:  me.userType,
-    firstname: me.firstName,
-    lastname:  me.lastName,
-    ...(me.level           != null && { level: me.level }),
-    ...(me.totalExperience != null && { totalExperience: me.totalExperience }),
-    ...(me.grade           != null && { grade: me.grade }),
-});
-
 export const AuthProvider = ({ children }) => {
-    // Inicializamos el estado intentando leer del localStorage
-    const [user, setUser] = useState(() => {
-        const savedUser = localStorage.getItem('appUser');
-        return savedUser ? JSON.parse(savedUser) : null;
-    });
-
-    const [token, setToken] = useState(() => localStorage.getItem('authToken'));
-
-    // Mientras se valida el token guardado contra el backend
-    const [isVerifying, setIsVerifying] = useState(() => !!localStorage.getItem('authToken'));
-    // true cuando el backend rechazó el token guardado (sesión caducada/inválida)
-    const [sessionExpired, setSessionExpired] = useState(false);
+    const queryClient = useQueryClient();
+    const [initialSession] = useState(readStoredSession);
+    const [user, setUser] = useState(initialSession.user);
+    const [token, setToken] = useState(initialSession.token);
+    const [sessionExpired, setSessionExpired] = useState(initialSession.invalid);
 
     const clearSession = useCallback(() => {
         setUser(null);
         setToken(null);
         localStorage.removeItem('appUser');
         localStorage.removeItem('authToken');
-        // Evitar que Google reseleccione automáticamente la cuenta en el próximo login
+        queryClient.clear();
         GoogleAuthService.disableAutoSelect();
-    }, []);
+    }, [queryClient]);
 
-    // Función para iniciar sesión
     const login = (userData, userToken) => {
-        // 1. Guardar en el estado de React (para la UI)
-        setUser(userData);
+        const claims = readJwtClaims(userToken);
+        if (!claims || claims.exp * 1000 <= Date.now()) {
+            clearSession();
+            setSessionExpired(true);
+            return;
+        }
+        const currentUser = { ...userData, username: claims.sub };
+        queryClient.clear();
+        setUser(currentUser);
         setToken(userToken);
         setSessionExpired(false);
-
-        // 2. Persistir en el navegador (para F5)
-        localStorage.setItem('appUser', JSON.stringify(userData));
+        localStorage.setItem('appUser', JSON.stringify(currentUser));
         localStorage.setItem('authToken', userToken);
     };
 
-    // Función para cerrar sesión
     const logout = useCallback(() => {
         clearSession();
         setSessionExpired(false);
@@ -75,51 +54,38 @@ export const AuthProvider = ({ children }) => {
         });
     }, []);
 
-    // ── Verificación de sesión al entrar a la aplicación ──────────────────────
-    // Si hay token guardado se contrasta con GET /api/user/me. El backend responde
-    // 403 (sin body) cuando el token falta, es inválido o expiró: en ese caso se
-    // cierra la sesión, la UI vuelve a mostrar el login y las rutas protegidas
-    // redirigen solas (ProtectedRoute depende de isAuthenticated).
+    // Restaurar la sesión usa el login guardado y la caducidad del JWT.
     useEffect(() => {
-        if (!localStorage.getItem('authToken')) {
-            setIsVerifying(false);
-            return;
-        }
+        if (initialSession.invalid) clearSession();
+        else if (initialSession.user) localStorage.setItem('appUser', JSON.stringify(initialSession.user));
+    }, [initialSession, clearSession]);
 
-        let cancelled = false;
-
-        (async () => {
-            const result = await AuthService.getMe();
-            if (cancelled) return;
-
-            if (result.success) {
-                // Refresca los datos del usuario (nivel, XP, nombre…) con lo que dice el servidor
-                setUser(prev => {
-                    const merged = mergeMe(prev, result.data);
-                    localStorage.setItem('appUser', JSON.stringify(merged));
-                    return merged;
-                });
-            } else if (result.status === 403 || result.status === 401) {
-                clearSession();
-                setSessionExpired(true);
-            }
-            // Un fallo de red (sin status) no invalida la sesión local: se conserva.
-
-            setIsVerifying(false);
-        })();
-
-        return () => { cancelled = true; };
-    }, [clearSession]);
-
-    // Evita renderizar la app con un token que aún no se sabe si es válido:
-    // sin esto, las vistas protegidas dispararían peticiones que fallarían con 403.
-    if (isVerifying) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent" />
-            </div>
-        );
-    }
+    useEffect(() => {
+        if (!token) return;
+        const expire = () => {
+            clearSession();
+            setSessionExpired(true);
+        };
+        // El navegador puede pausar timers; comprobar también al volver a la pestaña.
+        let timer;
+        const checkExpiration = () => {
+            clearTimeout(timer);
+            const remaining = (readJwtClaims(token)?.exp || 0) * 1000 - Date.now();
+            if (remaining <= 0) expire();
+            else timer = setTimeout(checkExpiration, Math.min(remaining, 2147483647));
+        };
+        const handleUnauthorized = (event) => {
+            if (event.detail?.token === token) expire();
+        };
+        checkExpiration();
+        window.addEventListener('focus', checkExpiration);
+        window.addEventListener('sessionUnauthorized', handleUnauthorized);
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener('focus', checkExpiration);
+            window.removeEventListener('sessionUnauthorized', handleUnauthorized);
+        };
+    }, [token, clearSession]);
 
     return (
         <AuthContext.Provider value={{
@@ -128,7 +94,7 @@ export const AuthProvider = ({ children }) => {
             login,
             logout,
             updateUser,
-            isAuthenticated: !!user,
+            isAuthenticated: !!user && !!token,
             sessionExpired,
             clearSessionExpired,
         }}>
@@ -137,5 +103,4 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-// Hook personalizado para usar el contexto fácilmente
 export const useAuth = () => useContext(AuthContext);

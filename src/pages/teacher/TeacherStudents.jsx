@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import List from '../../components/common/List';
 import PageShell from '../../components/common/PageShell';
 import { useTeacherStudentsQuery, useTeacherInvalidate } from '../../hooks/useTeacherQueries';
@@ -40,17 +41,14 @@ const TeacherStudents = () => {
     );
 
     const renderStudentActions = (student) => (
-        <button
-            onClick={() => {
-                // TODO: navegar al detalle de actividades del estudiante
-                console.log('Ver actividades de:', student.username);
-            }}
+        <Link
+            to={`/maestro/reportes?student=${encodeURIComponent(student.username)}`}
             title="Ver Actividades"
             className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold"
         >
             <span className="material-symbols-outlined text-[18px]">assignment</span>
-            Actividades
-        </button>
+            Reportes
+        </Link>
     );
 
     return (

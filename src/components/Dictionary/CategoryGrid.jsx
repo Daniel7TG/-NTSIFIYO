@@ -2,6 +2,7 @@ import React from 'react';
 import { darken } from '../../utils/colorUtils';
 
 // Import SVG SVGs
+import IconNumeros from '../../assets/svgs/diccionario/topic_numeros.svg';
 import IconAnimales from '../../assets/svgs/diccionario/topic_animales.svg';
 import IconFrutas from '../../assets/svgs/diccionario/topic_frutas.svg';
 import IconComida from '../../assets/svgs/diccionario/topic_comida.svg';
@@ -18,6 +19,7 @@ import IconCanciones from '../../assets/svgs/diccionario/topic_canciones.svg';
 import IconPoemas from '../../assets/svgs/diccionario/topic_poemas.svg';
 
 const topicIconMap = {
+    'NUMBERS': IconNumeros,
     'ANIMALS': IconAnimales,
     'FRUITS': IconFrutas,
     'FOOD': IconComida,
@@ -36,6 +38,7 @@ const topicIconMap = {
 
 // Color de acento vibrante por tema
 const topicColorMap = {
+    'NUMBERS': '#FF4081',
     'VOWELS': '#7c3aed',
     'PRONOUNS': '#2563eb',
     'CLOTHES': '#db2777',

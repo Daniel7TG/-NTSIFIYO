@@ -12,16 +12,39 @@
     justify-content: center;
 }
 
-/* ── Map canvas – maintains the natural 2729×1521 aspect ratio ── */
+/* ── Map canvas – maintains the natural 5516×3072 aspect ratio ── */
 .game-map-canvas {
     position: relative;
     /* On desktop: full width, height is calculated from aspect ratio */
     width: 100%;
     height: auto;
-    aspect-ratio: 2729 / 1521;
+    aspect-ratio: 5516 / 3072;
     flex-shrink: 0;
     user-select: none;
 }
+
+.map-global-progress {
+    position: absolute;
+    z-index: 5;
+    top: 2%;
+    right: 2%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: min(390px, 42%);
+    padding: 11px 15px;
+    border: 2px solid rgba(92, 58, 24, 0.4);
+    border-radius: 16px;
+    background: rgba(255, 250, 240, 0.94);
+    box-shadow: 0 4px 14px rgba(30, 25, 20, 0.18);
+    color: #4a2f1d;
+    pointer-events: none;
+}
+.map-global-progress > .material-symbols-outlined { color: #ca8a04; font-size: 26px; }
+.map-global-progress > div { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 2px; }
+.map-global-progress strong { font-size: 12px; line-height: 1.2; }
+.map-global-progress span:not(.material-symbols-outlined) { overflow: hidden; color: #7c5c43; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.map-global-progress b { color: #166534; font-size: 16px; }
 
 /* ── Base map image ─────────────────────────────────────────── */
 .game-map-base {
@@ -35,39 +58,45 @@
     pointer-events: none;  /* clicks go through to zone overlays */
 }
 
-/* ── Highlight zone overlays ────────────────────────────────── */
+/* Botones recortados a su silueta: la transparencia no intercepta clics. */
 .game-map-zone {
     position: absolute;
-    object-fit: fill;
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
     opacity: 0;
     cursor: pointer;
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.2s ease;
-    /* expand clickable area slightly so the zone edge is easier to hit */
-    pointer-events: all;
-    transform-origin: center;
+    transition: opacity 150ms ease, filter 150ms ease;
 }
 
-.game-map-zone:hover {
-    opacity: 0.8;
-    transform: scale(1.025);
-    filter: drop-shadow(0 0 12px rgba(255, 152, 0, 0.6)) brightness(1.1);
+.game-map-zone img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
 }
 
+.game-map-zone:hover,
+.game-map-zone:focus-visible,
+.game-map-zone:active,
 .game-map-zone.active {
     opacity: 1;
-    transform: scale(1.025);
-    filter: drop-shadow(0 0 16px rgba(255, 152, 0, 0.8)) brightness(1.1);
+    filter: brightness(1.1);
+}
+
+.game-map-zone:focus-visible {
+    /* El contorno CSS se recorta junto al botón; resaltar toda la silueta
+       mantiene visible el foco de teclado. */
+    filter: brightness(1.25);
 }
 
 .game-map-zone.disabled {
     cursor: not-allowed;
-    filter: grayscale(1) brightness(0.7);
 }
 
-.game-map-zone.disabled:hover {
-    opacity: 0.6;
-    transform: none;
-    filter: grayscale(1) brightness(0.7);
+@media (prefers-reduced-motion: reduce) {
+    .game-map-zone { transition: none; }
 }
 
 /* ── Popup overlay ──────────────────────────────────────────── */
@@ -150,6 +179,36 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 0 2px 0 rgba(255,255,255,0.8);
+}
+
+.map-progress-summary {
+    width: min(100%, 520px);
+    margin: -4px auto 18px;
+    color: #5c3a18;
+}
+.map-progress-copy {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 12px;
+    font-weight: 700;
+}
+.map-progress-copy strong { color: #166534; font-size: 14px; }
+.map-progress-track {
+    height: 9px;
+    margin-top: 7px;
+    overflow: hidden;
+    border: 1px solid #d2b48c;
+    border-radius: 999px;
+    background: #fff;
+}
+.map-progress-track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #65a30d, #22c55e);
+    transition: width 250ms ease;
 }
 
 .map-tabs-container {
@@ -260,6 +319,16 @@
     color: #4a2f1d;
     margin: 0 0 6px 0;
 }
+.map-game-stars {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin: 0 0 9px;
+    color: #cbd5e1;
+}
+.map-game-stars .material-symbols-outlined { font-size: 19px; }
+.map-game-stars .material-symbols-outlined.earned { color: #eab308; font-variation-settings: 'FILL' 1; }
+.map-game-star-count { margin-left: 5px; color: #7c5c43; font-size: 11px; font-weight: 800; }
 .map-game-desc {
     font-size: 14px;
     color: #7c5c43;
@@ -355,4 +424,9 @@
     .map-game-actions {
         align-items: stretch;
     }
+    .map-global-progress { top: 3%; right: 3%; max-width: 48%; padding: 7px 9px; gap: 6px; }
+    .map-global-progress > .material-symbols-outlined { font-size: 20px; }
+    .map-global-progress strong { font-size: 10px; }
+    .map-global-progress span:not(.material-symbols-outlined) { font-size: 8px; }
+    .map-global-progress b { font-size: 13px; }
 }

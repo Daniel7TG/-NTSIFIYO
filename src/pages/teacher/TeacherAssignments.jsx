@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ActivityApiService from '../../services/ActivityApiService';
+import ActivityAttemptHistory from '../../components/Teacher/ActivityAttemptHistory';
+import { useReportActivitiesQuery } from '../../hooks/useTeacherReportQueries';
 import SectionHeader from '../../components/common/SectionHeader';
 import LoadingState from '../../components/common/LoadingState';
 import ErrorState from '../../components/common/ErrorState';
 import PageShell from '../../components/common/PageShell';
-import { useTeacherAssignmentsQuery, useTeacherStudentsQuery, useTeacherInvalidate } from '../../hooks/useTeacherQueries';
+import { useTeacherAssignmentsQuery, useTeacherStudentsQuery, useTeacherInvalidate, useTeacherGroupQuery } from '../../hooks/useTeacherQueries';
 import { getGameTypeInfo } from '../../config/activityConfig';
 import { getDifficultyBadge } from '../../utils/difficultyBadges';
 
@@ -22,108 +23,60 @@ const formatDate = (dateStr) => {
     } catch { return dateStr; }
 };
 
-// ── Student Detail Row (accordion inside the expanded section) ──
-const StudentResponseRow = ({ student, activityId }) => {
+// Resolve the student's assigned Activity; the card's gameId is a different resource.
+const StudentResponseRow = ({ student, gameId, groupId }) => {
     const [open, setOpen] = useState(false);
-    const [responses, setResponses] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [loaded, setLoaded] = useState(false);
-
-    const handleToggle = async () => {
-        if (!open && !loaded) {
-            setLoading(true);
-            const result = await ActivityApiService.getStudentResponses(activityId, student.username);
-            if (result.success) {
-                setResponses(result.data);
-            }
-            setLoaded(true);
-            setLoading(false);
-        }
-        setOpen(prev => !prev);
-    };
-
-    const correctCount = responses.filter(r => r.isCorrect).length;
-    const totalCount = responses.length;
+    const [selectedActivityId, setSelectedActivityId] = useState(null);
+    const [page, setPage] = useState(0);
+    const username = student.username || student.id;
+    const results = useReportActivitiesQuery({
+        groupId, gameId, source: 'ASSIGNMENT', studentIds: [username],
+        page, size: 20, sort: 'RECENT', direction: 'DESC',
+    }, { enabled: open && Boolean(groupId && gameId && username) });
+    const rows = (results.data?.items || []).filter(row =>
+        row.source === 'ASSIGNMENT' && String(row.gameId) === String(gameId)
+        && row.studentUsername === username && Number(row.activityId) > 0);
+    const selected = rows.find(row => String(row.activityId) === String(selectedActivityId)) || rows[0];
+    const total = results.data?.total || 0;
 
     return (
         <div className="border border-gray-100 rounded-xl overflow-hidden bg-white">
-            {/* Student header row */}
-            <button
-                onClick={handleToggle}
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left"
-            >
-                {/* Avatar */}
+            <button type="button" aria-expanded={open} onClick={() => setOpen(value => !value)}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left">
                 <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
-                    {(student.firstname || student.username || '?').charAt(0).toUpperCase()}
+                    {(student.firstname || username || '?').charAt(0).toUpperCase()}
                 </div>
-
-                {/* Name / username */}
                 <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-800 text-sm truncate">
-                        {student.lastname ? `${student.lastname}, ${student.firstname}` : student.username}
+                        {[student.lastname, student.firstname].filter(Boolean).join(', ') || username}
                     </p>
-                    <p className="text-xs text-gray-400 truncate">{student.username}</p>
+                    <p className="text-xs text-gray-400 truncate">{username}</p>
                 </div>
-
-                {/* Quick badge if loaded */}
-                {loaded && !loading && (
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full ${correctCount === totalCount && totalCount > 0 ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                        {correctCount}/{totalCount} correctas
-                    </span>
-                )}
-
-                {/* Chevron */}
-                <span className="material-symbols-outlined text-gray-400 text-[20px] flex-shrink-0">
-                    {open ? 'expand_less' : 'expand_more'}
-                </span>
+                {selected?.accuracyPercent != null && <span className="text-xs font-bold px-2 py-1 rounded-full bg-green-50 text-green-700">{selected.accuracyPercent}%</span>}
+                <span className="material-symbols-outlined text-gray-400 text-[20px] flex-shrink-0" aria-hidden="true">{open ? 'expand_less' : 'expand_more'}</span>
             </button>
-
-            {/* Responses detail */}
-            {open && (
-                <div className="border-t border-gray-50 bg-gray-50/60 px-4 py-3">
-                    {loading ? (
-                        <div className="flex items-center gap-2 text-sm text-gray-400 py-2">
-                            <div className="w-4 h-4 border-2 border-gray-200 border-t-green-500 rounded-full animate-spin" />
-                            Cargando respuestas...
-                        </div>
-                    ) : responses.length === 0 ? (
-                        <p className="text-sm text-gray-400 py-2">Sin respuestas registradas.</p>
-                    ) : (
-                        <div className="space-y-2">
-                            {/* Summary bar */}
-                            <div className="flex items-center gap-3 mb-3">
-                                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-green-500 rounded-full transition-all"
-                                        style={{ width: totalCount > 0 ? `${(correctCount / totalCount) * 100}%` : '0%' }}
-                                    />
-                                </div>
-                                <span className="text-xs font-bold text-gray-600">
-                                    {totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0}%
-                                </span>
-                            </div>
-
-                            {/* Individual responses */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                                {responses.map((resp, idx) => (
-                                    <div
-                                        key={idx}
-                                        className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium border ${resp.isCorrect
-                                            ? 'bg-green-50 border-green-100 text-green-700'
-                                            : 'bg-red-50 border-red-100 text-red-600'
-                                            }`}
-                                    >
-                                        <span className="material-symbols-outlined text-[16px]">
-                                            {resp.isCorrect ? 'check_circle' : 'cancel'}
-                                        </span>
-                                        <span>Pregunta {idx + 1}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
+            {open && <div className="border-t border-gray-100 bg-gray-50/60 px-4 py-4">
+                {results.isLoading || results.isPending ? <p role="status" className="text-sm text-gray-500">Buscando la actividad del alumno...</p>
+                    : results.error ? <div role="alert" className="text-sm text-red-700">
+                        <p>{results.error.message || 'No se pudo consultar la actividad del alumno.'}</p>
+                        <button type="button" onClick={() => results.refetch()} className="mt-2 font-semibold underline">Reintentar consulta</button>
+                    </div>
+                        : !selected ? <p className="text-sm text-gray-500">Este alumno todavía no tiene un intento registrado en esta asignación.</p>
+                            : <>
+                                {rows.length > 1 && <label className="mb-4 flex flex-wrap items-center gap-2 text-sm font-semibold text-gray-700">
+                                    Asignación del alumno
+                                    <select value={String(selected.activityId)} onChange={event => setSelectedActivityId(event.target.value)} className="rounded-lg border border-gray-300 bg-white px-3 py-2 font-normal">
+                                        {rows.map(row => <option key={row.activityId} value={String(row.activityId)}>Asignación #{row.activityId} · {formatDate(row.activityDate)}</option>)}
+                                    </select>
+                                </label>}
+                                <ActivityAttemptHistory key={selected.activityId} activityId={selected.activityId} />
+                            </>}
+                {total > 20 && <div className="mt-4 flex items-center justify-between gap-2 text-sm">
+                    <button type="button" disabled={page === 0 || results.isFetching} onClick={() => setPage(value => value - 1)} className="font-semibold text-green-700 disabled:opacity-40">Asignaciones anteriores</button>
+                    <span>Página {page + 1} de {Math.ceil(total / 20)}</span>
+                    <button type="button" disabled={(page + 1) * 20 >= total || results.isFetching} onClick={() => setPage(value => value + 1)} className="font-semibold text-green-700 disabled:opacity-40">Asignaciones siguientes</button>
+                </div>}
+            </div>}
         </div>
     );
 };
@@ -132,6 +85,7 @@ const StudentResponseRow = ({ student, activityId }) => {
 
 const TeacherAssignments = () => {
     const { data, isLoading, error } = useTeacherAssignmentsQuery();
+    const groupQuery = useTeacherGroupQuery();
     const { data: students = [] } = useTeacherStudentsQuery();
     const { reloadAssignments } = useTeacherInvalidate();
     const activities = data?.activities || [];
@@ -150,20 +104,20 @@ const TeacherAssignments = () => {
                         onReload={reloadAssignments}
                     />
 
-                    {isLoading ? (
+                    {isLoading || groupQuery.isLoading ? (
                         <LoadingState message="Cargando asignaciones..." />
-                    ) : error ? (
+                    ) : error || groupQuery.error ? (
                         <ErrorState
-                            message={error.message}
+                            message={(error || groupQuery.error).message}
                             onRetry={reloadAssignments}
                             dashboardPath="/dashboard"
                         />
                     ) : activities.length === 0 ? (
                         <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 shadow-sm">
                             <img src={IconEmptyBox} alt="Vacío" className="w-20 h-20 mx-auto mb-4" />
-                            <h3 className="text-xl font-bold text-gray-800 mb-2">Sin asignaciones activas</h3>
-                            <p className="text-gray-500">No hay actividades asignadas a tu grupo en este momento.</p>
-                            <p className="text-gray-400 text-sm mt-2">Asigna actividades desde la sección de <Link to="/maestro/recursos" className="text-green-600 font-semibold hover:underline">Recursos</Link>.</p>
+                            <h3 className="text-xl font-bold text-gray-800 mb-2">{data?.noGroup ? 'Sin grupo asignado' : 'Sin asignaciones activas'}</h3>
+                            <p className="text-gray-500">{data?.noGroup ? 'Solicita al administrador que te asigne un grupo.' : 'No hay actividades asignadas a tu grupo en este momento.'}</p>
+                            {!data?.noGroup && <p className="text-gray-400 text-sm mt-2">Asigna actividades desde la sección de <Link to="/maestro/recursos" className="text-green-600 font-semibold hover:underline">Recursos</Link>.</p>}
                         </div>
                     ) : (
                         <div className="flex flex-col gap-4">
@@ -305,7 +259,8 @@ const TeacherAssignments = () => {
                                                             <StudentResponseRow
                                                                 key={student.username || student.id}
                                                                 student={student}
-                                                                activityId={activity.gameId}
+                                                                gameId={activity.gameId}
+                                                                groupId={groupQuery.data?.groupId}
                                                             />
                                                         ))}
                                                     </div>

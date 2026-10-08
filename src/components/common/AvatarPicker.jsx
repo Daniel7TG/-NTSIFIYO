@@ -41,7 +41,7 @@ const AvatarPicker = ({ size = 96 }) => {
 
     const currentId = Number.isInteger(user?.avatarId) ? user.avatarId : 0;
 
-    // El avatar no viene en el login ni en /api/user/me: se pide aparte la primera vez.
+    // El avatar no viene en el login: se pide aparte la primera vez.
     useEffect(() => {
         if (Number.isInteger(user?.avatarId)) return;
         let cancelled = false;

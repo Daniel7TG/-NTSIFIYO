@@ -3,59 +3,52 @@
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import ActivityApiService from '../services/ActivityApiService';
-import AuthService from '../services/AuthService';
+import GroupService from '../services/GroupService';
 import AdminService from '../services/AdminService';
 import { gamesKeys } from './useGamesQueries';
 
 // ── Query Keys ────────────────────────────────────────────────────────────────
 export const teacherKeys = {
+    group:       () => ['teacher', 'group'],
     dashboard:   () => ['teacher', 'dashboard'],
     instances:   () => ['teacher', 'instances'],
     assignments: () => ['teacher', 'assignments'],
     students:    () => ['teacher', 'students'],
+    reports:     (filters) => ['teacher', 'reports', filters],
 };
 
-// ── Shared: resolve groupId ───────────────────────────────────────────────────
-async function resolveGroupId() {
-    const currentUser = AuthService.getCurrentUser();
-    if (currentUser?.grade) return currentUser.grade;
-    try {
-        const instResult = await ActivityApiService.getGroupInstances();
-        if (instResult.success && instResult.data.length > 0) {
-            const id = instResult.data[0].group?.id || instResult.data[0].groupId;
-            if (id) return id;
-        }
-    } catch (e) {
-        console.error('Error resolving groupId:', e);
-    }
-    return null;
-}
+const groupQueryOptions = () => ({
+    queryKey: teacherKeys.group(),
+    queryFn: () => GroupService.getMyGroup(),
+});
 
 // ── Fetchers ──────────────────────────────────────────────────────────────────
-async function fetchTeacherDashboard() {
-    const gId = await resolveGroupId();
-    if (!gId) {
-        return { totalStudents: 0, activeAssignments: [], alertStudents: [], completeStudents: [], groupId: null, noGroup: true };
+export async function fetchTeacherDashboard(group) {
+    const { groupId, grade } = group;
+    if (groupId === null) {
+        return { totalStudents: 0, activeAssignments: [], alertStudents: [], completeStudents: [], groupId: null, grade: null, noGroup: true };
     }
-    const result = await ActivityApiService.getTeacherDashboard(gId);
+    const result = await ActivityApiService.getTeacherDashboard(groupId);
     if (!result.success) throw new Error(result.error || 'Error al cargar el dashboard.');
-    return { ...result.data, groupId: gId };
+    return { ...result.data, groupId, grade, noGroup: false };
 }
 
 /** Obtiene las instancias asignadas al grupo del teacher. */
-async function fetchTeacherInstances() {
+export async function fetchTeacherInstances(group) {
+    if (group.groupId === null) return [];
     const instData = await ActivityApiService.getGroupInstances();
-    return instData.success ? (instData.data || []) : [];
+    if (!instData.success) throw new Error(instData.error || 'Error al cargar las actividades del grupo.');
+    return instData.data || [];
 }
 
-async function fetchTeacherAssignments() {
-    const gId = await resolveGroupId();
-    if (!gId) {
-        return { activities: [], groupId: null, noGroup: true };
+export async function fetchTeacherAssignments(group) {
+    const { groupId, grade } = group;
+    if (groupId === null) {
+        return { activities: [], groupId: null, grade: null, noGroup: true };
     }
-    const result = await ActivityApiService.getActiveAssignments(gId, true);
+    const result = await ActivityApiService.getActiveAssignments(groupId, true);
     if (!result.success) throw new Error(result.error || 'Error al cargar las asignaciones.');
-    return { activities: result.data, groupId: gId };
+    return { activities: result.data || [], groupId, grade, noGroup: false };
 }
 
 async function fetchTeacherStudents() {
@@ -68,27 +61,34 @@ async function fetchTeacherStudents() {
 
 // ── Hooks ─────────────────────────────────────────────────────────────────────
 
+export function useTeacherGroupQuery() {
+    return useQuery(groupQueryOptions());
+}
+
 export function useTeacherDashboardQuery() {
+    const queryClient = useQueryClient();
     return useQuery({
         queryKey: teacherKeys.dashboard(),
-        queryFn: fetchTeacherDashboard,
+        queryFn: async () => fetchTeacherDashboard(await queryClient.fetchQuery(groupQueryOptions())),
     });
 }
 
 /** Query de instancias asignadas (específica del teacher). */
 export function useTeacherInstancesQuery() {
+    const queryClient = useQueryClient();
     return useQuery({
         queryKey: teacherKeys.instances(),
-        queryFn:  fetchTeacherInstances,
+        queryFn: async () => fetchTeacherInstances(await queryClient.fetchQuery(groupQueryOptions())),
         staleTime: 2 * 60 * 1000,
         gcTime:    10 * 60 * 1000,
     });
 }
 
 export function useTeacherAssignmentsQuery() {
+    const queryClient = useQueryClient();
     return useQuery({
         queryKey: teacherKeys.assignments(),
-        queryFn: fetchTeacherAssignments,
+        queryFn: async () => fetchTeacherAssignments(await queryClient.fetchQuery(groupQueryOptions())),
     });
 }
 
@@ -104,15 +104,25 @@ export function useTeacherStudentsQuery() {
  */
 export function useTeacherInvalidate() {
     const queryClient = useQueryClient();
+    const reloadWithGroup = async (queryKey) => {
+        await queryClient.invalidateQueries({ queryKey: teacherKeys.group(), refetchType: 'none' });
+        return queryClient.invalidateQueries({ queryKey });
+    };
+    const reloadInstances = () => Promise.all([
+        queryClient.invalidateQueries({ queryKey: teacherKeys.group() }),
+        queryClient.invalidateQueries({ queryKey: teacherKeys.instances() }),
+        queryClient.invalidateQueries({ queryKey: teacherKeys.dashboard() }),
+        queryClient.invalidateQueries({ queryKey: teacherKeys.assignments() }),
+    ]);
     return {
-        reloadDashboard:   () => queryClient.invalidateQueries({ queryKey: teacherKeys.dashboard() }),
-        reloadInstances:   () => queryClient.invalidateQueries({ queryKey: teacherKeys.instances() }),
+        reloadDashboard:   () => reloadWithGroup(teacherKeys.dashboard()),
+        reloadInstances,
         // El catálogo de juegos vive bajo la key ['games'] (useGamesQueries)
         reloadResources:   () => {
-            queryClient.invalidateQueries({ queryKey: teacherKeys.instances() });
+            reloadInstances();
             queryClient.invalidateQueries({ queryKey: gamesKeys.all() });
         },
-        reloadAssignments: () => queryClient.invalidateQueries({ queryKey: teacherKeys.assignments() }),
+        reloadAssignments: () => reloadWithGroup(teacherKeys.assignments()),
         reloadStudents:    () => queryClient.invalidateQueries({ queryKey: teacherKeys.students() }),
     };
 }

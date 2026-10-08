@@ -83,10 +83,11 @@ const GameSummary = ({
         setError(null);
         try {
             const trueActivityId = currentGameData?.activityId ? parseInt(currentGameData.activityId, 10) : parseInt(activityId, 10);
-            const trueGameId = currentGameData?.activityId ? parseInt(activityId, 10) : parseInt(gameId, 10);
+            const trueGameId = parseInt(currentGameData?.gameId || gameId || activityId, 10);
 
             const payload = {
                 activityId: trueActivityId,
+                attemptId: currentGameData?.attemptId || null,
                 startDate: startDate,
                 correctAnswers: correctAnswers,
                 gameId: trueGameId,
@@ -101,6 +102,9 @@ const GameSummary = ({
 
             if (apiResult.success && apiResult.data) {
                 setResult(apiResult.data);
+                if (trueGameId && totalQuestions > 0) {
+                    await ActivityApiService.saveGameStars(trueGameId, correctAnswers, totalQuestions);
+                }
             } else if (apiResult.success) {
                 // Si tuvo éxito pero no hay datos (fallback visual mínimo)
                 setResult({ xpGained: 0, actualXp: 0, currentLevel: 1, isLevelUp: false });

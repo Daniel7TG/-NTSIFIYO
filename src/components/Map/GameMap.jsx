@@ -22,13 +22,14 @@ import forestHL from '../../assets/map/forest.webp';
 import plainHL from '../../assets/map/plain.webp';
 import communityHL from '../../assets/map/community.webp';
 import '../../styles/components/map/GameMap.css';
+import mapGeometry from './mapGeometry.json';
 
 /**
  * Natural dimensions of map.webp (px).
  * All zone coordinates are expressed in this coordinate space.
  */
-const MAP_NATURAL_W = 2729;
-const MAP_NATURAL_H = 1521;
+const MAP_NATURAL_W = 5516;
+const MAP_NATURAL_H = 3072;
 
 /**
  * Zone definitions.
@@ -36,17 +37,18 @@ const MAP_NATURAL_H = 1521;
  * w / h  → size of the highlight image
  * categoryId must match the id used in GAME_CATEGORIES
  */
+// Coordenadas y contornos recuperados de las capas originales sin recortar.
 const ZONES = [
-    { id: 'FOREST', img: forestHL, x: 278, y: 196, w: 542, h: 232, disabled: true },
-    { id: 'PARK', img: parkHL, x: 1057, y: 920, w: 1363, h: 589 },
-    { id: 'COMMUNITY', img: communityHL, x: 1791, y: 119, w: 918, h: 546 },
-    { id: 'SCHOOL', img: schoolHL, x: 169, y: 832, w: 660, h: 565 },
-    { id: 'CLINIC', img: clinicHL, x: 2207, y: 818, w: 502, h: 406 },
-    { id: 'MARKET', img: marketHL, x: 1760, y: 642, w: 504, h: 279 },
-    { id: 'KITCHEN', img: kitchenHL, x: 1047, y: 474, w: 620, h: 547 },
-    { id: 'PLAIN', img: plainHL, x: 1102, y: 287, w: 656, h: 281, disabled: true },
-    { id: 'FARM', img: farmHL, x: 505, y: 657, w: 551, h: 299 },
-];
+    { id: 'FOREST', img: forestHL, disabled: true },
+    { id: 'PARK', img: parkHL },
+    { id: 'COMMUNITY', img: communityHL },
+    { id: 'SCHOOL', img: schoolHL },
+    { id: 'CLINIC', img: clinicHL },
+    { id: 'MARKET', img: marketHL },
+    { id: 'KITCHEN', img: kitchenHL },
+    { id: 'PLAIN', img: plainHL, disabled: true },
+    { id: 'FARM', img: farmHL },
+].map(zone => ({ ...zone, ...mapGeometry[zone.id] }));
 
 // BASE_PATHS replaced with central gameConfig
 
@@ -59,6 +61,55 @@ function GameMap() {
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(false);
     const [startingGameId, setStartingGameId] = useState(null);
+    const [starsByGameId, setStarsByGameId] = useState({});
+    const [starsLoading, setStarsLoading] = useState(true);
+    const [starsAvailable, setStarsAvailable] = useState(false);
+    const [mapGameCatalog, setMapGameCatalog] = useState([]);
+    const [catalogLoading, setCatalogLoading] = useState(true);
+    const [catalogAvailable, setCatalogAvailable] = useState(false);
+
+    useEffect(() => {
+        let active = true;
+        const loadStars = async () => {
+            const result = await ActivityApiService.getMyGameStars();
+            if (!active) return;
+            setStarsAvailable(result.success);
+            const next = {};
+            (result.data || []).forEach(row => {
+                const total = Number(row.max_puntuation) || 0;
+                const correct = Number(row.puntuation) || 0;
+                if (row.gameId != null && total > 0) {
+                    next[row.gameId] = Math.max(0, Math.min(5, Math.floor(5 * correct / total)));
+                }
+            });
+            setStarsByGameId(next);
+            setStarsLoading(false);
+        };
+        loadStars();
+        window.addEventListener('game-stars-updated', loadStars);
+        Promise.all(GAME_TOPICS.map(topic => ActivityApiService.getGamesByTopic(topic.id, 0, 100)))
+            .then(results => {
+                if (!active) return;
+                const uniqueGames = new Map();
+                results.forEach(result => (result.data?.content || []).forEach(game => uniqueGames.set(game.id, game)));
+                setCatalogAvailable(results.every(result => result.success));
+                setMapGameCatalog([...uniqueGames.values()]);
+            })
+            .finally(() => { if (active) setCatalogLoading(false); });
+        return () => {
+            active = false;
+            window.removeEventListener('game-stars-updated', loadStars);
+        };
+    }, []);
+
+    const earnedStars = games.reduce((sum, game) => sum + (starsByGameId[game.id] || 0), 0);
+    const possibleStars = games.length * 5;
+    const completedGames = games.filter(game => starsByGameId[game.id] != null).length;
+    const topicProgress = possibleStars > 0 ? Math.round(earnedStars / possibleStars * 100) : 0;
+    const mapEarnedStars = mapGameCatalog.reduce((sum, game) => sum + (starsByGameId[game.id] || 0), 0);
+    const mapPossibleStars = mapGameCatalog.length * 5;
+    const mapCompletedGames = mapGameCatalog.filter(game => starsByGameId[game.id] != null).length;
+    const mapProgress = mapPossibleStars > 0 ? Math.round(mapEarnedStars / mapPossibleStars * 100) : 0;
 
     // Get topics for the currently selected category
     const categoryTopics = selectedCategory
@@ -184,18 +235,28 @@ function GameMap() {
                     />
                 </picture>
 
+                <div className="map-global-progress" aria-live="polite">
+                    <span className="material-symbols-outlined">emoji_events</span>
+                    <div>
+                        <strong>Progreso del mapa</strong>
+                        <span>{catalogLoading || starsLoading ? 'Cargando progreso…' : !catalogAvailable || !starsAvailable ? 'Progreso no disponible' : `${mapCompletedGames}/${mapGameCatalog.length} actividades · ${mapEarnedStars}/${mapPossibleStars} estrellas`}</span>
+                    </div>
+                    <b>{catalogLoading || starsLoading || !mapPossibleStars || !catalogAvailable || !starsAvailable ? '—' : `${mapProgress}%`}</b>
+                </div>
+
                 {/* Highlight overlays – one per zone */}
                 {ZONES.map(zone => {
                     const isActive = selectedCategory && selectedCategory.id === zone.id;
                     return (
-                        <img
+                        <button
                             key={zone.id}
-                            src={zone.img}
-                            alt={zone.id}
-                            draggable={false}
-                            loading="lazy"
+                            type="button"
+                            aria-label={GAME_CATEGORIES.find(category => category.id === zone.id)?.label || zone.id}
+                            aria-disabled={Boolean(zone.disabled)}
+                            aria-haspopup="dialog"
                             className={`game-map-zone${isActive ? ' active' : ''}${zone.disabled ? ' disabled' : ''}`}
                             style={{
+                                clipPath: zone.clipPath,
                                 left: `${(zone.x / MAP_NATURAL_W) * 100}%`,
                                 top: `${(zone.y / MAP_NATURAL_H) * 100}%`,
                                 width: `${(zone.w / MAP_NATURAL_W) * 100}%`,
@@ -205,7 +266,9 @@ function GameMap() {
                                 e.stopPropagation();
                                 handleZoneClick(zone.id);
                             }}
-                        />
+                        >
+                            <img src={zone.img} alt="" draggable={false} />
+                        </button>
                     );
                 })}
             </div>
@@ -218,6 +281,15 @@ function GameMap() {
 
                         <div className="map-popup-header">
                             <h2 className="map-popup-title">{selectedCategory.label}</h2>
+                            {activeTopic && (
+                                <div className="map-progress-summary" aria-live="polite">
+                                    <div className="map-progress-copy">
+                                    <span>{starsLoading ? 'Cargando progreso…' : !starsAvailable ? 'Progreso no disponible' : `${GAME_TOPICS.find(topic => topic.id === activeTopic)?.label || 'Tema'}: ${completedGames} de ${games.length} actividades · ${earnedStars} de ${possibleStars} estrellas`}</span>
+                                        <strong>{possibleStars ? `${topicProgress}%` : '—'}</strong>
+                                    </div>
+                                    <div className="map-progress-track"><span style={{ width: `${topicProgress}%` }} /></div>
+                                </div>
+                            )}
                             <div className="map-tabs-container">
                                 {categoryTopics.map(topic => (
                                     <div
@@ -243,6 +315,10 @@ function GameMap() {
                                             <div className="map-game-info">
                                                 <h3 className="map-game-title">{game.title}</h3>
                                                 <p className="map-game-desc">{game.description}</p>
+                                                <div className="map-game-stars" aria-label={`${starsByGameId[game.id] || 0} de 5 estrellas`}>
+                                                    {Array.from({ length: 5 }, (_, index) => <span key={index} className={`material-symbols-outlined${index < (starsByGameId[game.id] || 0) ? ' earned' : ''}`}>star</span>)}
+                                                    <span className="map-game-star-count">{starsAvailable ? `${starsByGameId[game.id] || 0}/5` : '—'}</span>
+                                                </div>
                                                 <span className={`map-game-difficulty diff-${game.difficult}`}>
                                                     {getDifficultyLabel(game.difficult)}
                                                 </span>

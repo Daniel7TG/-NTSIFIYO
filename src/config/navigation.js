@@ -45,6 +45,7 @@ export const teacherNavigation = [
     { id: 'dictionary', label: 'Diccionario', path: '/maestro/diccionario', icon: 'translate', roles: [Roles.TEACHER] },
     { id: 'pronunciation', label: 'Pronunciación', path: '/maestro/pronunciacion', icon: 'record_voice_over', roles: [Roles.TEACHER] },
     { id: 'assignments', label: 'Asignaciones', path: '/maestro/asignaciones', icon: 'assignment', roles: [Roles.TEACHER] },
+    { id: 'reports', label: 'Reportes', path: '/maestro/reportes', icon: 'query_stats', roles: [Roles.TEACHER] },
 ];
 
 // ─── Navegación del panel Administrador ───────────────────────

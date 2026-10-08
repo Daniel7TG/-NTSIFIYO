@@ -385,7 +385,7 @@ class ActivityApiService {
     /**
      * Obtener actividades activas asignadas a un grupo (para vista del maestro)
      * GET /api/activities/group/{groupId}?active=true
-     * @param {number} groupId - ID del grupo (grade)
+     * @param {number} groupId - ID del grupo en la base de datos
      * @param {boolean} active - Filtrar por activas/inactivas
      * @returns {Promise<Object>} - { activities: [...] }
      */
@@ -430,10 +430,39 @@ class ActivityApiService {
         }
     }
 
+    /** Respuestas más recientes del grupo para una asignación. */
+    async getGroupAssignmentResults(grade, gameId) {
+        try {
+            const response = await apiConfig.get(`/api/activities/${encodeURIComponent(grade)}/${gameId}`);
+            return { success: true, data: response?.detailResults || [] };
+        } catch (error) {
+            return { success: false, error: error.message, data: [] };
+        }
+    }
+
+    async getMyGameStars() {
+        try {
+            const response = await apiConfig.get('/api/game-stars');
+            return { success: true, data: Array.isArray(response) ? response : [] };
+        } catch (error) {
+            return { success: false, error: error.message, data: [] };
+        }
+    }
+
+    async saveGameStars(gameId, puntuation, max_puntuation) {
+        try {
+            const response = await apiConfig.put(`/api/game-stars/${gameId}`, { puntuation, max_puntuation });
+            window.dispatchEvent(new CustomEvent('game-stars-updated', { detail: response }));
+            return { success: true, data: response };
+        } catch (error) {
+            return { success: false, error: error.message };
+        }
+    }
+
     /**
      * Obtener los datos del panel principal del maestro
      * GET /api/dashboard/teacher/{groupId}
-     * @param {number} groupId - ID del grupo (grade)
+     * @param {number} groupId - ID del grupo en la base de datos
      * @returns {Promise<Object>} - Dashboard general data
      */
     async getTeacherDashboard(groupId) {

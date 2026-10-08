@@ -22,7 +22,7 @@ const TeacherDashboard = () => {
         activeAssignments = [],
         alertStudents = [],
         completeStudents = [],
-        groupId = null
+        grade = null
     } = data || {};
 
     return (
@@ -31,18 +31,19 @@ const TeacherDashboard = () => {
                 title="Panel de Control"
                 subtitle="Monitorea el progreso de tu grupo estudiantil."
                 onReload={reloadDashboard}
+                actionButton={<Link to="/maestro/reportes" className="rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-800">Ver reportes</Link>}
             />
 
             {/* Grupo a cargo */}
             {!isLoading && !error && (
                 <div className="flex items-center gap-3 bg-white border border-gray-100 rounded-2xl px-5 py-4 mb-6 shadow-sm w-fit">
                     <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 border border-primary/10 flex items-center justify-center text-primary font-black text-lg">
-                        {groupId ? `${groupId}º` : '—'}
+                        {grade ? `${grade}º` : '—'}
                     </div>
                     <div>
                         <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Tu grupo</p>
                         <p className="font-bold text-gray-800 leading-tight">
-                            {groupId ? `${groupId}º Grado` : 'Sin grupo asignado'}
+                            {grade ? `${grade}º Grado` : 'Sin grupo asignado'}
                         </p>
                     </div>
                 </div>
@@ -65,8 +66,8 @@ const TeacherDashboard = () => {
                         <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4 mb-6 text-amber-800">
                             <span className="material-symbols-outlined text-amber-500 text-2xl flex-shrink-0">info</span>
                             <div>
-                                <p className="font-semibold text-sm">No hay actividades activas</p>
-                                <p className="text-xs text-amber-700 mt-0.5">Actualmente no tienes actividades asignadas a tu grupo. Cuando asignes actividades aparecerán aquí.</p>
+                                <p className="font-semibold text-sm">No tienes un grupo asignado</p>
+                                <p className="text-xs text-amber-700 mt-0.5">Solicita al administrador que te asigne un grupo para gestionar sus actividades.</p>
                             </div>
                         </div>
                     )}

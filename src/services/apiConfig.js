@@ -49,8 +49,12 @@ const apiConfig = {
      * @param {Response} response - Respuesta de fetch
      * @returns {Promise<any>} - Datos parseados o error
      */
-    handleResponse: async (response) => {
+    handleResponse: async (response, requestToken) => {
         if (!response.ok) {
+            if (response.status === 401 && requestToken
+                && requestToken === localStorage.getItem('authToken')) {
+                window.dispatchEvent(new CustomEvent('sessionUnauthorized', { detail: { token: requestToken } }));
+            }
             const errorData = await response.json().catch(() => ({}));
 
             // Construir un mensaje de error legible
@@ -106,11 +110,12 @@ const apiConfig = {
      * Realiza una petición GET
      */
     get: async (endpoint) => {
+        const headers = apiConfig.getHeaders();
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'GET',
-            headers: apiConfig.getHeaders()
+            headers
         });
-        return apiConfig.handleResponse(response);
+        return apiConfig.handleResponse(response, headers.Authorization?.slice(7));
     },
 
     /**
@@ -128,7 +133,7 @@ const apiConfig = {
             headers,
             ...(body && { body: JSON.stringify(body) })
         });
-        return apiConfig.handleResponse(response);
+        return apiConfig.handleResponse(response, headers.Authorization?.slice(7));
     },
 
     /**
@@ -146,7 +151,7 @@ const apiConfig = {
             headers,
             ...(body && { body: JSON.stringify(body) })
         });
-        return apiConfig.handleResponse(response);
+        return apiConfig.handleResponse(response, headers.Authorization?.slice(7));
     },
 
     /**
@@ -164,18 +169,19 @@ const apiConfig = {
             headers,
             ...(body && { body: JSON.stringify(body) })
         });
-        return apiConfig.handleResponse(response);
+        return apiConfig.handleResponse(response, headers.Authorization?.slice(7));
     },
 
     /**
      * Realiza una petición DELETE
      */
     delete: async (endpoint) => {
+        const headers = apiConfig.getHeaders();
         const response = await fetch(`${API_BASE_URL}${endpoint}`, {
             method: 'DELETE',
-            headers: apiConfig.getHeaders()
+            headers
         });
-        return apiConfig.handleResponse(response);
+        return apiConfig.handleResponse(response, headers.Authorization?.slice(7));
     }
 };
 
