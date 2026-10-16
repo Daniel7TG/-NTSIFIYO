@@ -18,7 +18,7 @@ ICONS = sorted(set([
     "add", "add_circle", "admin_panel_settings", "apple", "arrow_back", "arrow_forward",
     "assignment", "auto_stories", "badge", "block","bolt", "mark_email_read",
     "calendar_today", "cancel", "category", "check", "check_circle","checklist",
-    "chevron_right", "close", "delete", "edit", "error",
+    "chevron_left", "chevron_right", "close", "delete", "edit", "error",
     "expand_less", "expand_more", "extension", "fast_forward", "favorite",
     "group", "group_add", "group_off", "groups",
     "history", "hourglass_empty", "hub",
