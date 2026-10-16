@@ -25,7 +25,7 @@ const GameAccessView = lazy(() => import('./components/Games/GameAccessView'));
 const MemoriaRapidaGameView = lazy(() => import('./components/Games/MemoriaRapida/MemoriaRapidaGameView'));
 const QuizGameView = lazy(() => import('./components/Games/Quiz/QuizGameView'));
 const IntrusoGameView = lazy(() => import('./components/Games/Intruso/IntrusoGameView'));
-// const RompecabezasGameView = lazy(() => import('./components/Games/Rompecabezas/RompecabezasGameView'));
+const RompecabezasGameView = lazy(() => import('./components/Games/Rompecabezas/RompecabezasGameView'));
 const ParesGameView = lazy(() => import('./components/Games/Pares/ParesGameView'));
 const MemoramaGameView = lazy(() => import('./components/Games/Memorama/MemoramaGameView'));
 const LoteriaGameView = lazy(() => import('./components/Games/Loteria/LoteriaGameView'));
@@ -222,7 +222,10 @@ function App() {
                             <Route path="/games/intruso/jugar/:activityId" element={<ActiveGameRoute><IntrusoGameView /></ActiveGameRoute>} />
 
                             {/* Rompecabezas */}
-                            {/* <Route path="/games/rompecabezas/jugar/:activityId" element={<RompecabezasGameView />} /> */}
+                            <Route path="/games/rompecabezas/jugar/:activityId" element={<ActiveGameRoute><RompecabezasGameView /></ActiveGameRoute>} />
+
+                            {/* Canción con preguntas */}
+                            <Route path="/games/cancion/jugar/:activityId" element={<ActiveGameRoute><QuizGameView /></ActiveGameRoute>} />
 
                             {/* Pares */}
                             <Route path="/games/pares/jugar/:activityId" element={<ActiveGameRoute><ParesGameView /></ActiveGameRoute>} />

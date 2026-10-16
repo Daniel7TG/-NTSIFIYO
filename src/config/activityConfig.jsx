@@ -4,7 +4,7 @@ import Roles from '../utils/roles';
 import IconFastMemory from '../assets/svgs/juegos/memoria_rapida_premium.svg';
 import IconQuiz from '../assets/svgs/juegos/quiz_premium.svg';
 import IconIntruder from '../assets/svgs/juegos/intruso_premium.svg';
-// import IconPuzzle from '../assets/svgs/juegos/rompecabezas_premium.svg';
+import IconPuzzle from '../assets/svgs/juegos/rompecabezas_premium.svg';
 import IconMemory from '../assets/svgs/juegos/memorama_premium.svg';
 import IconLottery from '../assets/svgs/juegos/loteria_premium.svg';
 import IconMaze from '../assets/svgs/juegos/laberinto_premium.svg';
@@ -29,7 +29,7 @@ export const ActivityTypes = Object.freeze({
     MEDIA_ANECDOTE: "MEDIA_ANECDOTE",
     MEDIA_LEGEND: "MEDIA_LEGEND",
     MEDIA_POEM: "MEDIA_POEM",
-    // PUZZLE: "PUZZLE",
+    PUZZLE: "PUZZLE",
     MEMORY_GAME: "MEMORY_GAME",
     LOTTERY: "LOTTERY",
     MAZE: "MAZE",
@@ -93,7 +93,6 @@ export const ACTIVITY_CONFIG = {
             { icon: 'emoji_events', label: 'XP' }
         ]
     },
-    /*
     [ActivityTypes.PUZZLE]: {
         id: 'rompecabezas',
         value: ActivityTypes.PUZZLE,
@@ -112,7 +111,6 @@ export const ACTIVITY_CONFIG = {
             { icon: 'emoji_events', label: 'XP' }
         ]
     },
-    */
     [ActivityTypes.MEMORY_GAME]: {
         id: 'memorama',
         value: ActivityTypes.MEMORY_GAME,
@@ -315,7 +313,7 @@ export const QUESTIONNAIRE_TYPES = [
     ActivityTypes.INTRUDER,
     ActivityTypes.FILL_BLANK,
     // ActivityTypes.FIND_THE_WORD,
-    // ActivityTypes.PUZZLE,
+    ActivityTypes.PUZZLE,
 ];
 
 export const PAIR_TYPES = [
@@ -339,8 +337,7 @@ export const MEDIA_TYPES = [
 export const getGameBasePath = (type) => ACTIVITY_CONFIG[type]?.basePath || '/dashboard';
 export const getGameIcon = (type) => ACTIVITY_CONFIG[type]?.icon || '🎮';
 export const getActivitiesList = () => Object.values(ACTIVITY_CONFIG).filter(
-    a => a.type !== ActivityTypes.MEDIA_SONG &&
-         a.type !== ActivityTypes.MEDIA_ANECDOTE &&
+    a => a.type !== ActivityTypes.MEDIA_ANECDOTE &&
          a.type !== ActivityTypes.MEDIA_LEGEND &&
          a.type !== ActivityTypes.MEDIA_POEM
 );
@@ -363,7 +360,8 @@ export const getNavigationRoutes = () => {
         ActivityTypes.QUESTIONNAIRE,
         ActivityTypes.INTRUDER,
         ActivityTypes.LOTTERY,
-        // ActivityTypes.PUZZLE,
+        ActivityTypes.PUZZLE,
+        ActivityTypes.MEDIA_SONG,
         ActivityTypes.FAST_MEMORY,
         ActivityTypes.MAZE,
         ActivityTypes.PAIRS,

@@ -277,7 +277,7 @@ const RompecabezasGameView = () => {
 
             {/* ── Instrucción ── */}
             <div className="rp-instruction">
-                Completa la frase
+                {currentQuestion.question || 'Completa la frase'}
             </div>
 
             {/* ── Piezas superiores (pregunta + slot) ── */}
@@ -286,12 +286,14 @@ const RompecabezasGameView = () => {
                 <div className="rp-piece rp-piece-question" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                     {gameConfigs[0]?.showImage && currentQuestion.word?.imageUrl && (
                         <img src={currentQuestion.word.imageUrl} alt=""
-                            style={{ width: '60px', height: '60px', borderRadius: '10px', objectFit: 'cover' }} />
+                            style={{ width: '80px', height: '80px', borderRadius: '10px', objectFit: 'contain' }} />
                     )}
                     {gameConfigs[0]?.showText && (
-                        <span>{gameConfigs[0]?.isMazahua && currentQuestion.word
-                            ? currentQuestion.word.mazahuaWord
-                            : currentQuestion.question}</span>
+                        <span>{currentQuestion.word
+                            ? (gameConfigs[0]?.isMazahua
+                                ? currentQuestion.word.mazahuaWord
+                                : currentQuestion.word.spanishWord)
+                            : ''}</span>
                     )}
                     {gameConfigs[0]?.playAudio && currentQuestion.word?.audioUrl && (
                         <button onClick={() => playAudio(currentQuestion.word.audioUrl)}

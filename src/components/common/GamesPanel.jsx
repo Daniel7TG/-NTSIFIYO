@@ -8,6 +8,7 @@ import {
     QUESTIONNAIRE_TYPES,
     PAIR_TYPES,
     ACTIVITY_CONFIG,
+    ActivityTypes,
     getGameTypeInfo,
 } from '../../config/activityConfig';
 import { getDifficultyBadge } from '../../utils/difficultyBadges';
@@ -16,7 +17,7 @@ import IconEmptyBox from '../../assets/svgs/empty_box.svg';
 import IconWarning from '../../assets/svgs/warning.svg';
 
 // ── Opciones de filtro ────────────────────────────────────────────────────────
-const GAME_TYPES = [...QUESTIONNAIRE_TYPES, ...PAIR_TYPES];
+const GAME_TYPES = [...QUESTIONNAIRE_TYPES, ...PAIR_TYPES, ActivityTypes.MEDIA_SONG];
 
 const DIFFICULTIES = [
     { value: 'EASY',   label: 'Fácil' },

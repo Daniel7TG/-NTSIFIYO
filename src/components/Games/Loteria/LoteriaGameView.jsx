@@ -29,7 +29,7 @@ function buildGameData(words, gameConfigs) {
     const cfg0 = gameConfigs[0] || { showText: true, showImage: false, playAudio: false, isMazahua: false };
     const cfg1 = gameConfigs[1] || { showText: true, showImage: false, playAudio: false, isMazahua: false };
 
-    // Tomar los primeros 9 (o todos si hay menos) como tabla del jugador
+    // Tomar nueve palabras del pool para la tabla del jugador.
     const boardWords = [...words].sort(() => Math.random() - 0.5).slice(0, 9);
 
     // La pila incluye TODOS los words disponibles mezclados aleatoriamente
@@ -132,10 +132,10 @@ const LoteriaGameView = () => {
 
             // NO limpiar currentGameData: GameSummary lo necesita para enviar
             // el activityId real (el param de la URL es el id del juego)
-            if (data?.words?.length) {
+            if (data?.words?.length >= 9) {
                 loadFromApiData(data);
             } else {
-                setLoadError('La actividad no tiene palabras configuradas.');
+                setLoadError('La lotería necesita al menos nueve palabras.');
                 setGameState('error');
             }
         } catch (e) {
@@ -147,7 +147,6 @@ const LoteriaGameView = () => {
     }
 
     function loadFromApiData(data) {
-        // buildGameData ya soporta menos de 9 palabras: la tabla usa las que haya
         const { pile: p, board: b } = buildGameData(data.words, data.gameConfigs || []);
         setPile(p); setBoard(b);
         setActivityTitle(data.title || '¡Lotería!');
