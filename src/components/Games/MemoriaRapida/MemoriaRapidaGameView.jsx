@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import { useCoyote } from '../../../context/CoyoteContext';
 import MemoriaRapidaCard from './MemoriaRapidaCard';
 import GameSummary from '../GamePanel/GameSummary';
@@ -21,6 +22,7 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     
     const { currentGameData } = useGame();
     const { triggerReaction } = useCoyote();
@@ -30,6 +32,7 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
 
     const [topWords, setTopWords] = useState([]);
     const [currentTopIndex, setCurrentTopIndex] = useState(0);
+    const displayedWordRef = useRef(null);
     const [bottomCardProps, setBottomCardProps] = useState(null);
     const [currentMatch, setCurrentMatch] = useState(false);
 
@@ -152,6 +155,7 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
         const configs = currentGameData?.gameConfigs || [];
         const cfg1 = configs[1] || { showText: false, showImage: true, playAudio: false, isMazahua: false };
 
+        displayedWordRef.current = bottomWord;
         setBottomCardProps(buildCardProps(bottomWord, cfg1));
         setCardKey(prev => prev + 1);
     }, [topWords, currentGameData]);
@@ -166,7 +170,10 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
         
         setResponseLogs(prev => [...prev, { 
             questionId: null, 
-            answerId: currentTopWord.id, 
+            answerId: currentTopWord.id,
+            promptWordId: currentTopWord.id,
+            selectedWordId: displayedWordRef.current?.id || null,
+            claimedMatch: userSaysMatch,
             isCorrect,
             wordText: currentTopWord.mazahuaWord || currentTopWord.spanishWord
         }]);
@@ -278,7 +285,7 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
                 correctAnswers={correctCount}
                 totalQuestions={totalCards}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/estudiante/actividades')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/estudiante/actividades')}
                 onRetry={restartGame}
             />
     }
@@ -314,7 +321,7 @@ const MemoriaRapidaGameView = ({ studentId = 'student_001' }) => {
                     <button className="mr-paused__btn-continue" onClick={togglePause}>
                         ▶️ Continuar
                     </button>
-                    <button className="mr-paused__btn-exit" onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate(-1)}>
+                    <button className="mr-paused__btn-exit" onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate(-1)}>
                         Salir del Juego
                     </button>
                 </div>

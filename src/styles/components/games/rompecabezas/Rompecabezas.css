@@ -12,7 +12,9 @@
     font-weight: 800;
     color: var(--primary-blue);
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    max-width: 420px;
+    overflow-wrap: anywhere;
     letter-spacing: -0.02em;
 }
 
@@ -102,7 +104,8 @@
 }
 
 .rp-options-grid {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     justify-content: center;
 }
@@ -110,7 +113,9 @@
 /* PIEZA OPCIÓN (respuesta) — imagen puzzle_right */
 .rp-option-piece {
     flex: 1;
-    max-width: 170px;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
     min-height: 130px;
     background-image: url('../../../../assets/puzzle_right.webp');
     background-size: contain;
@@ -119,6 +124,8 @@
     background-color: transparent;
     border: none;
     display: flex;
+    flex-direction: column;
+    gap: 6px;
     align-items: center;
     justify-content: center;
     font-size: 18px;

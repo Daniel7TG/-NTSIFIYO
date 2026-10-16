@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameSummary from '../GamePanel/GameSummary';
 import GameCard from '../GameCard/GameCard';
 import GameAlert from '../GamePanel/GameAlert';
@@ -56,6 +57,7 @@ const MemoramaGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [loading, setLoading] = useState(true);
@@ -74,12 +76,14 @@ const MemoramaGameView = () => {
     const [gameState, setGameState] = useState('loading'); // loading | playing | finished | error
     const [elapsed, setElapsed] = useState(0);
     const timerRef = useRef(null);
+    const startedAtRef = useRef(null);
     const feedbackTimeout = useRef(null);
 
     const totalPairs = cards.length / 2;
 
     const initGame = () => {
         setLoading(true);
+        startedAtRef.current = new Date().toISOString();
 
         if (!currentGameData) {
             console.error('No hay datos de juego activos en el contexto.');
@@ -225,7 +229,7 @@ const MemoramaGameView = () => {
                 <p style={{ fontSize: '48px', marginBottom: '1rem' }}>😕</p>
                 <h2 style={{ color: '#E65100', fontFamily: 'Poppins, sans-serif' }}>Actividad no encontrada</h2>
                 <p style={{ color: '#374151', margin: '0.5rem 0 1.5rem' }}>No se pudo cargar la actividad.</p>
-                <button onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/memorama')} style={{
+                <button onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/memorama')} style={{
                     background: '#1E3A8A', color: 'white', padding: '0.75rem 1.5rem',
                     border: 'none', borderRadius: '8px', cursor: 'pointer',
                     fontFamily: 'Poppins, sans-serif', fontWeight: '600'
@@ -245,6 +249,8 @@ const MemoramaGameView = () => {
             return {
                 questionId: null,
                 answerId: wordId,
+                promptWordId: wordId,
+                selectedWordId: matchedWordIds.has(wordId) ? wordId : null,
                 isCorrect: matchedWordIds.has(wordId),
                 wordText: card ? card.text : ''
             };
@@ -254,11 +260,11 @@ const MemoramaGameView = () => {
             <GameSummary
                 activityId={activityId}
                 gameId={gameIdParam || 5}
-                startDate={new Date().toISOString()}
+                startDate={startedAtRef.current}
                 correctAnswers={matchedWordIds.size}
                 totalQuestions={totalPairs}
                 responseLogs={finalResponseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/memorama')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/memorama')}
                 onRetry={initGame}
             />
         );
@@ -271,7 +277,7 @@ const MemoramaGameView = () => {
         <div className="game-container">
             {/* Barra superior */}
             <div className="game-top-bar">
-                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/memorama')} title="Salir">‹</button>
+                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/memorama')} title="Salir">‹</button>
                 <span className="game-top-bar__title">Memorama</span>
                 <div className="game-top-bar__timer">⏱ {formatTime(elapsed)}</div>
             </div>

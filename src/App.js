@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { useQueryClient } from '@tanstack/react-query';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
+import NotFound from './pages/NotFound';
+import ActiveGameRoute from './components/Games/ActiveGameRoute';
 import AuthPage from './pages/AuthPage';
 import AdminLogin from './pages/AdminLogin';
-import UserService from './services/UserService';
 
 import { useAuth } from './context/AuthContext';
 import { useAlert } from './context/AlertContext';
@@ -16,6 +17,7 @@ import ProtectedRoute from './components/Auth/ProtectedRoute';
 import AppErrorBoundary from './components/common/AppErrorBoundary';
 import DashboardSwitcher from './components/Dashboard/DashboardSwitcher';
 import Roles from './utils/roles';
+import { getActivitiesList } from './config/activityConfig';
 
 // Lazy-loaded components (loaded on demand)
 const ConfigurationGameView = lazy(() => import('./components/Teacher/ConfigurationGameView'));
@@ -23,7 +25,7 @@ const GameAccessView = lazy(() => import('./components/Games/GameAccessView'));
 const MemoriaRapidaGameView = lazy(() => import('./components/Games/MemoriaRapida/MemoriaRapidaGameView'));
 const QuizGameView = lazy(() => import('./components/Games/Quiz/QuizGameView'));
 const IntrusoGameView = lazy(() => import('./components/Games/Intruso/IntrusoGameView'));
-// const RompecabezasGameView = lazy(() => import('./components/Games/Rompecabezas/RompecabezasGameView'));
+const RompecabezasGameView = lazy(() => import('./components/Games/Rompecabezas/RompecabezasGameView'));
 const ParesGameView = lazy(() => import('./components/Games/Pares/ParesGameView'));
 const MemoramaGameView = lazy(() => import('./components/Games/Memorama/MemoramaGameView'));
 const LoteriaGameView = lazy(() => import('./components/Games/Loteria/LoteriaGameView'));
@@ -90,18 +92,6 @@ function App() {
             buttons: [{ text: 'Entendido', type: 'accept' }],
         });
     }, [sessionExpired, clearSessionExpired, queryClient, showAlert]);
-
-    useEffect(() => {
-        const handleBeforeUnload = () => {
-            UserService.endSessionOnUnload();
-        };
-
-        window.addEventListener('beforeunload', handleBeforeUnload);
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-        };
-    }, []);
 
     return (
         <CoyoteProvider>
@@ -199,87 +189,65 @@ function App() {
                             {/* MediaPlayer */}
                             <Route path="/reproductor/:id" element={<MediaPlayerView />} />
 
+                            {getActivitiesList().flatMap(game => [
+                                <Route key={`${game.id}-create`} path={`${game.basePath}/crear`} element={
+                                    <ProtectedRoute isAllowed={user?.userType === Roles.TEACHER || user?.userType === Roles.ADMIN}>
+                                        <ConfigurationGameView redirectPath={game.basePath} />
+                                    </ProtectedRoute>
+                                } />,
+                                <Route key={`${game.id}-edit`} path={`${game.basePath}/editar/:editId`} element={
+                                    <ProtectedRoute isAllowed={user?.userType === Roles.TEACHER || user?.userType === Roles.ADMIN}>
+                                        <ConfigurationGameView redirectPath={game.basePath} />
+                                    </ProtectedRoute>
+                                } />,
+                            ])}
+
                             {/* Generic Game Access View */}
                             <Route path="/games/:gameId" element={<GameAccessView />} />
 
                             {/* Memoria Rápida */}
-                            <Route path="/games/memoria_rapida/crear" element={
-                                <ConfigurationGameView redirectPath="/games/memoria_rapida/jugar/{id}" />
-                            } />
-                            <Route path="/games/memoria_rapida/editar/:editId" element={
-                                <ConfigurationGameView redirectPath="/games/memoria_rapida" />
-                            } />
                             <Route path="/games/memoria_rapida/jugar/:activityId" element={
-                                <MemoriaRapidaGameView studentId={localStorage.getItem('app_user') ? JSON.parse(localStorage.getItem('app_user')).id : 'student_001'} />
+                                <ActiveGameRoute><MemoriaRapidaGameView /></ActiveGameRoute>
                             } />
 
                             {/* Memorama */}
-                            <Route path="/games/memorama/crear" element={
-                                <ConfigurationGameView redirectPath="/games/memorama/jugar/{id}" />
-                            } />
-                            <Route path="/games/memorama/editar/:editId" element={
-                                <ConfigurationGameView redirectPath="/games/memorama" />
-                            } />
                             <Route path="/games/memorama/jugar/:activityId" element={
-                                <MemoramaGameView studentId={localStorage.getItem('app_user') ? JSON.parse(localStorage.getItem('app_user')).id : 'student_001'} />
+                                <ActiveGameRoute><MemoramaGameView /></ActiveGameRoute>
                             } />
 
                             {/* Quiz */}
-                            <Route path="/games/quiz/editar/:editId" element={
-                                <ConfigurationGameView redirectPath="/games/quiz" />
-                            } />
-                            <Route path="/games/quiz/jugar/:activityId" element={<QuizGameView />} />
+                            <Route path="/games/quiz/jugar/:activityId" element={<ActiveGameRoute><QuizGameView /></ActiveGameRoute>} />
 
                             {/* Intruso */}
-                            <Route path="/games/intruso/jugar/:activityId" element={<IntrusoGameView />} />
+                            <Route path="/games/intruso/jugar/:activityId" element={<ActiveGameRoute><IntrusoGameView /></ActiveGameRoute>} />
 
                             {/* Rompecabezas */}
-                            {/* <Route path="/games/rompecabezas/jugar/:activityId" element={<RompecabezasGameView />} /> */}
+                            <Route path="/games/rompecabezas/jugar/:activityId" element={<ActiveGameRoute><RompecabezasGameView /></ActiveGameRoute>} />
+
+                            {/* Canción con preguntas */}
+                            <Route path="/games/cancion/jugar/:activityId" element={<ActiveGameRoute><QuizGameView /></ActiveGameRoute>} />
 
                             {/* Pares */}
-                            <Route path="/games/pares/crear" element={
-                                <ConfigurationGameView redirectPath="/games/pares/jugar/{id}" />
-                            } />
-                            <Route path="/games/pares/editar/:editId" element={
-                                <ConfigurationGameView redirectPath="/games/pares" />
-                            } />
-                            <Route path="/games/pares/jugar/:activityId" element={<ParesGameView />} />
+                            <Route path="/games/pares/jugar/:activityId" element={<ActiveGameRoute><ParesGameView /></ActiveGameRoute>} />
 
                             {/* Lotería */}
-                            <Route path="/games/loteria/jugar/:activityId" element={<LoteriaGameView />} />
+                            <Route path="/games/loteria/jugar/:activityId" element={<ActiveGameRoute><LoteriaGameView /></ActiveGameRoute>} />
 
                             {/* Laberinto */}
-                            <Route path="/games/laberinto/jugar/:activityId" element={<LaberintoGameView />} />
+                            <Route path="/games/laberinto/jugar/:activityId" element={<ActiveGameRoute><LaberintoGameView /></ActiveGameRoute>} />
 
                             {/* Tripas del Gato */}
-                            <Route path="/games/tripas/crear" element={
-                                <ConfigurationGameView redirectPath="/games/tripas/jugar/{id}" />
-                            } />
-                            <Route path="/games/tripas/editar/:editId" element={
-                                <ConfigurationGameView redirectPath="/games/tripas" />
-                            } />
-                            <Route path="/games/tripas/jugar/:activityId" element={<TripasGameView />} />
+                            <Route path="/games/tripas/jugar/:activityId" element={<ActiveGameRoute><TripasGameView /></ActiveGameRoute>} />
 
                             {/* Sopa de Letras */}
-                            <Route path="/games/encuentra_palabra/crear" element={
-                                <ConfigurationGameView redirectPath="/games/encuentra_palabra/jugar/{id}" />
-                            } />
-                            <Route path="/games/encuentra_palabra/editar/:editId" element={
-                                <ConfigurationGameView redirectPath="/games/encuentra_palabra" />
-                            } />
-                            <Route path="/games/encuentra_palabra/jugar/:activityId" element={<SopaLetrasGameView />} />
+                            <Route path="/games/encuentra_palabra/jugar/:activityId" element={<ActiveGameRoute><SopaLetrasGameView /></ActiveGameRoute>} />
 
                             {/* Fill Blank */}
-                            <Route path="/games/fill_blank/crear" element={
-                                <ConfigurationGameView redirectPath="/games/fill_blank/jugar/{id}" />
-                            } />
-                            <Route path="/games/fill_blank/editar/:editId" element={
-                                <ConfigurationGameView redirectPath="/games/fill_blank" />
-                            } />
-                            <Route path="/games/fill_blank/jugar/:activityId" element={<FillBlankGameView />} />
+                            <Route path="/games/fill_blank/jugar/:activityId" element={<ActiveGameRoute><FillBlankGameView /></ActiveGameRoute>} />
                         </Route>
                     </Route>
 
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
                 </AppErrorBoundary>
                 </PageContent>

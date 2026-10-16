@@ -1,5 +1,6 @@
-import { createContext, useState, useEffect, useCallback, useContext } from 'react';
+import { createContext, useState, useEffect, useCallback, useContext, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import UserService from '../services/UserService';
 import GoogleAuthService from '../services/GoogleAuthService';
 import { readJwtClaims, readStoredSession } from '../utils/authSession';
 
@@ -12,11 +13,15 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(initialSession.token);
     const [sessionExpired, setSessionExpired] = useState(initialSession.invalid);
 
+    const sessionStart = useRef({ token: null, promise: Promise.resolve() });
+    const logoutPending = useRef(null);
+
     const clearSession = useCallback(() => {
         setUser(null);
         setToken(null);
         localStorage.removeItem('appUser');
         localStorage.removeItem('authToken');
+        window.dispatchEvent(new Event('gameSessionCleared'));
         queryClient.clear();
         GoogleAuthService.disableAutoSelect();
     }, [queryClient]);
@@ -38,9 +43,25 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = useCallback(() => {
-        clearSession();
-        setSessionExpired(false);
+        if (logoutPending.current) return logoutPending.current;
+        const closingToken = localStorage.getItem('authToken');
+        const pending = (async () => {
+            if (sessionStart.current.token === closingToken) await sessionStart.current.promise;
+            if (closingToken) await UserService.endSession(closingToken);
+            if (localStorage.getItem('authToken') !== closingToken) return false;
+            clearSession();
+            setSessionExpired(false);
+            return true;
+        })();
+        logoutPending.current = pending;
+        pending.finally(() => { logoutPending.current = null; });
+        return pending;
     }, [clearSession]);
+
+    useEffect(() => {
+        if (!token || sessionStart.current.token === token) return;
+        sessionStart.current = { token, promise: UserService.startSession(token) };
+    }, [token]);
 
     const clearSessionExpired = useCallback(() => setSessionExpired(false), []);
 

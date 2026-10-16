@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import AuthService from '../services/AuthService';
-import UserService from '../services/UserService';
 import Roles from '../utils/roles';
 import { useAuth } from '../context/AuthContext';
 import { useAlert } from '../context/AlertContext';
@@ -12,8 +11,8 @@ const AuthPage = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
     const { showAlert } = useAlert();
-    const [authMode, setAuthMode] = useState(location.state?.mode || 'login');
-    const [userType, setUserType] = useState('student');
+    const [authMode, setAuthMode] = useState(location.state?.mode || (location.pathname === '/registro' ? 'register' : 'login'));
+    const [userType, setUserType] = useState(location.pathname === '/registro' || location.state?.mode === 'register' ? 'guest' : 'student');
     const [isLoading, setIsLoading] = useState(false);
 
     // Estados para el login del estudiante
@@ -98,14 +97,15 @@ const AuthPage = () => {
             userType: role,
         };
         login(userData, jwtToken);
-        await UserService.startSession();
         window.dispatchEvent(new Event('authChanged'));
 
     }
 
     useEffect(() => {
-        if (location.state?.mode) setAuthMode(location.state.mode);
-    }, [location.state]);
+        const mode = location.state?.mode || (location.pathname === '/registro' ? 'register' : 'login');
+        setAuthMode(mode);
+        if (mode === 'register') setUserType('guest');
+    }, [location.state, location.pathname]);
 
     return (
         <div className="flex min-h-screen w-full flex-row overflow-hidden bg-white">

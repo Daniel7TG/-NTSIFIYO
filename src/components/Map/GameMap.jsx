@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { GAME_CATEGORIES, GAME_TOPICS } from '../../utils/gameCategories';
 import ActivityApiService from '../../services/ActivityApiService';
 import MediaService from '../../services/MediaService';
@@ -54,10 +54,11 @@ const ZONES = [
 
 function GameMap() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { saveGameData } = useGame();
 
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [activeTopic, setActiveTopic] = useState(null);
+    const [selectedCategory, setSelectedCategory] = useState(location.state?.selectedCategory || null);
+    const [activeTopic, setActiveTopic] = useState(location.state?.activeTopic || null);
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(false);
     const [startingGameId, setStartingGameId] = useState(null);
@@ -119,7 +120,7 @@ function GameMap() {
     // When a category is opened, automatically select the first topic
     useEffect(() => {
         if (selectedCategory && categoryTopics.length > 0) {
-            setActiveTopic(categoryTopics[0].id);
+            setActiveTopic(previous => categoryTopics.some(topic => topic.id === previous) ? previous : categoryTopics[0].id);
         }
     }, [selectedCategory]);
 
@@ -180,7 +181,7 @@ function GameMap() {
             if (result.success && result.data) {
                 await preloadAssets(result.data);
                 saveGameData(result.data);
-                navigate(`${basePath}/jugar/${game.id}`, { state: { returnToMap: true } });
+                navigate(`${basePath}/jugar/${result.data.activityId}`, { state: { returnToMap: true, returnPath: location.pathname, selectedCategory, activeTopic } });
             } else {
                 alert(`Error al iniciar el juego: ${result.error}`);
             }

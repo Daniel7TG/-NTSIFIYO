@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameService from '../../../services/GameService';
 import MediaService from '../../../services/MediaService';
 import GameSummary from '../GamePanel/GameSummary';
@@ -51,6 +52,7 @@ const LaberintoGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [loading, setLoading] = useState(true);
@@ -177,6 +179,8 @@ const LaberintoGameView = () => {
         const logs = wordList.map(w => ({
             questionId: null,
             answerId: w.id,
+                promptWordId: w.id,
+                selectedWordId: pairsSnapshot.has(w.id) ? w.id : null,
             isCorrect: pairsSnapshot.has(w.id),
             wordText: w.spanishWord || w.mazahuaWord
         }));
@@ -325,7 +329,7 @@ const LaberintoGameView = () => {
                 correctAnswers={completedPairs.size}
                 totalQuestions={wordList.length}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/laberinto')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/laberinto')}
                 onRetry={initGame}
             />
         );
@@ -334,7 +338,7 @@ const LaberintoGameView = () => {
     return (
         <div className="game-container">
             <div className="game-top-bar">
-                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/laberinto')} title="Salir">‹</button>
+                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/laberinto')} title="Salir">‹</button>
                 <span className="game-top-bar__title">{activityTitle}</span>
                 <div className="game-top-bar__timer">⏱ {formatTime(timeLeft)}</div>
             </div>

@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
 import GameCard from '../GameCard/GameCard';
@@ -15,6 +16,7 @@ const IntrusoGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [activity, setActivity] = useState(null);
@@ -118,7 +120,6 @@ const IntrusoGameView = () => {
         const currentQuestion = activity.questions[currentQuestionIndex];
         const correctOption = currentQuestion.responseList.find(opt => opt.isCorrect);
 
-        const config1 = gameConfigs[0] || {};
         const config2 = gameConfigs[1] || {};
 
         const logEntry = {
@@ -126,8 +127,8 @@ const IntrusoGameView = () => {
             answerId: answer.id || null, // use ID if available
             isCorrect: isCorrect,
             questionText: currentQuestion.question,
-            questionImage: config1.showImage && currentQuestion.word ? currentQuestion.word.imageUrl : null,
-            questionAudio: config1.playAudio && currentQuestion.word ? currentQuestion.word.audioUrl : null,
+            questionImage: null,
+            questionAudio: null,
             selectedText: config2.isMazahua && answer.word ? answer.word.mazahuaWord : (answer.answerText || (answer.word ? answer.word.spanishWord : null)),
             selectedImage: config2.showImage && answer.word ? answer.word.imageUrl : null,
             selectedAudio: config2.playAudio && answer.word ? answer.word.audioUrl : null,
@@ -181,7 +182,7 @@ const IntrusoGameView = () => {
                 correctAnswers={correctCount}
                 totalQuestions={activity?.questions?.length || 0}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/estudiante/actividades')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/estudiante/actividades')}
                 onRetry={initGame}
             />
         );
@@ -190,14 +191,13 @@ const IntrusoGameView = () => {
     if (!activity || !activity.questions) return <div>Error: Actividad inválida</div>;
 
     const currentQuestion = activity.questions[currentQuestionIndex];
-    const config1 = gameConfigs[0] || {};
     const config2 = gameConfigs[1] || {};
 
     return (
         <div className="game-container">
             {/* Top Bar */}
             <div className="game-top-bar">
-                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate(-1)}>
+                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate(-1)}>
                     ⏸
                 </button>
                 <div className="intruso-score-badge">
@@ -222,31 +222,15 @@ const IntrusoGameView = () => {
                 </div>
             </div>
 
-            {/* Question header — config1 */}
+            {/* La consigna de intruso siempre se presenta como texto. */}
             <div className="intruso-question-header animate-pop" key={`header-${currentQuestionIndex}`}>
                 <div className="intruso-category-pill">
-                    Encuentra al Intruso
+                    Lee la consigna y elige una imagen
                 </div>
 
-                {config1.showImage && currentQuestion.word?.imageUrl && (
-                    <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
-                        <img src={currentQuestion.word.imageUrl} alt="Pregunta"
-                            style={{ maxWidth: '120px', maxHeight: '90px', borderRadius: '12px', objectFit: 'cover' }} />
-                    </div>
-                )}
-
-                {config1.playAudio && currentQuestion.word?.audioUrl && (
-                    <div style={{ textAlign: 'center', marginBottom: '0.5rem' }}>
-                        <button onClick={() => playAudio(currentQuestion.word.audioUrl)}
-                            style={{ fontSize: '28px', background: 'none', border: 'none', cursor: 'pointer' }}>🔊</button>
-                    </div>
-                )}
-
-                {config1.showText && (
-                    <h2 className="intruso-title">
-                        {currentQuestion.question}
-                    </h2>
-                )}
+                <h2 className="intruso-title">
+                    {currentQuestion.question}
+                </h2>
             </div>
 
             {/* Grid — config2 */}

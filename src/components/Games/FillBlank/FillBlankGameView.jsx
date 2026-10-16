@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import IconHourglass from '../../../assets/svgs/loading_hourglass.svg';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
@@ -13,6 +14,7 @@ const FillBlankGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [activity, setActivity] = useState(null);
@@ -155,7 +157,7 @@ const FillBlankGameView = () => {
 
     const handleExit = () => {
         if (returnToMap) {
-            navigate('/estudiante/mapa');
+            navigate(returnMapPath, { state: location.state });
         } else {
             navigate('/games/fill_blank');
         }

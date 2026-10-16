@@ -18,7 +18,7 @@ ICONS = sorted(set([
     "add", "add_circle", "admin_panel_settings", "apple", "arrow_back", "arrow_forward",
     "assignment", "auto_stories", "badge", "block","bolt", "mark_email_read",
     "calendar_today", "cancel", "category", "check", "check_circle","checklist",
-    "chevron_right", "close", "delete", "edit", "error",
+    "chevron_left", "chevron_right", "close", "delete", "edit", "error",
     "expand_less", "expand_more", "extension", "fast_forward", "favorite",
     "group", "group_add", "group_off", "groups",
     "history", "hourglass_empty", "hub",
@@ -35,7 +35,7 @@ ICONS = sorted(set([
 
     # --- config/navigation.js ---
     "article", "dashboard", "home", "library_books", "login",
-    "map", "shield_person",
+    "map", "query_stats", "shield_person",
 
     # --- config/activityConfig.js ---
     "compare_arrows", "drag_indicator", "emoji_events",
@@ -108,12 +108,14 @@ ICONS = sorted(set([
 
 # ── Paths ───────────────────────────────────────────────────────────────
 SCRIPT_DIR  = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+FONT_DIR = os.path.join(PROJECT_ROOT, "src", "fonts")
 SOURCE_FONT = os.path.join(
-    SCRIPT_DIR, "node_modules", "@fontsource-variable",
+    PROJECT_ROOT, "node_modules", "@fontsource-variable",
     "material-symbols-outlined", "files",
     "material-symbols-outlined-latin-wght-normal.woff2",
 )
-OUTPUT_FONT = os.path.join(SCRIPT_DIR, "src", "fonts", "material-symbols-subset.woff2")
+OUTPUT_FONT = os.path.join(FONT_DIR, "material-symbols-subset.woff2")
 src_size = os.path.getsize(SOURCE_FONT)
 
 # ── Step 1: Get icon codepoints from original font ─────────────────────
@@ -139,7 +141,7 @@ orig.close()
 print(f"Source: {src_size/1024:.0f} KB | Icons: {len(ICONS)} | Codepoints: {len(needed_cps)}")
 
 # ── Step 2: Subset with rlig ───────────────────────────────────────────
-tmp1 = os.path.join(SCRIPT_DIR, "src", "fonts", "_tmp1.woff2")
+tmp1 = os.path.join(FONT_DIR, "_tmp1.woff2")
 unicodes_arg = ",".join(f"U+{cp:04X}" for cp in sorted(needed_cps))
 subprocess.run([
     sys.executable, "-m", "fontTools.subset", SOURCE_FONT,
@@ -173,7 +175,7 @@ for feat in gsub.FeatureList.FeatureRecord:
 print(f"Pass 2 (prune rlig): kept {kept}, removed {removed}")
 
 # Save as temporary uncompressed TTF for re-subsetting
-tmp2 = os.path.join(SCRIPT_DIR, "src", "fonts", "_tmp2.ttf")
+tmp2 = os.path.join(FONT_DIR, "_tmp2.ttf")
 font.flavor = None  # save as raw TTF
 font.save(tmp2)
 font.close()

@@ -173,10 +173,12 @@ function TeacherReports() {
                                     {games.map(game => <option key={game.id} value={game.id}>{game.title}</option>)}
                                 </select>
                                 {catalogQuery.error ? <p className="mt-1 text-xs text-amber-700">No se pudo cargar el catálogo. Usa Recargar para reintentar.</p> : catalogQuery.data?.page?.totalPages > 1 && (
-                                    <div className="mt-2 flex items-center justify-between gap-2 text-xs text-gray-500">
-                                        <button type="button" className={buttonClass} aria-label="Página anterior de juegos" disabled={catalogPage === 0 || catalogQuery.isFetching} onClick={() => setCatalogPage(value => value - 1)}>Anterior</button>
-                                        <span>{catalogPage + 1}/{catalogQuery.data.page.totalPages}</span>
-                                        <button type="button" className={buttonClass} aria-label="Página siguiente de juegos" disabled={catalogQuery.data.page.last || catalogQuery.isFetching} onClick={() => setCatalogPage(value => value + 1)}>Siguiente</button>
+                                    <div className="mt-2 space-y-2 text-xs text-gray-500">
+                                        <p>Catálogo de juegos · Página {catalogPage + 1} de {catalogQuery.data.page.totalPages}</p>
+                                        <div className="flex items-center justify-between gap-2">
+                                            <button type="button" className={buttonClass} aria-label="Página anterior de juegos" disabled={catalogPage === 0 || catalogQuery.isFetching} onClick={() => setCatalogPage(value => value - 1)}>Anterior</button>
+                                            <button type="button" className={buttonClass} aria-label="Página siguiente de juegos" disabled={catalogQuery.data.page.last || catalogQuery.isFetching} onClick={() => setCatalogPage(value => value + 1)}>Siguiente</button>
+                                        </div>
                                     </div>
                                 )}
                             </Field>

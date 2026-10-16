@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameService from '../../../services/GameService';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
@@ -32,6 +33,7 @@ const SopaLetrasGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [loading, setLoading] = useState(true);
@@ -191,6 +193,8 @@ const SopaLetrasGameView = () => {
         const logs = clues.map(cl => ({
             questionId: null,
             answerId: cl.id,
+                promptWordId: cl.id,
+                selectedWordId: finalFound.includes(cl.id) ? cl.id : null,
             isCorrect: finalFound.includes(cl.id),
             wordText: cl.hiddenText,
         }));
@@ -233,7 +237,7 @@ const SopaLetrasGameView = () => {
                 correctAnswers={foundIds.length}
                 totalQuestions={clues.length}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/encuentra_palabra')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/encuentra_palabra')}
                 onRetry={initGame}
             />
         );
@@ -249,7 +253,7 @@ const SopaLetrasGameView = () => {
             <div className="game-top-bar">
                 <button
                     className="game-top-bar__back-btn"
-                    onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/encuentra_palabra')}
+                    onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/encuentra_palabra')}
                 >‹</button>
                 <span className="game-top-bar__title">Sopa de Letras</span>
                 <div className={`game-top-bar__timer ${lowTime ? 'timer-low' : ''}`}>⏱ {formatTime(timeLeft)}</div>

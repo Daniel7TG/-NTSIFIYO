@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameService from '../../../services/GameService';
 import GameSummary from '../GamePanel/GameSummary';
 import GameCard from '../GameCard/GameCard';
@@ -24,6 +25,7 @@ const ParesGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [loading, setLoading] = useState(true);
@@ -191,6 +193,8 @@ const ParesGameView = () => {
             return {
                 questionId: null,
                 answerId: w.id,
+                promptWordId: w.id,
+                selectedWordId: isMatched ? w.id : null,
                 isCorrect: isMatched,
                 wordText: w.spanishWord || w.mazahuaWord
             };
@@ -287,7 +291,7 @@ const ParesGameView = () => {
                 correctAnswers={matchedPairs.length}
                 totalQuestions={totalWords}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/pares')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/pares')}
                 onRetry={initGame}
             />
         );
@@ -302,7 +306,7 @@ const ParesGameView = () => {
             <div className="game-top-bar">
                 <button 
                     className="game-top-bar__back-btn" 
-                    onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/pares')}
+                    onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/pares')}
                 >‹</button>
                 <span className="game-top-bar__title">Enlazar Elementos</span>
                 <div className="game-top-bar__timer">⏱ {formatTime(elapsed)}</div>

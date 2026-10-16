@@ -3,11 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import IconHourglass from '../../../assets/svgs/loading_hourglass.svg';
 import IconQuiz from '../../../assets/svgs/juegos/quiz_premium.svg';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
 import GameCard from '../GameCard/GameCard';
+import MediaService from '../../../services/MediaService';
 import '../../../styles/components/games/quiz/Quiz.css';
 
 function QuizGameView() {
@@ -15,6 +17,7 @@ function QuizGameView() {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     const [activity, setactivity] = useState(null);
@@ -27,6 +30,8 @@ function QuizGameView() {
     const [loading, setloading] = useState(true);
     const [error, setError] = useState(null);
     const [feedback, setFeedback] = useState(null);
+    const [mediaStream, setMediaStream] = useState(null);
+    const [mediaLoadError, setMediaLoadError] = useState(null);
 
     // Summary data
     const [responseLogs, setResponseLogs] = useState([]);
@@ -50,7 +55,7 @@ function QuizGameView() {
         }
 
         const mappedActivity = {
-            name: "Centro de quiz",
+            name: currentGameData.mediaId ? "Canción y preguntas" : "Centro de quiz",
             recommendedXP: 100,
             questions: (currentGameData.questions || []).map((q, i) => ({
                 id: q.id,
@@ -76,6 +81,17 @@ function QuizGameView() {
         setError(null);
         setloading(false);
     }, [currentGameData]);
+
+    useEffect(() => {
+        let active = true;
+        setMediaStream(null);
+        setMediaLoadError(null);
+        if (!currentGameData?.mediaId) return () => { active = false; };
+        MediaService.getMediaStream(currentGameData.mediaId)
+            .then(stream => { if (active) setMediaStream(stream); })
+            .catch(() => { if (active) setMediaLoadError('No se pudo cargar la canción.'); });
+        return () => { active = false; };
+    }, [currentGameData?.mediaId]);
 
     const currentQuestion = activity?.questions?.[currentQuestionIndex];
     const config1 = gameconfigs[0] || {};
@@ -145,9 +161,9 @@ function QuizGameView() {
 
     const handleExit = () => {
         if (returnToMap) {
-            navigate('/estudiante/mapa');
+            navigate(returnMapPath, { state: location.state });
         } else {
-            navigate('/games/quiz');
+            navigate(currentGameData?.mediaId ? '/games/cancion' : '/games/quiz');
         }
     };
 
@@ -204,6 +220,21 @@ function QuizGameView() {
                     <span style={{ color: '#6b7280' }}>{`${currentQuestionIndex + 1}/${activity.questions.length}`}</span>
                 </div>
 
+                {currentGameData?.mediaId && (
+                    <section aria-label="Canción del juego" style={{ background: '#fdf2f8', borderRadius: '16px', padding: '1rem', marginBottom: '1.5rem' }}>
+                        <p style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Escucha la canción antes de responder</p>
+                        {mediaStream?.url ? (
+                            <>
+                                <audio controls preload="metadata" src={mediaStream.url} style={{ width: '100%' }} />
+                                <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                                    {mediaStream.espSubtitlesUrl && <a href={mediaStream.espSubtitlesUrl} target="_blank" rel="noopener noreferrer">Subtítulos en español</a>}
+                                    {mediaStream.mazSubtitlesUrl && <a href={mediaStream.mazSubtitlesUrl} target="_blank" rel="noopener noreferrer">Subtítulos en mazahua</a>}
+                                </div>
+                            </>
+                        ) : <p>{mediaLoadError || 'Cargando canción…'}</p>}
+                    </section>
+                )}
+
                 {/* Progress bar */}
                 <div style={{ height: '6px', background: '#e5e7eb', borderRadius: '3px', marginBottom: '2rem' }}>
                     <div style={{
@@ -255,6 +286,7 @@ function QuizGameView() {
                                 <GameCard
                                     key={option.id}
                                     text={optionText || undefined}
+                                    wrapText={!option.word}
                                     imageUrl={config2.showImage ? option.word?.imageUrl : undefined}
                                     audioUrl={config2.playAudio ? option.word?.audioUrl : undefined}
                                     onClick={() => handleAnswerSelect(option.id)}

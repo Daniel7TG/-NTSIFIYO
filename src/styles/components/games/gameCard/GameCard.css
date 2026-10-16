@@ -134,6 +134,27 @@
     height: 100%;
 }
 
+/* Las respuestas escritas como frases conservan un tamaño legible. */
+.game-card--text-only.game-card--wrapped {
+    aspect-ratio: auto;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+}
+
+.game-card--wrapped .gc-text-center--wrapped {
+    display: block;
+    height: auto;
+    padding: 1rem;
+    font-size: 16px;
+    line-height: 1.5;
+    font-weight: 600;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    overflow: visible;
+    text-overflow: clip;
+}
+
 /* Footer strip — used for text on top of image or below audio */
 .gc-text-footer {
     position: relative;

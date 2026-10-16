@@ -14,6 +14,7 @@ import '../../../styles/components/games/gameCard/GameCard.css';
  *  - selected  {string}  - 'correct' | 'incorrect' | null
  *  - disabled  {bool}    - Deshabilitar interacción
  *  - animationDelay {string} - CSS delay, e.g. '0.1s'
+ *  - wrapText {boolean} - Permite leer frases completas en varias líneas.
  */
 const GameCard = ({
     text,
@@ -23,6 +24,7 @@ const GameCard = ({
     selected,
     disabled,
     animationDelay,
+    wrapText = false,
 }) => {
     const [playing, setPlaying] = useState(false);
     const centerTextRef = useFitText({ maxFontSize: 18, minFontSize: 8, text });
@@ -83,7 +85,7 @@ const GameCard = ({
             case 'text-only':
                 return (
                     <div className="gc-body gc-body--center">
-                        <span className="gc-text-center" ref={centerTextRef}>{text}</span>
+                        <span className={`gc-text-center${wrapText ? ' gc-text-center--wrapped' : ''}`} ref={wrapText ? undefined : centerTextRef}>{text}</span>
                     </div>
                 );
 
@@ -158,6 +160,7 @@ const GameCard = ({
     const cardClass = [
         'game-card',
         `game-card--${mode}`,
+        wrapText ? 'game-card--wrapped' : '',
         selected === 'correct' ? 'game-card--correct' : '',
         selected === 'incorrect' ? 'game-card--incorrect' : '',
         disabled ? 'game-card--disabled' : '',

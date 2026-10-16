@@ -1,9 +1,15 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
 const GameContext = createContext();
 
 export const GameProvider = ({ children }) => {
     const [currentGameData, setCurrentGameData] = useState(null);
+
+    useEffect(() => {
+        const clearSession = () => setCurrentGameData(null);
+        window.addEventListener('gameSessionCleared', clearSession);
+        return () => window.removeEventListener('gameSessionCleared', clearSession);
+    }, []);
 
     const saveGameData = (data) => {
         setCurrentGameData(data);

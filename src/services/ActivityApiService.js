@@ -244,6 +244,7 @@ class ActivityApiService {
         try {
             const response = await apiConfig.post('/api/activities/complete', {
                 activityId: data.activityId,
+                attemptId: data.attemptId,
                 startDate: data.startDate,
                 correctAnswers: data.correctAnswers,
                 responseLogs: data.responseLogs || [],

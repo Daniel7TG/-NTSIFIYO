@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGame } from '../../../context/GameContext';
+import useGameMapPath from '../../../hooks/useGameMapPath';
 import GameSummary from '../GamePanel/GameSummary';
 import GameAlert from '../GamePanel/GameAlert';
 import '../../../styles/components/games/GameBase.css';
@@ -13,6 +14,7 @@ const RompecabezasGameView = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const returnToMap = location.state?.returnToMap;
+    const returnMapPath = useGameMapPath();
     const { currentGameData } = useGame();
 
     // ─── Estado general ────────────────────────────────────────────────────
@@ -219,7 +221,7 @@ const RompecabezasGameView = () => {
                     </h2>
                     <p style={{ color: '#374151', marginBottom: '1.5rem' }}>{loadError}</p>
                     <button
-                        onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/rompecabezas')}
+                        onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/rompecabezas')}
                         style={{
                             background: '#1E3A8A', color: 'white', padding: '0.75rem 1.5rem',
                             border: 'none', borderRadius: '8px', cursor: 'pointer',
@@ -245,7 +247,7 @@ const RompecabezasGameView = () => {
                 correctAnswers={score}
                 totalQuestions={totalOriginal}
                 responseLogs={responseLogs}
-                onExit={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/rompecabezas')}
+                onExit={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/rompecabezas')}
                 onRetry={initGame}
             />
         );
@@ -258,7 +260,7 @@ const RompecabezasGameView = () => {
         <div className="game-container">
             {/* ── Barra superior ── */}
             <div className="game-top-bar">
-                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate('/estudiante/mapa') : navigate('/games/rompecabezas')} title="Salir">
+                <button className="game-top-bar__back-btn" onClick={() => returnToMap ? navigate(returnMapPath, { state: location.state }) : navigate('/games/rompecabezas')} title="Salir">
                     ‹
                 </button>
                 <span className="game-top-bar__title">{activityTitle}</span>
@@ -275,7 +277,7 @@ const RompecabezasGameView = () => {
 
             {/* ── Instrucción ── */}
             <div className="rp-instruction">
-                Completa la frase
+                {currentQuestion.question || 'Completa la frase'}
             </div>
 
             {/* ── Piezas superiores (pregunta + slot) ── */}
@@ -284,12 +286,14 @@ const RompecabezasGameView = () => {
                 <div className="rp-piece rp-piece-question" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
                     {gameConfigs[0]?.showImage && currentQuestion.word?.imageUrl && (
                         <img src={currentQuestion.word.imageUrl} alt=""
-                            style={{ width: '60px', height: '60px', borderRadius: '10px', objectFit: 'cover' }} />
+                            style={{ width: '80px', height: '80px', borderRadius: '10px', objectFit: 'contain' }} />
                     )}
                     {gameConfigs[0]?.showText && (
-                        <span>{gameConfigs[0]?.isMazahua && currentQuestion.word
-                            ? currentQuestion.word.mazahuaWord
-                            : currentQuestion.question}</span>
+                        <span>{currentQuestion.word
+                            ? (gameConfigs[0]?.isMazahua
+                                ? currentQuestion.word.mazahuaWord
+                                : currentQuestion.word.spanishWord)
+                            : ''}</span>
                     )}
                     {gameConfigs[0]?.playAudio && currentQuestion.word?.audioUrl && (
                         <button onClick={() => playAudio(currentQuestion.word.audioUrl)}
